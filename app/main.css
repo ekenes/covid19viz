@@ -1,0 +1,40 @@
+html,
+body,
+#viewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #cfd3d4;
+}
+
+#titleDiv {
+  font-size: 18pt;
+  padding: 10px;
+  font-weight: 800;
+}
+
+#subtitleDiv{
+  font-size: 10pt;
+  padding-bottom: 10px;
+}
+
+#timeOptions {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  bottom: 30px;
+}
+
+#ui-controls{
+  padding: 10px;
+  width: 250px;
+}
+
+#legend {
+  width: auto;
+}
+
+.esri-select {
+  font-size: medium;
+}
