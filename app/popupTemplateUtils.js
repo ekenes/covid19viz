@@ -331,7 +331,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             expressionInfos.push(new ExpressionInfo({
                 expression: expressionUtils_1.createDoublingTimeExpression(currentFieldName),
                 name: "doubling-time-" + currentFieldName,
-                title: currentFieldName
+                title: timeUtils_1.formatDate(currentDate)
             }));
             currentDate = timeUtils_1.getNextDay(currentDate);
         }

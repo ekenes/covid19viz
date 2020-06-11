@@ -396,7 +396,7 @@ function createDoublingTimeExpressionInfos(startDate: Date, endDate: Date): Expr
     expressionInfos.push( new ExpressionInfo({
       expression: createDoublingTimeExpression(currentFieldName),
       name: `doubling-time-${currentFieldName}`,
-      title: currentFieldName
+      title: formatDate(currentDate)
     }));
     currentDate = getNextDay(currentDate);
   }
