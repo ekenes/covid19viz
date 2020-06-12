@@ -1,7 +1,7 @@
 import intl = require("esri/intl");
 import { prefix, separator } from "./layerUtils";
 
-export const endDate = getPreviousDay(new Date());//new Date(2020, 4, 31);// getPreviousDay(new Date());
+export const endDate = getPreviousDay(new Date());
 
 export const initialTimeExtent = {
   start: new Date(2020, 0, 22),
@@ -14,7 +14,7 @@ export function getFieldFromDate(d: Date) {
 }
 
 export function getPreviousDay(d: Date){
-  return new Date(d.setDate(d.getDate() - 2));
+  return new Date(d.setDate(d.getDate() - 1));
 }
 
 export function getNextDay(d: Date){

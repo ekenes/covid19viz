@@ -1,7 +1,7 @@
 define(["require", "exports", "esri/intl", "./layerUtils"], function (require, exports, intl, layerUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.endDate = getPreviousDay(new Date()); //new Date(2020, 4, 31);// getPreviousDay(new Date());
+    exports.endDate = getPreviousDay(new Date());
     exports.initialTimeExtent = {
         start: new Date(2020, 0, 22),
         end: exports.endDate
@@ -12,7 +12,7 @@ define(["require", "exports", "esri/intl", "./layerUtils"], function (require, e
     }
     exports.getFieldFromDate = getFieldFromDate;
     function getPreviousDay(d) {
-        return new Date(d.setDate(d.getDate() - 2));
+        return new Date(d.setDate(d.getDate() - 1));
     }
     exports.getPreviousDay = getPreviousDay;
     function getNextDay(d) {

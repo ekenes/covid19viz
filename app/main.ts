@@ -14,7 +14,7 @@ import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 
 import { endDate, initialTimeExtent } from "./timeUtils";
-import { updateRenderer, RendererVars, UpdateRendererParams } from "./rendererUtils";
+import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
 import { infectionsPopulationLayer } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
