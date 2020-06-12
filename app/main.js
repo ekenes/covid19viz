@@ -238,7 +238,17 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 case 1:
                     _a.sent();
                     slider.watch("values", function () {
-                        updateLayer(true);
+                        if (slider.viewModel.state === "playing") {
+                            // don't generate popupTemplate when slider is playing
+                            rendererUtils_1.updateRenderer({
+                                layer: layerUtils_1.infectionsPopulationLayer,
+                                currentDate: slider.values[0],
+                                rendererType: rendererSelect.value
+                            });
+                        }
+                        else {
+                            updateLayer(true);
+                        }
                     });
                     return [2 /*return*/];
             }

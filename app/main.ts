@@ -217,7 +217,16 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
   await initializeLayer();
   slider.watch("values",  () => {
-    updateLayer(true);
+    if (slider.viewModel.state === "playing"){
+      // don't generate popupTemplate when slider is playing
+      updateRenderer({
+        layer: infectionsPopulationLayer,
+        currentDate: slider.values[0],
+        rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
+      });
+    } else {
+      updateLayer(true);
+    }
   });
 
 })();
