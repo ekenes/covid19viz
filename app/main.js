@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -78,7 +78,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, map, view, search, slider;
+        var rendererSelect, map, view, search, slider, timeVisibilityBtn, timeOptions;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -210,9 +210,17 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         view: view,
                         container: "legend"
                     });
-                    view.ui.add("ui-controls", "top-right");
+                    view.ui.add(new Expand({
+                        view: view,
+                        content: document.getElementById("ui-controls"),
+                        expandIconClass: "esri-icon-menu",
+                        expanded: true
+                    }), "top-right");
                     view.ui.add(new Zoom({ view: view }), "bottom-right");
-                    view.ui.add(search, "top-left");
+                    view.ui.add(new Expand({
+                        view: view,
+                        content: search
+                    }), "top-left");
                     slider = new TimeSlider({
                         container: "timeSlider",
                         playRate: 50,
@@ -221,7 +229,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             end: timeUtils_1.endDate
                         },
                         mode: "instant",
-                        values: [timeUtils_1.initialTimeExtent.start],
+                        values: [timeUtils_1.initialTimeExtent.end],
                         stops: {
                             interval: new TimeInterval({
                                 value: 1,
@@ -231,6 +239,18 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         view: view
                     });
                     view.ui.add("timeOptions", "bottom-center");
+                    timeVisibilityBtn = document.getElementById("time-slider-toggle");
+                    timeOptions = document.getElementById("timeOptions");
+                    timeVisibilityBtn.addEventListener("click", function () {
+                        console.log(timeOptions.style.visibility);
+                        timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
+                        if (timeVisibilityBtn.classList.contains("esri-icon-time-clock")) {
+                            timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
+                        }
+                        else {
+                            timeVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-time-clock");
+                        }
+                    });
                     rendererSelect.addEventListener("change", function () {
                         updateLayer(false);
                     });

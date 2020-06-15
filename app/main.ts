@@ -9,6 +9,7 @@ import watchUtils = require("esri/core/watchUtils");
 import Color = require("esri/Color");
 
 import Legend = require("esri/widgets/Legend");
+import Expand = require("esri/widgets/Expand");
 import Zoom = require("esri/widgets/Zoom");
 import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
@@ -155,9 +156,19 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     container: "legend"
   });
 
-  view.ui.add("ui-controls", "top-right");
-  view.ui.add(new Zoom({ view }), "bottom-right");
-  view.ui.add(search, "top-left");
+  view.ui.add(new Expand({
+    view,
+    content: document.getElementById("ui-controls"),
+    expandIconClass: "esri-icon-menu",
+    expanded: true
+  }) , "top-right");
+
+  view.ui.add( new Zoom({ view }), "bottom-right");
+
+  view.ui.add(new Expand({
+    view,
+    content: search
+  }), "top-left");
 
   const slider = new TimeSlider({
     container: "timeSlider",
@@ -167,7 +178,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
       end: endDate
     },
     mode: "instant",
-    values: [ initialTimeExtent.start ],
+    values: [ initialTimeExtent.end ],
     stops: {
       interval: new TimeInterval({
         value: 1,
@@ -178,6 +189,21 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   });
 
   view.ui.add("timeOptions", "bottom-center");
+
+  const timeVisibilityBtn = document.getElementById("time-slider-toggle");
+  const timeOptions = document.getElementById("timeOptions");
+
+  timeVisibilityBtn.addEventListener("click", () => {
+    console.log(timeOptions.style.visibility);
+    timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
+
+    if(timeVisibilityBtn.classList.contains("esri-icon-time-clock")){
+      timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
+    } else {
+      timeVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-time-clock");
+    }
+
+  });
 
   async function initializeLayer(){
     map.add(infectionsPopulationLayer);
@@ -216,6 +242,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   });
 
   await initializeLayer();
+
   slider.watch("values",  () => {
     if (slider.viewModel.state === "playing"){
       // don't generate popupTemplate when slider is playing

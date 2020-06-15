@@ -21,9 +21,17 @@ body,
 
 #timeOptions {
   position: absolute;
-  left: 100px;
-  right: 100px;
+  left: 55px;
+  right: 65px;
   bottom: 30px;
+}
+
+#time-slider-toggle {
+  position: absolute;
+  left: 15px;
+  bottom: 30px;
+  height: 32px;
+  width: 32px;
 }
 
 #ui-controls{
