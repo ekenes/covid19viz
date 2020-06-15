@@ -119,7 +119,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 new MediaContent({
                     mediaInfos: [{
                             type: "line-chart",
-                            title: "Total infections over time",
+                            title: "Total cases over time",
                             value: {
                                 fields: expressionNameList
                             }
@@ -235,7 +235,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
         if (existingTemplate) {
             existingTemplate.content[0] = new TextContent({
-                text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
             });
             existingTemplate.expressionInfos = [new ExpressionInfo({
                     expression: expressionUtils_1.createDoublingTimeExpression(currentFieldName),
@@ -244,7 +244,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 }), new ExpressionInfo({
                     expression: expressionUtils_1.createNewInfectionsExpression(currentFieldName),
                     name: "new-infections",
-                    title: "new infections"
+                    title: "new cases"
                 })];
             return existingTemplate.clone();
         }
@@ -263,12 +263,12 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             title: "{Admin2}, {Province_State}, {Country_Region}",
             content: [
                 new TextContent({
-                    text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                    text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
                 }),
                 new MediaContent({
                     mediaInfos: [{
                             type: "line-chart",
-                            title: "Total infections over time",
+                            title: "Total cases over time",
                             value: {
                                 fields: infectionFieldList
                             }
@@ -305,7 +305,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 }), new ExpressionInfo({
                     expression: expressionUtils_1.createNewInfectionsExpression(currentFieldName),
                     name: "new-infections",
-                    title: "new infections"
+                    title: "new cases"
                 })]
         });
     }
@@ -342,7 +342,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
         if (existingTemplate) {
             existingTemplate.content[0] = new TextContent({
-                text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
             });
             var expressionInfosLength = existingTemplate.expressionInfos.length;
             var replacementIndex = expressionInfosLength - 2;
@@ -353,7 +353,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             }), new ExpressionInfo({
                 expression: expressionUtils_1.createNewInfectionsExpression(currentFieldName),
                 name: "new-infections",
-                title: "new infections"
+                title: "new cases"
             }));
             return existingTemplate.clone();
         }
@@ -394,18 +394,18 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             title: "{Admin2}, {Province_State}, {Country_Region}",
             content: [
                 new TextContent({
-                    text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                    text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
                 }),
                 new MediaContent({
                     mediaInfos: [{
                             type: "line-chart",
-                            title: "Total infections over time",
+                            title: "Total cases over time",
                             value: {
                                 fields: infectionExpressionNameList
                             }
                         }, {
                             type: "column-chart",
-                            title: "Average new infections per day",
+                            title: "14-day rolling average of new cases per day",
                             value: {
                                 fields: newCasesExpressionNameList
                             }
@@ -454,7 +454,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 }), new ExpressionInfo({
                     expression: expressionUtils_1.createNewInfectionsExpression(currentFieldName),
                     name: "new-infections",
-                    title: "new infections"
+                    title: "new cases"
                 })])
         });
     }
@@ -557,7 +557,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 }), new ExpressionInfo({
                     expression: expressionUtils_1.createTotalInfectionsExpression(currentFieldName),
                     name: "total-infections",
-                    title: "Total infections"
+                    title: "Total cases"
                 })]
         });
     }
@@ -568,7 +568,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             title: "{Admin2}, {Province_State}, {Country_Region}",
             content: [
                 new TextContent({
-                    text: "An estimated <b>{expression/active-infections}</b> out of {POPULATION} people were sick with COVID-19 on " + timeUtils_1.formatDate(currentDate) + " here. That equates to about <b>{expression/active-rate}</b> infections for every 100,000 people."
+                    text: "An estimated <b>{expression/active-infections}</b> out of {POPULATION} people were sick with COVID-19 on " + timeUtils_1.formatDate(currentDate) + " here. That equates to about <b>{expression/active-rate}</b> cases for every 100,000 people."
                 })
             ],
             fieldInfos: [
@@ -601,7 +601,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 }), new ExpressionInfo({
                     expression: expressionUtils_1.createActiveCasesExpression(currentFieldName),
                     name: "active-infections",
-                    title: "Active infections"
+                    title: "Active cases"
                 })]
         });
     }

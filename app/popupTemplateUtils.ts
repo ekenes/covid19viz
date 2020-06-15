@@ -153,7 +153,7 @@ function createTotalCasesPopupTemplate(params: PopupTemplateCreateParams) : Popu
       new MediaContent({
         mediaInfos: [{
           type: "line-chart",
-          title: "Total infections over time",
+          title: "Total cases over time",
           value: {
             fields: expressionNameList
           }
@@ -288,7 +288,7 @@ function createDoublingTimePopupTemplate(params: PopupTemplateCreateParams) : Po
   if(existingTemplate){
     existingTemplate.content[0] = new TextContent({
       text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
-        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.
+        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
     });
     existingTemplate.expressionInfos = [ new ExpressionInfo({
@@ -298,7 +298,7 @@ function createDoublingTimePopupTemplate(params: PopupTemplateCreateParams) : Po
     }), new ExpressionInfo({
       expression: createNewInfectionsExpression(currentFieldName),
       name: "new-infections",
-      title: "new infections"
+      title: "new cases"
     })];
     return existingTemplate.clone();
   }
@@ -321,13 +321,13 @@ function createDoublingTimePopupTemplate(params: PopupTemplateCreateParams) : Po
     content: [
       new TextContent({
         text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
-        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.
+        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
       }),
       new MediaContent({
         mediaInfos: [{
           type: "line-chart",
-          title: "Total infections over time",
+          title: "Total cases over time",
           value: {
             fields: infectionFieldList
           }
@@ -364,7 +364,7 @@ function createDoublingTimePopupTemplate(params: PopupTemplateCreateParams) : Po
     }), new ExpressionInfo({
       expression: createNewInfectionsExpression(currentFieldName),
       name: "new-infections",
-      title: "new infections"
+      title: "new cases"
     })]
   });
 }
@@ -411,7 +411,7 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
   if(existingTemplate){
     existingTemplate.content[0] = new TextContent({
       text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
-        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.
+        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
     });
     const expressionInfosLength = existingTemplate.expressionInfos.length;
@@ -423,7 +423,7 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
     }), new ExpressionInfo({
       expression: createNewInfectionsExpression(currentFieldName),
       name: "new-infections",
-      title: "new infections"
+      title: "new cases"
     }));
     return existingTemplate.clone();
   }
@@ -469,19 +469,19 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
     content: [
       new TextContent({
         text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
-        The number of new infections has a doubling time of <b>{expression/doubling-time} days</b>.
+        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
       }),
       new MediaContent({
         mediaInfos: [{
           type: "line-chart",
-          title: "Total infections over time",
+          title: "Total cases over time",
           value: {
             fields: infectionExpressionNameList
           }
         }, {
           type: "column-chart",
-          title: "Average new infections per day",
+          title: "14-day rolling average of new cases per day",
           value: {
             fields: newCasesExpressionNameList
           }
@@ -532,7 +532,7 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
       }), new ExpressionInfo({
         expression: createNewInfectionsExpression(currentFieldName),
         name: "new-infections",
-        title: "new infections"
+        title: "new cases"
       })])
   });
 }
@@ -644,7 +644,7 @@ function createInfectionRatePopupTemplate(params: PopupTemplateCreateParams) : P
     }), new ExpressionInfo({
       expression: createTotalInfectionsExpression(currentFieldName),
       name: "total-infections",
-      title: "Total infections"
+      title: "Total cases"
     })]
   });
 }
@@ -658,7 +658,7 @@ function createActiveRatePopupTemplate(params: PopupTemplateCreateParams) : Popu
     title: `{Admin2}, {Province_State}, {Country_Region}`,
     content: [
       new TextContent({
-        text: `An estimated <b>{expression/active-infections}</b> out of {POPULATION} people were sick with COVID-19 on ${formatDate(currentDate)} here. That equates to about <b>{expression/active-rate}</b> infections for every 100,000 people.`
+        text: `An estimated <b>{expression/active-infections}</b> out of {POPULATION} people were sick with COVID-19 on ${formatDate(currentDate)} here. That equates to about <b>{expression/active-rate}</b> cases for every 100,000 people.`
       })
     ],
     fieldInfos: [
@@ -691,7 +691,7 @@ function createActiveRatePopupTemplate(params: PopupTemplateCreateParams) : Popu
     }), new ExpressionInfo({
       expression: createActiveCasesExpression(currentFieldName),
       name: "active-infections",
-      title: "Active infections"
+      title: "Active cases"
     })]
   });
 }
