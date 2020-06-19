@@ -146,6 +146,7 @@ function createTotalCasesPopupTemplate(params: PopupTemplateCreateParams) : Popu
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `<b>{expression/total-infections-${currentFieldName}}</b> people tested positive for COVID-19 as of ${formatDate(currentDate)}.`
@@ -192,6 +193,7 @@ function createTotalDeathsPopupTemplate(params: PopupTemplateCreateParams) : Pop
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `<b>{expression/total-deaths-${currentFieldName}}</b> people died from COVID-19 as of ${formatDate(currentDate)}.`
@@ -238,6 +240,7 @@ function createActiveCasesPopupTemplate(params: PopupTemplateCreateParams) : Pop
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `An estimated <b>{expression/${currentFieldName}}</b> people were actively sick with COVID-19 on ${formatDate(currentDate)}.`
@@ -318,6 +321,7 @@ function createDoublingTimePopupTemplate(params: PopupTemplateCreateParams) : Po
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
@@ -466,6 +470,7 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
@@ -561,6 +566,7 @@ function createDeathRatePopupTemplate(params: PopupTemplateCreateParams) : Popup
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `<b>{expression/total-deaths}</b> people died due to COVID-19 here, which represents <b>{expression/death-rate}%</b> of the total number of people infected with the virus.
@@ -609,6 +615,7 @@ function createInfectionRatePopupTemplate(params: PopupTemplateCreateParams) : P
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `<b>{expression/total-infections}</b> out of {POPULATION} people tested positive for COVID-19 here. Positive results ocurred in about <b>{expression/infection-rate}</b> for every 100,000 people.`
@@ -656,6 +663,7 @@ function createActiveRatePopupTemplate(params: PopupTemplateCreateParams) : Popu
 
   return new PopupTemplate({
     title: `{Admin2}, {Province_State}, {Country_Region}`,
+    outFields: ["*"],
     content: [
       new TextContent({
         text: `An estimated <b>{expression/active-infections}</b> out of {POPULATION} people were sick with COVID-19 on ${formatDate(currentDate)} here. That equates to about <b>{expression/active-rate}</b> cases for every 100,000 people.`
