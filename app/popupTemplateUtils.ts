@@ -486,7 +486,7 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
           }
         }, {
           type: "column-chart",
-          title: "14-day rolling average of new cases per day",
+          title: "7-day rolling average of new cases per day",
           value: {
             fields: newCasesExpressionNameList
           }

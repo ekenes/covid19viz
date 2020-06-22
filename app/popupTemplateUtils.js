@@ -238,7 +238,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
         if (existingTemplate) {
             existingTemplate.content[0] = new TextContent({
-                text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
             });
             existingTemplate.expressionInfos = [new ExpressionInfo({
                     expression: expressionUtils_1.createDoublingTimeExpression(currentFieldName),
@@ -267,7 +267,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             outFields: ["*"],
             content: [
                 new TextContent({
-                    text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                    text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
                 }),
                 new MediaContent({
                     mediaInfos: [{
@@ -346,7 +346,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
         if (existingTemplate) {
             existingTemplate.content[0] = new TextContent({
-                text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
             });
             var expressionInfosLength = existingTemplate.expressionInfos.length;
             var replacementIndex = expressionInfosLength - 2;
@@ -399,7 +399,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             outFields: ["*"],
             content: [
                 new TextContent({
-                    text: "<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                    text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
                 }),
                 new MediaContent({
                     mediaInfos: [{
@@ -410,7 +410,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                             }
                         }, {
                             type: "column-chart",
-                            title: "14-day rolling average of new cases per day",
+                            title: "7-day rolling average of new cases per day",
                             value: {
                                 fields: newCasesExpressionNameList
                             }

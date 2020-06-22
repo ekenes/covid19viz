@@ -2,7 +2,7 @@ import { prefix, separator } from "./layerUtils";
 
 export function createNewInfectionsAverageExpression(currentDateFieldName: string){
   return `
-    var unit = 14;
+    var unit = 7;
     var currentDayFieldName = "${currentDateFieldName}";
     var currentDayValue = $feature[currentDayFieldName];
     var currentDayValueParts = Split(currentDayValue, "|");
