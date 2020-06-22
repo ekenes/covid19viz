@@ -172,7 +172,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
   const slider = new TimeSlider({
     container: "timeSlider",
-    playRate: 50,
+    playRate: 100,
     fullTimeExtent: {
       start: new Date(2020, 0, 22),
       end: endDate

@@ -223,7 +223,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     }), "top-left");
                     slider = new TimeSlider({
                         container: "timeSlider",
-                        playRate: 50,
+                        playRate: 100,
                         fullTimeExtent: {
                             start: new Date(2020, 0, 22),
                             end: timeUtils_1.endDate
