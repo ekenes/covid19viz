@@ -290,7 +290,7 @@ function createDoublingTimePopupTemplate(params: PopupTemplateCreateParams) : Po
 
   if(existingTemplate){
     existingTemplate.content[0] = new TextContent({
-      text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
+      text: `<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.
         The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
     });
@@ -324,7 +324,7 @@ function createDoublingTimePopupTemplate(params: PopupTemplateCreateParams) : Po
     outFields: ["*"],
     content: [
       new TextContent({
-        text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
+        text: `<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.
         The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
       }),
@@ -414,7 +414,7 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
 
   if(existingTemplate){
     existingTemplate.content[0] = new TextContent({
-      text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
+      text: `<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.
         The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
     });
@@ -473,7 +473,7 @@ function createNewInfectionsPopupTemplate(params: PopupTemplateCreateParams) : P
     outFields: ["*"],
     content: [
       new TextContent({
-        text: `<b>{expression/new-infections}</b> new people tested positive for COVID-19 in the last 14 days.
+        text: `<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.
         The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.
         `
       }),
