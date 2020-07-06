@@ -5,6 +5,10 @@
     <title>Viral - Explore COVID-19 data</title>
     <link rel="stylesheet" href="https://js.arcgis.com/next/esri/css/main.css">
     <link rel="stylesheet" href="app/main.css">
+
+    <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css">
+    <script src="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/js/calcite-web.min.js"></script>
+
     <script>
       var locationPath = location.pathname.replace(/\/[^\/]+$/, "");
       window.dojoConfig = {
@@ -17,6 +21,7 @@
       };
     </script>
     <script src="https://js.arcgis.com/4.16"></script>
+
   </head>
   <body>
     <div id="viewDiv"></div>
@@ -38,10 +43,24 @@
           <option value="death-rate">Death rate</option>
         </select>
       </div>
-      <input type="checkbox" id="difference"> Date range
+      <div style="margin-top: 10px;">
+        <label class="toggle-switch modifier-class">
+          <input type="checkbox" class="toggle-switch-input" id="difference">
+          <span class="toggle-switch-track margin-right-1"></span>
+          <span class="toggle-switch-label font-size--1">Explore date range</span>
+        </label>
+      </div>
       <div id="legend"></div>
     </div>
     <div id="timeOptions" style="visibility: visible;">
+      <nav class="leader-1">
+        <button class="btn btn-grouped btn-clear btn-small" id="beforeCA">Before CA stay at home order</button>
+        <button class="btn btn-grouped btn-clear btn-small" id="afterCA">Since CA stay at home order</button>
+        <button class="btn btn-grouped btn-clear btn-small" id="memorial">Since Memorial Day</button>
+        <button class="btn btn-grouped btn-clear btn-small" id="july4">Since July 4th</button>
+        <button class="btn btn-grouped btn-clear btn-small" id="month">Last month</button>
+        <button class="btn btn-grouped btn-clear btn-small" id="twoWeeks">Last 2 weeks</button>
+      </nav>
       <div id="timeSlider"></div>
     </div>
     <button class="esri-icon-expand" id="time-slider-toggle"></button>

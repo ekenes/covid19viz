@@ -14,7 +14,7 @@ import Zoom = require("esri/widgets/Zoom");
 import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 
-import { endDate, initialTimeExtent } from "./timeUtils";
+import { endDate, initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
 import { infectionsPopulationLayer } from "./layerUtils";
@@ -194,23 +194,43 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
   checkbox.addEventListener( "input", (event) => {
     if(checkbox.checked){
-      updateSlider("time-window");
+      updateSlider({ mode: "time-window" });
     } else {
-      updateSlider("instant");
+      updateSlider({ mode: "instant" });
     }
   });
 
-  const updateSlider = (mode: "time-window" | "instant" ) => {
-    slider.mode = mode;
-    if (mode === "time-window"){
-      slider.values = [
-        slider.fullTimeExtent.start,
-        slider.fullTimeExtent.end
-      ];
+  interface UpdateSliderParams {
+    mode?: "time-window" | "instant",
+    filter?: string
+  }
+
+  const updateSlider = (params: UpdateSliderParams) => {
+    const { mode, filter } = params;
+    const newMode = mode || slider.mode;
+    slider.mode = newMode;
+    if (newMode === "time-window"){
+      if(filter){
+        slider.values = [
+          timeExtents[filter].start,
+          timeExtents[filter].end
+        ];
+      } else {
+        slider.values = [
+          timeExtents["twoWeeks"].start,
+          timeExtents["twoWeeks"].end
+        ];
+      }
     } else {
-      slider.values = [
-        slider.fullTimeExtent.end
-      ];
+      if(filter){
+        slider.values = [
+          timeExtents[filter].start
+        ];
+      } else {
+        slider.values = [
+          slider.fullTimeExtent.end
+        ];
+      }
     }
   };
 
@@ -218,6 +238,15 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
   const timeVisibilityBtn = document.getElementById("time-slider-toggle");
   const timeOptions = document.getElementById("timeOptions");
+  const btns = [].slice.call(document.getElementsByTagName("button"));
+
+  btns.forEach( (btn: HTMLButtonElement) => {
+    if(Object.keys(timeExtents).indexOf(btn.id) > -1){
+      btn.addEventListener( "click", () => {
+        updateSlider({ filter: btn.id });
+      });
+    }
+  });
 
   timeVisibilityBtn.addEventListener("click", () => {
     console.log(timeOptions.style.visibility);

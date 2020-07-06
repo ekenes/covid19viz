@@ -50,3 +50,11 @@ body,
 #difference{
   margin-top: 10px;
 }
+
+.leader-1{
+  width: 100%;
+}
+
+.esri-legend__service {
+  padding: 0
+}

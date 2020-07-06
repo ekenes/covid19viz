@@ -1,4 +1,7 @@
 import intl = require("esri/intl");
+import TimeExtent = require("esri/TimeExtent");
+import lang = require("esri/core/lang");
+
 import { prefix, separator } from "./layerUtils";
 
 export const endDate = getPreviousDay(new Date());
@@ -14,13 +17,44 @@ export function getFieldFromDate(d: Date) {
 }
 
 export function getPreviousDay(d: Date){
-  return new Date(d.setDate(d.getDate() - 1));
+  return new Date(lang.clone(d).setDate(d.getDate() - 1));
 }
 
 export function getNextDay(d: Date){
-  return new Date(d.setDate(d.getDate() + 1));
+  return new Date(lang.clone(d).setDate(d.getDate() + 1));
+}
+
+export function dateAdd(d: Date, days: number){
+  return new Date(lang.clone(d).setDate(d.getDate() + days));
 }
 
 export function formatDate(d: Date){
   return intl.formatDate(d, intl.convertDateFormatToIntlOptions("short-date"));
+}
+
+export const timeExtents = {
+  beforeCA: new TimeExtent({
+    start: initialTimeExtent.start,
+    end: new Date(2020, 2, 20)
+  }),
+  afterCA: new TimeExtent({
+    start: new Date(2020, 2, 20),
+    end: initialTimeExtent.end
+  }),
+  memorial: new TimeExtent({
+    start: new Date(2020, 4, 25),
+    end: initialTimeExtent.end
+  }),
+  july4: new TimeExtent({
+    start: new Date(2020, 6, 4),
+    end: initialTimeExtent.end
+  }),
+  month: new TimeExtent({
+    start: dateAdd(initialTimeExtent.end, -30),
+    end: initialTimeExtent.end
+  }),
+  twoWeeks: new TimeExtent({
+    start: dateAdd(initialTimeExtent.end, -14),
+    end: initialTimeExtent.end
+  }),
 }

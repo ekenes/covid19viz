@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/intl", "./layerUtils"], function (require, exports, intl, layerUtils_1) {
+define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", "./layerUtils"], function (require, exports, intl, TimeExtent, lang, layerUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.endDate = getPreviousDay(new Date());
@@ -12,16 +12,46 @@ define(["require", "exports", "esri/intl", "./layerUtils"], function (require, e
     }
     exports.getFieldFromDate = getFieldFromDate;
     function getPreviousDay(d) {
-        return new Date(d.setDate(d.getDate() - 1));
+        return new Date(lang.clone(d).setDate(d.getDate() - 1));
     }
     exports.getPreviousDay = getPreviousDay;
     function getNextDay(d) {
-        return new Date(d.setDate(d.getDate() + 1));
+        return new Date(lang.clone(d).setDate(d.getDate() + 1));
     }
     exports.getNextDay = getNextDay;
+    function dateAdd(d, days) {
+        return new Date(lang.clone(d).setDate(d.getDate() + days));
+    }
+    exports.dateAdd = dateAdd;
     function formatDate(d) {
         return intl.formatDate(d, intl.convertDateFormatToIntlOptions("short-date"));
     }
     exports.formatDate = formatDate;
+    exports.timeExtents = {
+        beforeCA: new TimeExtent({
+            start: exports.initialTimeExtent.start,
+            end: new Date(2020, 2, 20)
+        }),
+        afterCA: new TimeExtent({
+            start: new Date(2020, 2, 20),
+            end: exports.initialTimeExtent.end
+        }),
+        memorial: new TimeExtent({
+            start: new Date(2020, 4, 25),
+            end: exports.initialTimeExtent.end
+        }),
+        july4: new TimeExtent({
+            start: new Date(2020, 6, 4),
+            end: exports.initialTimeExtent.end
+        }),
+        month: new TimeExtent({
+            start: dateAdd(exports.initialTimeExtent.end, -30),
+            end: exports.initialTimeExtent.end
+        }),
+        twoWeeks: new TimeExtent({
+            start: dateAdd(exports.initialTimeExtent.end, -14),
+            end: exports.initialTimeExtent.end
+        }),
+    };
 });
 //# sourceMappingURL=timeUtils.js.map

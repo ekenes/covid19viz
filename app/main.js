@@ -79,7 +79,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions;
+        var rendererSelect, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -251,29 +251,54 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     checkbox = document.getElementById("difference");
                     checkbox.addEventListener("input", function (event) {
                         if (checkbox.checked) {
-                            updateSlider("time-window");
+                            updateSlider({ mode: "time-window" });
                         }
                         else {
-                            updateSlider("instant");
+                            updateSlider({ mode: "instant" });
                         }
                     });
-                    updateSlider = function (mode) {
-                        slider.mode = mode;
-                        if (mode === "time-window") {
-                            slider.values = [
-                                slider.fullTimeExtent.start,
-                                slider.fullTimeExtent.end
-                            ];
+                    updateSlider = function (params) {
+                        var mode = params.mode, filter = params.filter;
+                        var newMode = mode || slider.mode;
+                        slider.mode = newMode;
+                        if (newMode === "time-window") {
+                            if (filter) {
+                                slider.values = [
+                                    timeUtils_1.timeExtents[filter].start,
+                                    timeUtils_1.timeExtents[filter].end
+                                ];
+                            }
+                            else {
+                                slider.values = [
+                                    timeUtils_1.timeExtents["twoWeeks"].start,
+                                    timeUtils_1.timeExtents["twoWeeks"].end
+                                ];
+                            }
                         }
                         else {
-                            slider.values = [
-                                slider.fullTimeExtent.end
-                            ];
+                            if (filter) {
+                                slider.values = [
+                                    timeUtils_1.timeExtents[filter].start
+                                ];
+                            }
+                            else {
+                                slider.values = [
+                                    slider.fullTimeExtent.end
+                                ];
+                            }
                         }
                     };
                     view.ui.add("timeOptions", "bottom-center");
                     timeVisibilityBtn = document.getElementById("time-slider-toggle");
                     timeOptions = document.getElementById("timeOptions");
+                    btns = [].slice.call(document.getElementsByTagName("button"));
+                    btns.forEach(function (btn) {
+                        if (Object.keys(timeUtils_1.timeExtents).indexOf(btn.id) > -1) {
+                            btn.addEventListener("click", function () {
+                                updateSlider({ filter: btn.id });
+                            });
+                        }
+                    });
                     timeVisibilityBtn.addEventListener("click", function () {
                         console.log(timeOptions.style.visibility);
                         timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
