@@ -9,6 +9,7 @@ import FeatureLayer = require("esri/layers/FeatureLayer");
 import { initialTimeExtent, getFieldFromDate, formatDate } from "./timeUtils";
 import { createTotalInfectionsExpression, createNewInfectionsExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createInfectionRateExpression, createActiveCasesExpression, createNewInfectionPercentTotalExpression, createDeathRateExpression, createTotalDeathsExpression } from "./expressionUtils";
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
+import { updateRangeRenderer } from "./rendererRangeUtils";
 
 export class RendererVars {
   public static activeRendererType: UpdateRendererParams["rendererType"] = "total-infections";
@@ -19,15 +20,20 @@ export interface UpdateRendererParams {
   rendererType: "total-infections" | "doubling-time" | "total-deaths" | "total-active" |
     "active-rate" | "infection-rate-per-100k" | "death-rate" | "total-color" |
     "new-total" | "total-color-new-total-size"
-  currentDate: Date
+  currentDate: Date,
+  endDate?: Date
 }
 
 export type COVIDRenderer = SimpleRenderer;
 
 export function updateRenderer(params: UpdateRendererParams){
-  const { layer, rendererType, currentDate } = params;
+  const { layer, rendererType, currentDate, endDate } = params;
 
   let renderer: COVIDRenderer;
+
+  renderer = updateRangeRenderer(params);
+  layer.renderer = renderer;
+  return;
 
   switch (rendererType) {
     case "total-infections":

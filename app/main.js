@@ -69,16 +69,17 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
             rendererUtils_1.updateRenderer({
                 layer: layerUtils_1.infectionsPopulationLayer,
                 currentDate: slider.values[0],
+                endDate: slider.values[1] ? slider.values[1] : null,
                 rendererType: rendererSelect.value
             });
             popupTemplateUtils_1.updatePopupTemplate({
                 layer: layerUtils_1.infectionsPopulationLayer,
-                currentDate: slider.values[0],
+                currentDate: slider.values[1] ? slider.values[1] : slider.values[0],
                 rendererType: rendererSelect.value,
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, map, view, search, slider, timeVisibilityBtn, timeOptions;
+        var rendererSelect, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -221,13 +222,22 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         view: view,
                         content: search
                     }), "top-left");
+                    view.on("click", function (event) { return __awaiter(void 0, void 0, void 0, function () {
+                        var result;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, view.hitTest(event)];
+                                case 1:
+                                    result = _a.sent();
+                                    console.log(result);
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); });
                     slider = new TimeSlider({
                         container: "timeSlider",
                         playRate: 100,
-                        fullTimeExtent: {
-                            start: new Date(2020, 0, 22),
-                            end: timeUtils_1.endDate
-                        },
+                        fullTimeExtent: timeUtils_1.initialTimeExtent,
                         mode: "instant",
                         values: [timeUtils_1.initialTimeExtent.end],
                         stops: {
@@ -238,6 +248,29 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         },
                         view: view
                     });
+                    checkbox = document.getElementById("difference");
+                    checkbox.addEventListener("input", function (event) {
+                        if (checkbox.checked) {
+                            updateSlider("time-window");
+                        }
+                        else {
+                            updateSlider("instant");
+                        }
+                    });
+                    updateSlider = function (mode) {
+                        slider.mode = mode;
+                        if (mode === "time-window") {
+                            slider.values = [
+                                slider.fullTimeExtent.start,
+                                slider.fullTimeExtent.end
+                            ];
+                        }
+                        else {
+                            slider.values = [
+                                slider.fullTimeExtent.end
+                            ];
+                        }
+                    };
                     view.ui.add("timeOptions", "bottom-center");
                     timeVisibilityBtn = document.getElementById("time-slider-toggle");
                     timeOptions = document.getElementById("timeOptions");
@@ -263,6 +296,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             rendererUtils_1.updateRenderer({
                                 layer: layerUtils_1.infectionsPopulationLayer,
                                 currentDate: slider.values[0],
+                                endDate: slider.values[1] ? slider.values[1] : null,
                                 rendererType: rendererSelect.value
                             });
                         }

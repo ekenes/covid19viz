@@ -1,7 +1,9 @@
 import { prefix, separator } from "./layerUtils";
 
-export function createNewInfectionsAverageExpression(currentDateFieldName: string){
-  return `
+export function createNewInfectionsAverageExpression(currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
     var unit = 7;
     var currentDayFieldName = "${currentDateFieldName}";
     var currentDayValue = $feature[currentDayFieldName];
@@ -16,11 +18,6 @@ export function createNewInfectionsAverageExpression(currentDateFieldName: strin
       return 0;
     }
 
-    function getFieldFromDate(d) {
-      var fieldName =  "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
-      return fieldName;
-    }
-
     var previousDayFieldName = getFieldFromDate(previousDay);
     var previousDayValue = $feature[previousDayFieldName];
     var previousDayValueParts = Split(previousDayValue, "|");
@@ -29,11 +26,15 @@ export function createNewInfectionsAverageExpression(currentDateFieldName: strin
 
     return Round((currentDayValueInfections - previousDayValueInfections) / unit);
   `;
+
+  return excludeGetFieldFromDate ? base : getFieldFromDate + base;
 }
 
-export function createNewInfectionsExpression(currentDateFieldName: string){
-  return `
-    var unit = 14;
+export function createNewInfectionsExpression(currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
+    var unit = 7;
     var currentDayFieldName = "${currentDateFieldName}";
     var currentDayValue = $feature[currentDayFieldName];
     var currentDayValueParts = Split(currentDayValue, "|");
@@ -47,11 +48,6 @@ export function createNewInfectionsExpression(currentDateFieldName: string){
       return 0;
     }
 
-    function getFieldFromDate(d) {
-      var fieldName =  "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
-      return fieldName;
-    }
-
     var previousDayFieldName = getFieldFromDate(previousDay);
     var previousDayValue = $feature[previousDayFieldName];
     var previousDayValueParts = Split(previousDayValue, "|");
@@ -60,10 +56,14 @@ export function createNewInfectionsExpression(currentDateFieldName: string){
 
     return (currentDayValueInfections - previousDayValueInfections);
   `;
+
+  return excludeGetFieldFromDate ? base : getFieldFromDate + base;
 }
 
-export function createActiveCasesExpression(currentDateFieldName: string){
-  return `
+export function createActiveCasesExpression(currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
     var currentDayFieldName = "${currentDateFieldName}";
     var currentDayValue = $feature[currentDayFieldName];
     var currentDayValueParts = Split(currentDayValue, "|");
@@ -87,11 +87,6 @@ export function createActiveCasesExpression(currentDateFieldName: string){
 
     if (daysAgo15 < startDate){
       return currentDayInfections - deaths;
-    }
-
-    function getFieldFromDate(d) {
-      var fieldName =  "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
-      return fieldName;
     }
 
     var daysAgo14FieldName = getFieldFromDate(daysAgo14);
@@ -137,10 +132,14 @@ export function createActiveCasesExpression(currentDateFieldName: string){
 
     return Round(activeEstimate);
   `;
+
+  return excludeGetFieldFromDate ? base : getFieldFromDate + base;
 }
 
-export function createDoublingTimeExpression (currentDateFieldName: string){
-  return `
+export function createDoublingTimeExpression (currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
     var unit = 14;
     var currentDayFieldName = "${currentDateFieldName}";
     var currentDayValue = $feature[currentDayFieldName];
@@ -153,11 +152,6 @@ export function createDoublingTimeExpression (currentDateFieldName: string){
 
     if (Month(previousDay) == 0 && Day(previousDay) <= 21 && Year(previousDay) == 2020){
       return 0;
-    }
-
-    function getFieldFromDate(d) {
-      var fieldName =  "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
-      return fieldName;
     }
 
     var previousDayFieldName = getFieldFromDate(previousDay);
@@ -175,10 +169,14 @@ export function createDoublingTimeExpression (currentDateFieldName: string){
     var doublingTimeDays = Floor(unit / (newInfections / oldInfections))
     return IIF(doublingTimeDays >= 0, doublingTimeDays, "n/a");
   `;
+
+  return excludeGetFieldFromDate ? base : getFieldFromDate + base;
 }
 
-export function createNewInfectionPercentTotalExpression (currentDateFieldName: string){
-  return `
+export function createNewInfectionPercentTotalExpression (currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
     var currentDayFieldName = "${currentDateFieldName}";
     var totalInfectionsValue = $feature[currentDayFieldName];
     var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
@@ -187,11 +185,6 @@ export function createNewInfectionPercentTotalExpression (currentDateFieldName: 
 
     if (Month(previousDay) == 0 && Day(previousDay) <= 21 && Year(previousDay) == 2020){
       return 0;
-    }
-
-    function getFieldFromDate(d) {
-      var fieldName =  "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
-      return fieldName;
     }
 
     var lastDate = DateAdd(Now(), -1, 'days');
@@ -205,6 +198,8 @@ export function createNewInfectionPercentTotalExpression (currentDateFieldName: 
 
     return ( newInfections / lastDateValue ) * 100;
   `;
+
+  return excludeGetFieldFromDate ? base : getFieldFromDate + base;
 }
 
 export function createInfectionRateExpression(currentDateFieldName: string){
@@ -219,8 +214,10 @@ export function createInfectionRateExpression(currentDateFieldName: string){
   `;
 }
 
-export function createActiveCasesPer100kExpression(currentDateFieldName: string){
-  return `
+export function createActiveCasesPer100kExpression(currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
     var population = $feature.POPULATION;
 
     var currentDayFieldName = "${currentDateFieldName}";
@@ -248,11 +245,6 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string)
     if (daysAgo15 < startDate){
       activeEstimate = currentDayInfections - deaths;
       return (activeEstimate / population ) * 100000;
-    }
-
-    function getFieldFromDate(d) {
-      var fieldName =  "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
-      return fieldName;
     }
 
     var daysAgo14FieldName = getFieldFromDate(daysAgo14);
@@ -300,6 +292,8 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string)
 
     return (activeEstimate / population ) * 100000;
   `;
+
+  return excludeGetFieldFromDate ? base : getFieldFromDate + base;
 }
 
 export function createDeathRateExpression (currentDateFieldName: string){
@@ -342,4 +336,52 @@ export function createTotalInfectionsExpression (currentDateFieldName: string){
 
     return infections;
   `;
+}
+
+function getFieldFromDateFunction (){
+  return `
+    function getFieldFromDate(d) {
+      var fieldName = "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
+      return fieldName;
+    }
+
+  `;
+}
+
+export function expressionDifference (startExpression: string, endExpression: string, includeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
+    function startExpression(){
+      ${startExpression}
+    }
+
+    function endExpression(){
+      ${endExpression}
+    }
+
+    return endExpression() - startExpression();
+  `
+
+  return includeGetFieldFromDate ? getFieldFromDate + base : base;
+}
+
+export function expressionPercentChange (startExpression: string, endExpression: string, includeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
+    function startExpression(){
+      ${startExpression}
+    }
+
+    function endExpression(){
+      ${endExpression}
+    }
+    var startValue = startExpression();
+    var endValue = endExpression();
+
+    return ( ( endValue - startValue ) / startValue ) * 100;
+  `
+
+  return includeGetFieldFromDate ? getFieldFromDate + base : base;
 }

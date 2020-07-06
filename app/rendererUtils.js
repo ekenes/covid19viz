@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "./timeUtils", "./expressionUtils", "esri/symbols"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, timeUtils_1, expressionUtils_1, symbols_1) {
+define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "./timeUtils", "./expressionUtils", "esri/symbols", "./rendererRangeUtils"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, timeUtils_1, expressionUtils_1, symbols_1, rendererRangeUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var RendererVars = /** @class */ (function () {
@@ -9,8 +9,11 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
     }());
     exports.RendererVars = RendererVars;
     function updateRenderer(params) {
-        var layer = params.layer, rendererType = params.rendererType, currentDate = params.currentDate;
+        var layer = params.layer, rendererType = params.rendererType, currentDate = params.currentDate, endDate = params.endDate;
         var renderer;
+        renderer = rendererRangeUtils_1.updateRangeRenderer(params);
+        layer.renderer = renderer;
+        return;
         switch (rendererType) {
             case "total-infections":
                 renderer = createInfectionAccumulatedRenderer({

@@ -170,13 +170,15 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     content: search
   }), "top-left");
 
+  view.on("click", async (event)=>{
+    const result = await view.hitTest(event);
+    console.log(result);
+  })
+
   const slider = new TimeSlider({
     container: "timeSlider",
     playRate: 100,
-    fullTimeExtent: {
-      start: new Date(2020, 0, 22),
-      end: endDate
-    },
+    fullTimeExtent: initialTimeExtent,
     mode: "instant",
     values: [ initialTimeExtent.end ],
     stops: {
@@ -187,6 +189,30 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     },
     view
   });
+
+  const checkbox = document.getElementById("difference") as HTMLInputElement;
+
+  checkbox.addEventListener( "input", (event) => {
+    if(checkbox.checked){
+      updateSlider("time-window");
+    } else {
+      updateSlider("instant");
+    }
+  });
+
+  const updateSlider = (mode: "time-window" | "instant" ) => {
+    slider.mode = mode;
+    if (mode === "time-window"){
+      slider.values = [
+        slider.fullTimeExtent.start,
+        slider.fullTimeExtent.end
+      ];
+    } else {
+      slider.values = [
+        slider.fullTimeExtent.end
+      ];
+    }
+  };
 
   view.ui.add("timeOptions", "bottom-center");
 
@@ -227,11 +253,12 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     updateRenderer({
       layer: infectionsPopulationLayer,
       currentDate: slider.values[0],
+      endDate: slider.values[1] ? slider.values[1] : null,
       rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
     });
     updatePopupTemplate({
       layer: infectionsPopulationLayer,
-      currentDate: slider.values[0],
+      currentDate: slider.values[1] ? slider.values[1] : slider.values[0],
       rendererType: rendererSelect.value as UpdateRendererParams["rendererType"],
       existingTemplate: useExistingTemplate ? infectionsPopulationLayer.popupTemplate : null
     });
@@ -249,6 +276,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
       updateRenderer({
         layer: infectionsPopulationLayer,
         currentDate: slider.values[0],
+        endDate: slider.values[1] ? slider.values[1] : null,
         rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
       });
     } else {
