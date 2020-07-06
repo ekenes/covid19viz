@@ -34,6 +34,10 @@ body,
   width: 32px;
 }
 
+#time-slider-toggle:hover{
+  cursor: pointer;
+}
+
 #ui-controls{
   padding: 10px;
   width: 250px;
@@ -51,10 +55,11 @@ body,
   margin-top: 10px;
 }
 
-.leader-1{
-  width: 100%;
-}
-
 .esri-legend__service {
   padding: 0
 }
+
+.btn-border {
+  border: 1px solid #4c4c4c;
+}
+

@@ -6,14 +6,16 @@ import Color = require("esri/Color");
 
 import CSVLayer = require("esri/layers/CSVLayer");
 import FeatureLayer = require("esri/layers/FeatureLayer");
-import { initialTimeExtent, getFieldFromDate, formatDate } from "./timeUtils";
-import { createTotalInfectionsExpression, createNewInfectionsExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createInfectionRateExpression, createActiveCasesExpression, createNewInfectionPercentTotalExpression, createDeathRateExpression, createTotalDeathsExpression } from "./expressionUtils";
+
+import { getFieldFromDate, formatDate } from "./timeUtils";
+import { createTotalInfectionsExpression, createNewInfectionsExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createInfectionRateExpression, createActiveCasesExpression, createNewInfectionPercentTotalExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference } from "./expressionUtils";
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
-import { updateRangeRenderer } from "./rendererRangeUtils";
 
 export class RendererVars {
   public static activeRendererType: UpdateRendererParams["rendererType"] = "total-infections";
 }
+
+export type COVIDRenderer = SimpleRenderer;
 
 export interface UpdateRendererParams {
   layer: CSVLayer | FeatureLayer,
@@ -24,66 +26,59 @@ export interface UpdateRendererParams {
   endDate?: Date
 }
 
-export type COVIDRenderer = SimpleRenderer;
-
 export function updateRenderer(params: UpdateRendererParams){
   const { layer, rendererType, currentDate, endDate } = params;
+  const startDate = currentDate;
 
   let renderer: COVIDRenderer;
 
-  renderer = updateRangeRenderer(params);
-  layer.renderer = renderer;
-  return;
-
   switch (rendererType) {
     case "total-infections":
-      renderer = createInfectionAccumulatedRenderer({
-        currentDate
+      renderer = createTotalCasesRenderer({
+        startDate,
+        endDate
       });
       break;
     case "doubling-time":
       renderer = createDoublingTimeRenderer({
-        currentDate
+        startDate,
+        endDate
       });
       break;
     case "total-deaths":
-      renderer = createDeathsAccumulatedRenderer({
-        currentDate
+      renderer = createTotalDeathsRenderer({
+        startDate,
+        endDate
       });
       break;
     case "total-active":
-      renderer = createActiveCasesTotalSizeRenderer({
-        currentDate
+      renderer = createActiveCasesRenderer({
+        startDate,
+        endDate
       });
       break;
     case "active-rate":
-      renderer = createActiveRateFillRenderer({
-        currentDate
+      renderer = createActiveRateRenderer({
+        startDate,
+        endDate
       });
       break;
     case "infection-rate-per-100k":
-      renderer = createInfectionRateFillRenderer({
-        currentDate
+      renderer = createCaseRateRenderer({
+        startDate,
+        endDate
       });
       break;
     case "death-rate":
       renderer = createDeathRateRenderer({
-        currentDate
-      });
-      break;
-    case "total-color":
-      renderer = createColorAccumulatedRenderer({
-        currentDate
+        startDate,
+        endDate
       });
       break;
     case "new-total":
-      renderer = createSizeNewInfectionsRenderer({
-        currentDate
-      });
-      break;
-    case "total-color-new-total-size":
-      renderer = createTotalsRenderer({
-        currentDate
+      renderer = createNewCasesRenderer({
+        startDate,
+        endDate
       });
       break;
     default:
@@ -94,23 +89,58 @@ export function updateRenderer(params: UpdateRendererParams){
 }
 
 interface CreateRendererParams {
-  currentDate: Date
+  startDate: Date,
+  endDate: Date
 }
 
-function createInfectionAccumulatedRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const currentDateFieldName = getFieldFromDate(currentDate);
-  return new SimpleRenderer({
-    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
-      color: new Color("rgba(227, 0, 106,0.6)"),
-      width: 0.5
-    })),
-    label: "County",
-    visualVariables: [
+const colorRamps = {
+  light: [
+    [ "#edf8fb", "#b3cde3", "#8c96c6", "#8856a7", "#810f7c" ],
+    [ "#f6eff7", "#bdc9e1", "#67a9cf", "#1c9099", "#016c59" ],
+    [ "#f1eef6", "#d7b5d8", "#df65b0", "#dd1c77", "#980043" ],
+    [ "#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494" ],
+    [ "#54bebe", "#98d1d1", "#dedad2", "#df979e", "#c80064" ],
+    [ "#8100e6", "#b360d1", "#f2cf9e", "#6eb830", "#2b9900" ],
+    [ "#00998c", "#69d4cb", "#f2f2aa", "#d98346", "#b34a00" ],
+    [ "#a6611a", "#dfc27d", "#f5f5f5", "#80cdc1", "#018571" ]
+  ],
+  dark: [
+    [ "#0010d9", "#0040ff", "#0080ff", "#00bfff", "#00ffff" ],
+    [ "#481295", "#6535a6", "#7d6aa1", "#9e97b8", "#c4bedc" ],
+    [ "#00590f", "#008c1a", "#00bf25", "#76df13", "#d0ff00" ],
+    [ "#3b3734", "#54504c", "#ab3da9", "#eb44e8", "#ff80ff" ],
+    [ "#ff4d6a", "#a63245", "#453437", "#2b819b", "#23ccff" ],
+    [ "#23ccff", "#2c8eac", "#42422f", "#9b9b15", "#ffff00" ],
+    [ "#ff00ff", "#b21bb2", "#414537", "#76961d", "#beff00" ],
+    [ "#ff00cc", "#b21c97", "#453442", "#96961d", "#ffff00" ],
+    [ "#ff0099", "#aa1970", "#45343e", "#92781c", "#ffc800" ],
+    [ "#e8ff00", "#97a41c", "#413f54", "#655dbb", "#8c80ff" ]
+  ]
+}
+
+const dateRangeConfig = {
+  colors: colorRamps.light[2],
+  stops: [0,250,500,750,1000]
+}
+
+function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.light[1];
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if(endDate){
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [
       new SizeVariable({
-        valueExpression: createTotalInfectionsExpression(currentDateFieldName),
+        valueExpression: expressionDifference(
+          createTotalInfectionsExpression(startDateFieldName),
+          createTotalInfectionsExpression(endDateFieldName)
+        ),
         legendOptions: {
-          title: `Total COVID-19 cases as of ${formatDate(currentDate)}`
+          title: `New COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
         },
         stops: [
           { value: 0, size: 0 },
@@ -120,26 +150,138 @@ function createInfectionAccumulatedRenderer(params: CreateRendererParams) : COVI
           { value: 10000, size: "50px" },
           { value: 200000, size: "200px" }
         ]
+      }),
+      new ColorVariable({
+        valueExpression: expressionPercentChange(
+          createTotalInfectionsExpression(startDateFieldName),
+          createTotalInfectionsExpression(endDateFieldName)
+        ),
+        legendOptions: {
+          title: `% increase in total cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
+        },
+        stops: [
+          { value: dateRangeConfig.stops[0], color: colors[0], label: "No increase" },
+          { value: dateRangeConfig.stops[1], color: colors[1] },
+          { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
+          { value: dateRangeConfig.stops[3], color: colors[3] },
+          { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
+        ]
+      }),
+      new OpacityVariable({
+        valueExpression: expressionPercentChange(
+          createTotalInfectionsExpression(startDateFieldName),
+          createTotalInfectionsExpression(endDateFieldName)
+        ),
+        legendOptions: {
+          showLegend: false
+        },
+        stops: [
+          { value: 0, opacity: 0.25 },
+          { value: 100, opacity: 0.65 },
+          { value: 300, opacity: 0.75 },
+          { value: 400, opacity: 0.85 },
+          { value: 500, opacity: 1 }
+        ]
       })
-    ]
-  });
-}
+    ];
 
-function createDeathsAccumulatedRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const currentDateFieldName = getFieldFromDate(currentDate);
+  } else {
+    visualVariables = [ new SizeVariable({
+      valueExpression: createTotalInfectionsExpression(startDateFieldName),
+      legendOptions: {
+        title: `Total COVID-19 cases as of ${formatDate(startDate)}`
+      },
+      stops: [
+        { value: 0, size: 0 },
+        { value: 1, size: "2px" },
+        { value: 100, size: "4px" },
+        { value: 1000, size: "10px" },
+        { value: 10000, size: "50px" },
+        { value: 200000, size: "200px" }
+      ]
+    }) ];
+  }
+
   return new SimpleRenderer({
-    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
+    symbol: endDate ? createDefaultSymbol() : createDefaultSymbol(null, new SimpleLineSymbol({
       color: new Color("rgba(227, 0, 106,0.6)"),
       width: 0.5
     })),
     label: "County",
-    visualVariables: [
+    visualVariables
+  });
+}
+
+function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.light[1];
+
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if(endDate){
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [
       new SizeVariable({
         valueExpressionTitle: "Total deaths",
-        valueExpression: createTotalDeathsExpression(currentDateFieldName),
+        valueExpression: expressionDifference(
+          createTotalDeathsExpression(startDateFieldName),
+          createTotalDeathsExpression(endDateFieldName)
+        ),
         legendOptions: {
-          title: `Total COVID-19 deaths as of ${formatDate(currentDate)}`
+          title: `Total COVID-19 deaths from ${formatDate(startDate)} - ${formatDate(endDate)}`
+        },
+        stops: [
+          { value: 0, size: 0 },
+          { value: 1, size: "3px" },
+          { value: 100, size: "8px" },
+          { value: 1000, size: "18px" },
+          { value: 5000, size: "50px" },
+          { value: 30000, size: "100px" }
+        ]
+      }),
+      new ColorVariable({
+        valueExpression: expressionPercentChange(
+          createTotalInfectionsExpression(startDateFieldName),
+          createTotalInfectionsExpression(endDateFieldName)
+        ),
+        legendOptions: {
+          title: `% increase in deaths from ${formatDate(startDate)} - ${formatDate(endDate)}`
+        },
+        stops: [
+          { value: dateRangeConfig.stops[0], color: colors[0], label: "No increase" },
+          { value: dateRangeConfig.stops[1], color: colors[1] },
+          { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
+          { value: dateRangeConfig.stops[3], color: colors[3] },
+          { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
+        ]
+      }),
+      new OpacityVariable({
+        valueExpression: expressionPercentChange(
+          createTotalInfectionsExpression(startDateFieldName),
+          createTotalInfectionsExpression(endDateFieldName)
+        ),
+        legendOptions: {
+          showLegend: false
+        },
+        stops: [
+          { value: 0, opacity: 0.25 },
+          { value: 100, opacity: 0.65 },
+          { value: 300, opacity: 0.75 },
+          { value: 400, opacity: 0.85 },
+          { value: 500, opacity: 1 }
+        ]
+      })
+    ];
+  } else {
+    visualVariables = [
+      new SizeVariable({
+        valueExpressionTitle: "Total deaths",
+        valueExpression: createTotalDeathsExpression(startDateFieldName),
+        legendOptions: {
+          title: `Total COVID-19 deaths as of ${formatDate(startDate)}`
         },
         stops: [
           { value: 0, size: 0 },
@@ -150,73 +292,116 @@ function createDeathsAccumulatedRenderer(params: CreateRendererParams) : COVIDRe
           { value: 30000, size: "100px" }
         ]
       })
-    ]
-  });
-}
-
-function createColorAccumulatedRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const colors = [ "#edf8fb", "#b3cde3", "#8c96c6", "#8856a7", "#810f7c" ];
-  const currentDateFieldName = getFieldFromDate(currentDate);
-  return new SimpleRenderer({
-    symbol: createDefaultSymbol(new Color("gray"), new SimpleLineSymbol({
-      color: "rgba(128,128,128,0.8)",
-      width: 0
-    })),
-    visualVariables: [
-      new ColorVariable({
-        valueExpression: createTotalInfectionsExpression(currentDateFieldName),
-        legendOptions: {
-          title: `Total COVID-19 cases as of ${formatDate(currentDate)}`
-        },
-        stops: [
-          { value: 10, color: colors[0] },
-          { value: 100, color: colors[1] },
-          { value: 1000, color: colors[2] },
-          { value: 10000, color: colors[3] },
-          { value: 200000, color: colors[4] }
-        ]
-      })
-    ]
-  });
-}
-
-function createSizeNewInfectionsRenderer(params: CreateRendererParams) : COVIDRenderer{
-  const { currentDate } = params;
-  const currentDateFieldName = getFieldFromDate(currentDate);
+    ];
+  }
   return new SimpleRenderer({
     symbol: createDefaultSymbol(null, new SimpleLineSymbol({
-      color: new Color("rgba(222, 18, 222, 0.5)"),
-      width: 0.5
+      color: new Color("rgba(227, 0, 106,0.6)"),
+      width: endDate ? 0 : 0.5
     })),
     label: "County",
-    visualVariables: [new SizeVariable({
-      valueExpressionTitle: `New COVID-19 cases reported on ${currentDateFieldName}`,
-      valueExpression: createNewInfectionsExpression(currentDateFieldName),
+    visualVariables
+  });
+}
+
+function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if(endDate){
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [ new SizeVariable({
+      valueExpressionTitle: `7-day rolling average of new COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+      valueExpression: expressionDifference(
+        createNewInfectionsExpression(startDateFieldName, true),
+        createNewInfectionsExpression(endDateFieldName, true),
+        true
+      ),
       stops: [
         { value: 0, size: 0 },
         { value: 1, size: "2px" },
-        // { value: 100, size: "4px" },
         { value: 100, size: "10px" },
         { value: 1000, size: "50px" },
         { value: 5000, size: "200px" }
       ]
-    })]
+    }) ];
+  } else {
+    visualVariables = [ new SizeVariable({
+      valueExpressionTitle: `7-day rolling average of new COVID-19 cases as of ${formatDate(startDate)}`,
+      valueExpression: createNewInfectionsExpression(startDateFieldName),
+      stops: [
+        { value: 0, size: 0 },
+        { value: 1, size: "2px" },
+        { value: 100, size: "10px" },
+        { value: 1000, size: "50px" },
+        { value: 5000, size: "200px" }
+      ]
+    }) ];
+  }
+  return new SimpleRenderer({
+    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
+      color: new Color("rgba(222, 18, 222, 0.5)"),
+      width: endDate ? 0 : 0.5
+    })),
+    label: "County",
+    visualVariables
   });
 }
 
-function createActiveCasesTotalSizeRenderer(params: CreateRendererParams) : COVIDRenderer{
-  const { currentDate } = params;
-  const currentDateFieldName = getFieldFromDate(currentDate);
-  return new SimpleRenderer({
-    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
-      color: new Color("rgba(222, 18, 222, 1)"),
-      width: 0.5
-    })),
-    label: "County",
-    visualVariables: [new SizeVariable({
-      valueExpressionTitle: `Active COVID-19 cases on ${formatDate(currentDate)}`,
-      valueExpression: createActiveCasesExpression(currentDateFieldName),
+function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.light[0];
+
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if( endDate ){
+    const colors = colorRamps.light[6];
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [
+      new SizeVariable({
+        valueExpressionTitle: `Change in active COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+        valueExpression: expressionDifference(
+          createActiveCasesExpression(startDateFieldName, true),
+          createActiveCasesExpression(endDateFieldName, true),
+          true
+        ),
+        stops: [
+          { value: -10000, size: "50px" },
+          { value: -1000, size: "20px" },
+          { value: -10, size: "4px" },
+          { value: 10, size: "4px" },
+          { value: 1000, size: "20px" },
+          { value: 10000, size: "50px" }
+        ]
+      }),
+      new ColorVariable({
+        valueExpression: expressionPercentChange(
+          createActiveCasesExpression(startDateFieldName, true),
+          createActiveCasesExpression(endDateFieldName, true),
+          true
+        ),
+        legendOptions: {
+          title: `Change in active cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
+        },
+        stops: [
+          { value: -100, color: colors[0], label: "Decrease" },
+          { value: -50, color: colors[1] },
+          { value: 0, color: colors[2], label: `No change` },
+          { value: 50, color: colors[3] },
+          { value: 100, color: colors[4], label: `Increase` }
+        ]
+      })
+    ];
+  } else {
+    visualVariables = [ new SizeVariable({
+      valueExpressionTitle: `Active COVID-19 cases on ${formatDate(startDate)}`,
+      valueExpression: createActiveCasesExpression(startDateFieldName),
       stops: [
         { value: 0, size: 0 },
         { value: 1, size: "2px" },
@@ -225,24 +410,70 @@ function createActiveCasesTotalSizeRenderer(params: CreateRendererParams) : COVI
         { value: 10000, size: "50px" },
         { value: 100000, size: "200px" }
       ]
-    })]
+    }) ];
+  }
+
+  return new SimpleRenderer({
+    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
+      color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(222, 18, 222, 1)"),
+      width: endDate ? 0.5 : 0.5
+    })),
+    label: "County",
+    visualVariables
   });
 }
 
 function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const colors = [ "#edf8fb", "#b3cde3", "#8c96c6", "#8856a7", "#810f7c" ];
-  const currentDateFieldName = getFieldFromDate(currentDate);
-  const valueExpression = createDoublingTimeExpression(currentDateFieldName);
+  const colors = colorRamps.light[0];
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
 
-  return new SimpleRenderer({
-    symbol: createDefaultSymbol(new Color("#f7f7f7")),
-    label: "County",
-    visualVariables: [
+  let visualVariables = null;
+
+  if(endDate){
+    const colors = colorRamps.light[4];
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [
       new SizeVariable({
-        valueExpression: createTotalInfectionsExpression(currentDateFieldName),
+        valueExpression: expressionDifference(
+          createTotalInfectionsExpression(startDateFieldName),
+          createTotalInfectionsExpression(endDateFieldName)
+        ),
         legendOptions: {
-          title: `Total COVID-19 cases as of ${formatDate(currentDate)}`
+          title: `New COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
+        },
+        stops: [
+          { value: 0, size: 0 },
+          { value: 1, size: "2px" },
+          { value: 100, size: "4px" },
+          { value: 1000, size: "10px" },
+          { value: 10000, size: "50px" },
+          { value: 200000, size: "200px" }
+        ]
+      }),
+      new ColorVariable({
+        valueExpressionTitle: `Doubling time change from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+        valueExpression: expressionDifference(
+          createDoublingTimeExpression(startDateFieldName, true),
+          createDoublingTimeExpression(endDateFieldName, true),
+          true
+        ),
+        stops: [
+          { value: -28, color: colors[4], label: ">28 days faster (bad)" },
+          { value: -14, color: colors[3] },
+          { value: 0, color: colors[2], label: "No change" },
+          { value: 14, color: colors[1] },
+          { value: 28, color: colors[0], label: ">28 days slower (good)" }
+        ]
+      })
+    ]
+  } else {
+    visualVariables = [
+      new SizeVariable({
+        valueExpression: createTotalInfectionsExpression(startDateFieldName),
+        legendOptions: {
+          title: `Total COVID-19 cases as of ${formatDate(startDate)}`
         },
         stops: [
           { value: 0, size: 0 },
@@ -255,7 +486,7 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
       }),
       new ColorVariable({
         valueExpressionTitle: "Doubling Time",
-        valueExpression,
+        valueExpression: createDoublingTimeExpression(startDateFieldName),
         stops: [
           { value: 7, color: colors[4], label: "<7 days" },
           { value: 10, color: colors[3] },
@@ -268,7 +499,7 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
         legendOptions: {
           showLegend: false
         },
-        valueExpression,
+        valueExpression: createDoublingTimeExpression(startDateFieldName),
         stops: [
           { value: 7, opacity: 1 },
           { value: 14, opacity: 0.6 },
@@ -276,23 +507,68 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
         ]
       })
     ]
-  });
-}
-
-function createDeathRateRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const colors = [ "#edf8fb", "#b3cde3", "#8c96c6", "#8856a7", "#810f7c" ];
-  const currentDateFieldName = getFieldFromDate(currentDate);
+  }
 
   return new SimpleRenderer({
     symbol: createDefaultSymbol(new Color("#f7f7f7")),
     label: "County",
-    visualVariables: [
+    visualVariables
+  });
+}
+
+function createDeathRateRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.light[0];
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if(endDate){
+    const endDateFieldName = getFieldFromDate(endDate);
+    const colors = colorRamps.light[6];
+
+    visualVariables = [
       new SizeVariable({
         valueExpressionTitle: "Total deaths",
-        valueExpression: createTotalDeathsExpression(currentDateFieldName),
+        valueExpression: expressionDifference(
+          createTotalDeathsExpression(startDateFieldName),
+          createTotalDeathsExpression(endDateFieldName)
+        ),
         legendOptions: {
-          title: `Total COVID-19 deaths as of ${formatDate(currentDate)}`
+          title: `New COVID-19 deaths from ${formatDate(startDate)} - ${formatDate(endDate)}`
+        },
+        stops: [
+          { value: 0, size: 0 },
+          { value: 1, size: "3px" },
+          { value: 100, size: "8px" },
+          { value: 1000, size: "18px" },
+          { value: 5000, size: "50px" },
+          { value: 30000, size: "100px" }
+        ]
+      }),
+      new ColorVariable({
+        valueExpression: expressionDifference(
+          createDeathRateExpression(startDateFieldName),
+          createDeathRateExpression(endDateFieldName),
+          true
+        ),
+        valueExpressionTitle: `Change in death rate by % points`,
+        stops: [
+          { value: -5, color: colors[0] },
+          { value: -2, color: colors[1] },
+          { value: 0, color: colors[2] },
+          { value: 2, color: colors[3] },
+          { value: 5, color: colors[4] }
+        ]
+      })
+    ];
+  } else {
+    visualVariables = [
+      new SizeVariable({
+        valueExpressionTitle: "Total deaths",
+        valueExpression: createTotalDeathsExpression(startDateFieldName),
+        legendOptions: {
+          title: `Total COVID-19 deaths as of ${formatDate(startDate)}`
         },
         stops: [
           { value: 0, size: 0 },
@@ -305,7 +581,7 @@ function createDeathRateRenderer(params: CreateRendererParams) : COVIDRenderer {
       }),
       new ColorVariable({
         valueExpressionTitle: "Death rate",
-        valueExpression: createDeathRateExpression(currentDateFieldName),
+        valueExpression: createDeathRateExpression(startDateFieldName),
         stops: [
           { value: 1, color: colors[0] },
           { value: 5, color: colors[1] },
@@ -314,93 +590,104 @@ function createDeathRateRenderer(params: CreateRendererParams) : COVIDRenderer {
           { value: 20, color: colors[4] }
         ]
       })
-    ]
+    ];
+  }
+
+  return new SimpleRenderer({
+    symbol: createDefaultSymbol(new Color("#f7f7f7")),
+    label: "County",
+    visualVariables
   });
 }
 
-function createTotalsRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const colors = [ "#edf8fb", "#b3cde3", "#8c96c6", "#8856a7", "#810f7c" ];
-  const currentDateFieldName = getFieldFromDate(currentDate);
+function createCaseRateRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.light[0];
 
-  return new SimpleRenderer({
-    symbol: createDefaultSymbol(new Color("#f7f7f7"), new SimpleLineSymbol({
-      color: "rgba(102, 2, 2,0.2)",
-      width: 0.4
-    })),
-    label: "County",
-    visualVariables: [
-      new SizeVariable({
-        valueExpression: createNewInfectionsExpression(currentDateFieldName),
-        valueExpressionTitle: `Reported cases on ${currentDateFieldName}`,
-        stops: [
-          { value: 0, size: 0 },
-          { value: 0, size: "4px" },
-          { value: 100, size: "10px" },
-          { value: 1000, size: "50px" },
-          { value: 5000, size: "200px" }
-        ]
-      }),
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if(endDate){
+    const colors = colorRamps.light[2];
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [
       new ColorVariable({
-        field: currentDateFieldName,
-        legendOptions: {
-          title: `Total cases since ${getFieldFromDate(initialTimeExtent.start)}`
-        },
+        valueExpression: expressionDifference(
+          createInfectionRateExpression(startDateFieldName),
+          createInfectionRateExpression(endDateFieldName)
+        ),
+        valueExpressionTitle: `Change in COVID-19 cases per 100k people`,
         stops: [
-          { value: 10, color: colors[0] },
-          { value: 100, color: colors[1] },
-          { value: 1000, color: colors[2] },
-          { value: 10000, color: colors[3] },
-          { value: 200000, color: colors[4] }
+          { value: 0, color: colors[0] },
+          { value: 250, color: colors[1] },
+          { value: 500, color: colors[2] },
+          { value: 750, color: colors[3] },
+          { value: 1000, color: colors[4] }
         ]
       })
-    ]
-  });
-}
-
-function createInfectionRateFillRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const colors = [ "#edf8fb", "#b3cde3", "#8c96c6", "#8856a7", "#810f7c" ];
-  const currentDateFieldName = getFieldFromDate(currentDate);
-  return new SimpleRenderer({
-    symbol: new SimpleFillSymbol({
-      outline: new SimpleLineSymbol({
-        color: "rgba(128,128,128,0.4)",
-        width: 0
-      })
-    }),
-    label: "County",
-    visualVariables: [
+    ];
+  } else {
+    visualVariables = [
       new ColorVariable({
-        valueExpression: createInfectionRateExpression(currentDateFieldName),
+        valueExpression: createInfectionRateExpression(startDateFieldName),
         valueExpressionTitle: `Total COVID-19 cases per 100k people`,
         stops: [
           { value: 50, color: colors[0] },
-          { value: 200, color: colors[1] },
-          { value: 500, color: colors[2] },
-          { value: 1000, color: colors[3] },
-          { value: 1500, color: colors[4] }
+          { value: 500, color: colors[1] },
+          { value: 1000, color: colors[2] },
+          { value: 2000, color: colors[3] },
+          { value: 3000, color: colors[4] }
         ]
       })
-    ]
-  });
-}
+    ];
+  }
 
-function createActiveRateFillRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const { currentDate } = params;
-  const colors = [ "#edf8fb", "#b3cde3", "#8c96c6", "#8856a7", "#810f7c" ];
-  const currentDateFieldName = getFieldFromDate(currentDate);
   return new SimpleRenderer({
     symbol: new SimpleFillSymbol({
       outline: new SimpleLineSymbol({
         color: "rgba(128,128,128,0.4)",
         width: 0
-      }),
+      })
     }),
     label: "County",
-    visualVariables: [
+    visualVariables
+  });
+}
+
+function createActiveRateRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.light[0];
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if(endDate){
+    const colors = colorRamps.light[6];
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [
       new ColorVariable({
-        valueExpression: createActiveCasesPer100kExpression(currentDateFieldName),
+        valueExpression: expressionDifference(
+          createActiveCasesPer100kExpression(startDateFieldName, true),
+          createActiveCasesPer100kExpression(endDateFieldName, true),
+          true
+        ),
+        valueExpressionTitle: `Change in active COVID-19 cases per 100k people`,
+        stops: [
+          { value: -1000, color: colors[0] },
+          { value: -500, color: colors[1] },
+          { value: 0, color: colors[2] },
+          { value: 500, color: colors[3] },
+          { value: 1000, color: colors[4] }
+        ]
+      })
+    ];
+  } else {
+    visualVariables = [
+      new ColorVariable({
+        valueExpression: createActiveCasesPer100kExpression(startDateFieldName),
         valueExpressionTitle: `Active COVID-19 cases per 100k people`,
         stops: [
           { value: 50, color: colors[0] },
@@ -410,11 +697,22 @@ function createActiveRateFillRenderer(params: CreateRendererParams) : COVIDRende
           { value: 1500, color: colors[4] }
         ]
       })
-    ]
+    ];
+  }
+
+  return new SimpleRenderer({
+    symbol: new SimpleFillSymbol({
+      outline: new SimpleLineSymbol({
+        color: "rgba(128,128,128,0.4)",
+        width: 0
+      }),
+    }),
+    label: "County",
+    visualVariables
   });
 }
 
-function createDefaultSymbol(color: Color, outline?: SimpleLineSymbol) : SimpleMarkerSymbol{
+function createDefaultSymbol(color?: Color, outline?: SimpleLineSymbol) : SimpleMarkerSymbol{
   return new SimpleMarkerSymbol({
     color: color || null,
     size: 4,

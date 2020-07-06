@@ -14,7 +14,7 @@ import Zoom = require("esri/widgets/Zoom");
 import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 
-import { endDate, initialTimeExtent, timeExtents } from "./timeUtils";
+import { initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
 import { infectionsPopulationLayer } from "./layerUtils";
