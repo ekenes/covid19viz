@@ -217,8 +217,8 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
         ];
       } else {
         slider.values = [
-          timeExtents["twoWeeks"].start,
-          timeExtents["twoWeeks"].end
+          timeExtents["month"].start,
+          timeExtents["month"].end
         ];
       }
     } else {

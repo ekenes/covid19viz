@@ -270,8 +270,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             }
                             else {
                                 slider.values = [
-                                    timeUtils_1.timeExtents["twoWeeks"].start,
-                                    timeUtils_1.timeExtents["twoWeeks"].end
+                                    timeUtils_1.timeExtents["month"].start,
+                                    timeUtils_1.timeExtents["month"].end
                                 ];
                             }
                         }
