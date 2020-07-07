@@ -222,18 +222,6 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         view: view,
                         content: search
                     }), "top-left");
-                    view.on("click", function (event) { return __awaiter(void 0, void 0, void 0, function () {
-                        var result;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0: return [4 /*yield*/, view.hitTest(event)];
-                                case 1:
-                                    result = _a.sent();
-                                    console.log(result);
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); });
                     slider = new TimeSlider({
                         container: "timeSlider",
                         playRate: 100,
@@ -300,7 +288,6 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         }
                     });
                     timeVisibilityBtn.addEventListener("click", function () {
-                        console.log(timeOptions.style.visibility);
                         timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
                         if (timeVisibilityBtn.classList.contains("esri-icon-time-clock")) {
                             timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");

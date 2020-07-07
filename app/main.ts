@@ -170,11 +170,6 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     content: search
   }), "top-left");
 
-  view.on("click", async (event)=>{
-    const result = await view.hitTest(event);
-    console.log(result);
-  })
-
   const slider = new TimeSlider({
     container: "timeSlider",
     playRate: 100,
@@ -249,7 +244,6 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   });
 
   timeVisibilityBtn.addEventListener("click", () => {
-    console.log(timeOptions.style.visibility);
     timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
 
     if(timeVisibilityBtn.classList.contains("esri-icon-time-clock")){
