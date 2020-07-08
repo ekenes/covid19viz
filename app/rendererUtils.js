@@ -103,7 +103,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                 ["#e60049", "#0bb4ff", "#50e991", "#9b19f5"],
                 ["#1e8553", "#c44296", "#d97f00", "#00b6f1"],
                 ["#0040bf", "#a3cc52", "#b9a087", "#a01fcc"],
-                ["#dc4b00", "gray", "#000000"]
+                ["#dc4b00", "#b3cde3", "#000000"]
             ],
             dark: [
                 ["#dc4b00", "#3c6ccc", "#d9dc00", "#91d900", "#986ba1"],
@@ -198,10 +198,10 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var attributes;
         if (endDate) {
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
-            var colors_1 = colorRamps.dotDensity.light[0];
+            var colors_1 = colorRamps.dotDensity.light[5];
             attributes = [
                 new AttributeColorInfo({
-                    color: colors_1[5],
+                    color: colors_1[0],
                     valueExpressionTitle: "Cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
                     valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), expressionUtils_1.createTotalInfectionsExpression(endDateFieldName)),
                 }),

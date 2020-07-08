@@ -131,7 +131,7 @@ const colorRamps = {
       [ "#e60049", "#0bb4ff", "#50e991", "#9b19f5" ],
       [ "#1e8553", "#c44296", "#d97f00", "#00b6f1" ],
       [ "#0040bf", "#a3cc52", "#b9a087", "#a01fcc" ],
-      [ "#dc4b00", "gray", "#000000" ]
+      [ "#dc4b00", "#b3cde3", "#000000" ]
     ],
     dark: [
       [ "#dc4b00", "#3c6ccc", "#d9dc00", "#91d900", "#986ba1" ],
@@ -244,11 +244,11 @@ function createDotDensityRenderer(params: CreateRendererParams) : COVIDRenderer 
 
   if(endDate){
     const endDateFieldName = getFieldFromDate(endDate);
-    const colors = colorRamps.dotDensity.light[0];
+    const colors = colorRamps.dotDensity.light[5];
 
     attributes = [
       new AttributeColorInfo({
-        color: colors[5],
+        color: colors[0],
         valueExpressionTitle: `Cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
         valueExpression: expressionDifference(
           createTotalInfectionsExpression(startDateFieldName),
