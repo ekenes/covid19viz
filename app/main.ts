@@ -17,7 +17,7 @@ import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 import { initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
-import { infectionsPopulationLayer, blendedLayer } from "./layerUtils";
+import { infectionsPopulationLayer } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
