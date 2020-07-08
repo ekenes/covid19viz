@@ -79,11 +79,12 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+        var rendererSelect, wkid, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     rendererSelect = document.getElementById("renderer-select");
+                    wkid = 102008;
                     map = new WebMap({
                         basemap: {
                             baseLayers: [
@@ -92,7 +93,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                         id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
                                     },
                                     spatialReference: {
-                                        wkid: 102008
+                                        wkid: wkid
                                     },
                                     popupEnabled: false,
                                     renderer: new renderers_1.SimpleRenderer({
@@ -110,7 +111,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                         id: "99fd67933e754a1181cc755146be21ca"
                                     },
                                     spatialReference: {
-                                        wkid: 102008
+                                        wkid: wkid
                                     },
                                     minScale: 25000000,
                                     maxScale: 0,
@@ -145,7 +146,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                             minScale: 1500000
                                         }],
                                     spatialReference: {
-                                        wkid: 102008
+                                        wkid: wkid
                                     },
                                     minScale: 3000000,
                                     maxScale: 0,
@@ -169,7 +170,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         map: map,
                         center: {
                             "spatialReference": {
-                                "wkid": 102008
+                                "wkid": wkid
                             },
                             "x": 84858.41480916333,
                             "y": -83568.3783140908
@@ -234,6 +235,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 unit: "days"
                             })
                         },
+                        layout: "compact",
                         view: view
                     });
                     checkbox = document.getElementById("difference");

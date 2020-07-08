@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "./timeUtils", "./expressionUtils", "esri/symbols"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, timeUtils_1, expressionUtils_1, symbols_1) {
+define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "esri/renderers/support/AttributeColorInfo", "./timeUtils", "./expressionUtils", "esri/symbols", "esri/renderers"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, AttributeColorInfo, timeUtils_1, expressionUtils_1, symbols_1, renderers_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var RendererVars = /** @class */ (function () {
@@ -15,6 +15,12 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         switch (rendererType) {
             case "total-infections":
                 renderer = createTotalCasesRenderer({
+                    startDate: startDate,
+                    endDate: endDate
+                });
+                break;
+            case "dot-density":
+                renderer = createDotDensityRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
@@ -89,7 +95,22 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             ["#ff00cc", "#b21c97", "#453442", "#96961d", "#ffff00"],
             ["#ff0099", "#aa1970", "#45343e", "#92781c", "#ffc800"],
             ["#e8ff00", "#97a41c", "#413f54", "#655dbb", "#8c80ff"]
-        ]
+        ],
+        dotDensity: {
+            light: [
+                ["#e60049", "#d9dc00", "#000000"],
+                ["#a03500", "#3264c8", "#72b38e"],
+                ["#e60049", "#0bb4ff", "#50e991", "#9b19f5"],
+                ["#1e8553", "#c44296", "#d97f00", "#00b6f1"],
+                ["#0040bf", "#a3cc52", "#b9a087", "#a01fcc"],
+                ["#dc4b00", "gray", "#000000"]
+            ],
+            dark: [
+                ["#dc4b00", "#3c6ccc", "#d9dc00", "#91d900", "#986ba1"],
+                ["#1e8553", "#c44296", "#d97f00", "#00b6f1"],
+                ["#0040bf", "#a3cc52", "#a01fcc", "#5bb698"],
+            ]
+        }
     };
     var dateRangeConfig = {
         colors: colorRamps.light[2],
@@ -168,6 +189,57 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             })),
             label: "County",
             visualVariables: visualVariables
+        });
+    }
+    function createDotDensityRenderer(params) {
+        var colors = colorRamps.dotDensity.light[0];
+        var startDate = params.startDate, endDate = params.endDate;
+        var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
+        var attributes;
+        if (endDate) {
+            var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
+            var colors_1 = colorRamps.dotDensity.light[0];
+            attributes = [
+                new AttributeColorInfo({
+                    color: colors_1[5],
+                    valueExpressionTitle: "Cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), expressionUtils_1.createTotalInfectionsExpression(endDateFieldName)),
+                }),
+                new AttributeColorInfo({
+                    color: colors_1[1],
+                    valueExpressionTitle: "All cases",
+                    valueExpression: expressionUtils_1.createTotalInfectionsExpression(startDateFieldName),
+                })
+            ];
+        }
+        else {
+            attributes = [
+                new AttributeColorInfo({
+                    color: colors[0],
+                    valueExpressionTitle: "Sick",
+                    valueExpression: expressionUtils_1.createActiveCasesExpression(startDateFieldName),
+                }),
+                new AttributeColorInfo({
+                    color: colors[1],
+                    valueExpressionTitle: "Recovered",
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createActiveCasesExpression(startDateFieldName, true), expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), true),
+                }),
+                new AttributeColorInfo({
+                    color: colors[2],
+                    valueExpressionTitle: "Deaths",
+                    valueExpression: expressionUtils_1.createTotalDeathsExpression(startDateFieldName)
+                })
+            ];
+        }
+        return new renderers_1.DotDensityRenderer({
+            dotValue: 10,
+            referenceScale: null,
+            attributes: attributes,
+            outline: null,
+            dotBlendingEnabled: true,
+            legendOptions: {
+                unit: "cases"
+            }
         });
     }
     function createTotalDeathsRenderer(params) {
@@ -295,7 +367,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
-            var colors_1 = colorRamps.light[6];
+            var colors_2 = colorRamps.light[6];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new SizeVariable({
@@ -316,11 +388,11 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         title: "Change in active cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate)
                     },
                     stops: [
-                        { value: -100, color: colors_1[0], label: "Decrease" },
-                        { value: -50, color: colors_1[1] },
-                        { value: 0, color: colors_1[2], label: "No change" },
-                        { value: 50, color: colors_1[3] },
-                        { value: 100, color: colors_1[4], label: "Increase" }
+                        { value: -100, color: colors_2[0], label: "Decrease" },
+                        { value: -50, color: colors_2[1] },
+                        { value: 0, color: colors_2[2], label: "No change" },
+                        { value: 50, color: colors_2[3] },
+                        { value: 100, color: colors_2[4], label: "Increase" }
                     ]
                 })
             ];
@@ -354,7 +426,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
-            var colors_2 = colorRamps.light[4];
+            var colors_3 = colorRamps.light[4];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new SizeVariable({
@@ -375,11 +447,11 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpressionTitle: "Doubling time change from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
                     valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createDoublingTimeExpression(startDateFieldName, true), expressionUtils_1.createDoublingTimeExpression(endDateFieldName, true), true),
                     stops: [
-                        { value: -28, color: colors_2[4], label: ">28 days faster (bad)" },
-                        { value: -14, color: colors_2[3] },
-                        { value: 0, color: colors_2[2], label: "No change" },
-                        { value: 14, color: colors_2[1] },
-                        { value: 28, color: colors_2[0], label: ">28 days slower (good)" }
+                        { value: -28, color: colors_3[4], label: ">28 days faster (bad)" },
+                        { value: -14, color: colors_3[3] },
+                        { value: 0, color: colors_3[2], label: "No change" },
+                        { value: 14, color: colors_3[1] },
+                        { value: 28, color: colors_3[0], label: ">28 days slower (good)" }
                     ]
                 })
             ];
@@ -437,7 +509,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var visualVariables = null;
         if (endDate) {
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
-            var colors_3 = colorRamps.light[6];
+            var colors_4 = colorRamps.light[6];
             visualVariables = [
                 new SizeVariable({
                     valueExpressionTitle: "Total deaths",
@@ -458,11 +530,11 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createDeathRateExpression(startDateFieldName), expressionUtils_1.createDeathRateExpression(endDateFieldName), true),
                     valueExpressionTitle: "Change in death rate by % points",
                     stops: [
-                        { value: -5, color: colors_3[0] },
-                        { value: -2, color: colors_3[1] },
-                        { value: 0, color: colors_3[2] },
-                        { value: 2, color: colors_3[3] },
-                        { value: 5, color: colors_3[4] }
+                        { value: -5, color: colors_4[0] },
+                        { value: -2, color: colors_4[1] },
+                        { value: 0, color: colors_4[2] },
+                        { value: 2, color: colors_4[3] },
+                        { value: 5, color: colors_4[4] }
                     ]
                 })
             ];
@@ -509,18 +581,18 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
-            var colors_4 = colorRamps.light[2];
+            var colors_5 = colorRamps.light[2];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new ColorVariable({
                     valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createInfectionRateExpression(startDateFieldName), expressionUtils_1.createInfectionRateExpression(endDateFieldName)),
                     valueExpressionTitle: "Change in COVID-19 cases per 100k people",
                     stops: [
-                        { value: 0, color: colors_4[0] },
-                        { value: 250, color: colors_4[1] },
-                        { value: 500, color: colors_4[2] },
-                        { value: 750, color: colors_4[3] },
-                        { value: 1000, color: colors_4[4] }
+                        { value: 0, color: colors_5[0] },
+                        { value: 250, color: colors_5[1] },
+                        { value: 500, color: colors_5[2] },
+                        { value: 750, color: colors_5[3] },
+                        { value: 1000, color: colors_5[4] }
                     ]
                 })
             ];
@@ -557,18 +629,18 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
-            var colors_5 = colorRamps.light[6];
+            var colors_6 = colorRamps.light[6];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new ColorVariable({
                     valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createActiveCasesPer100kExpression(startDateFieldName, true), expressionUtils_1.createActiveCasesPer100kExpression(endDateFieldName, true), true),
                     valueExpressionTitle: "Change in active COVID-19 cases per 100k people",
                     stops: [
-                        { value: -1000, color: colors_5[0] },
-                        { value: -500, color: colors_5[1] },
-                        { value: 0, color: colors_5[2] },
-                        { value: 500, color: colors_5[3] },
-                        { value: 1000, color: colors_5[4] }
+                        { value: -1000, color: colors_6[0] },
+                        { value: -500, color: colors_6[1] },
+                        { value: 0, color: colors_6[2] },
+                        { value: 500, color: colors_6[3] },
+                        { value: 1000, color: colors_6[4] }
                     ]
                 })
             ];

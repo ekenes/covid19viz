@@ -17,13 +17,16 @@ import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 import { initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
-import { infectionsPopulationLayer } from "./layerUtils";
+import { infectionsPopulationLayer, blendedLayer } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
 (async () => {
 
   const rendererSelect = document.getElementById("renderer-select") as HTMLSelectElement;
+
+  //102008
+  const wkid = 102008;
 
   const map = new WebMap({
     basemap: {
@@ -33,7 +36,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
             id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
           },
           spatialReference: {
-            wkid: 102008
+            wkid
           },
           popupEnabled: false,
           renderer: new SimpleRenderer({
@@ -51,7 +54,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
             id: "99fd67933e754a1181cc755146be21ca"
           },
           spatialReference: {
-            wkid: 102008
+            wkid
           },
           minScale: 25000000,
           maxScale: 0,
@@ -86,7 +89,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
             minScale: 1500000
           }],
           spatialReference: {
-            wkid: 102008
+            wkid
           },
           minScale: 3000000,
           maxScale: 0,
@@ -111,7 +114,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     map: map,
     center: {
       "spatialReference": {
-        "wkid": 102008
+        "wkid": wkid
       },
       "x": 84858.41480916333,
       "y": -83568.3783140908
@@ -182,6 +185,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
         unit: "days"
       })
     },
+    layout: "compact",
     view
   });
 

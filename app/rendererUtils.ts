@@ -3,6 +3,7 @@ import ColorVariable = require("esri/renderers/visualVariables/ColorVariable");
 import SizeVariable = require("esri/renderers/visualVariables/SizeVariable");
 import OpacityVariable = require("esri/renderers/visualVariables/OpacityVariable");
 import Color = require("esri/Color");
+import AttributeColorInfo = require("esri/renderers/support/AttributeColorInfo");
 
 import CSVLayer = require("esri/layers/CSVLayer");
 import FeatureLayer = require("esri/layers/FeatureLayer");
@@ -10,18 +11,19 @@ import FeatureLayer = require("esri/layers/FeatureLayer");
 import { getFieldFromDate, formatDate } from "./timeUtils";
 import { createTotalInfectionsExpression, createNewInfectionsExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createInfectionRateExpression, createActiveCasesExpression, createNewInfectionPercentTotalExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference } from "./expressionUtils";
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
+import { DotDensityRenderer } from "esri/renderers";
 
 export class RendererVars {
   public static activeRendererType: UpdateRendererParams["rendererType"] = "total-infections";
 }
 
-export type COVIDRenderer = SimpleRenderer;
+export type COVIDRenderer = SimpleRenderer | DotDensityRenderer;
 
 export interface UpdateRendererParams {
   layer: CSVLayer | FeatureLayer,
   rendererType: "total-infections" | "doubling-time" | "total-deaths" | "total-active" |
     "active-rate" | "infection-rate-per-100k" | "death-rate" | "total-color" |
-    "new-total" | "total-color-new-total-size"
+    "new-total" | "total-color-new-total-size" | "dot-density"
   currentDate: Date,
   endDate?: Date
 }
@@ -35,6 +37,12 @@ export function updateRenderer(params: UpdateRendererParams){
   switch (rendererType) {
     case "total-infections":
       renderer = createTotalCasesRenderer({
+        startDate,
+        endDate
+      });
+      break;
+    case "dot-density":
+      renderer = createDotDensityRenderer({
         startDate,
         endDate
       });
@@ -115,7 +123,22 @@ const colorRamps = {
     [ "#ff00cc", "#b21c97", "#453442", "#96961d", "#ffff00" ],
     [ "#ff0099", "#aa1970", "#45343e", "#92781c", "#ffc800" ],
     [ "#e8ff00", "#97a41c", "#413f54", "#655dbb", "#8c80ff" ]
-  ]
+  ],
+  dotDensity: {
+    light: [
+      [ "#e60049", "#d9dc00", "#000000" ],
+      [ "#a03500", "#3264c8", "#72b38e" ],
+      [ "#e60049", "#0bb4ff", "#50e991", "#9b19f5" ],
+      [ "#1e8553", "#c44296", "#d97f00", "#00b6f1" ],
+      [ "#0040bf", "#a3cc52", "#b9a087", "#a01fcc" ],
+      [ "#dc4b00", "gray", "#000000" ]
+    ],
+    dark: [
+      [ "#dc4b00", "#3c6ccc", "#d9dc00", "#91d900", "#986ba1" ],
+      [ "#1e8553", "#c44296", "#d97f00", "#00b6f1" ],
+      [ "#0040bf", "#a3cc52", "#a01fcc", "#5bb698" ],
+    ]
+  }
 }
 
 const dateRangeConfig = {
@@ -209,6 +232,69 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
     })),
     label: "County",
     visualVariables
+  });
+}
+
+function createDotDensityRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.dotDensity.light[0];
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let attributes: DotDensityRenderer["attributes"];
+
+  if(endDate){
+    const endDateFieldName = getFieldFromDate(endDate);
+    const colors = colorRamps.dotDensity.light[0];
+
+    attributes = [
+      new AttributeColorInfo({
+        color: colors[5],
+        valueExpressionTitle: `Cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+        valueExpression: expressionDifference(
+          createTotalInfectionsExpression(startDateFieldName),
+          createTotalInfectionsExpression(endDateFieldName)
+        ),
+      }),
+      new AttributeColorInfo({
+        color: colors[1],
+        valueExpressionTitle: "All cases",
+        valueExpression: createTotalInfectionsExpression(startDateFieldName),
+      })
+    ];
+
+  } else {
+    attributes = [
+      new AttributeColorInfo({
+        color: colors[0],
+        valueExpressionTitle: "Sick",
+        valueExpression: createActiveCasesExpression(startDateFieldName),
+      }),
+      new AttributeColorInfo({
+        color: colors[1],
+        valueExpressionTitle: "Recovered",
+        valueExpression: expressionDifference(
+          createActiveCasesExpression(startDateFieldName, true),
+          createTotalInfectionsExpression(startDateFieldName),
+          true
+        ),
+      }),
+      new AttributeColorInfo({
+        color: colors[2],
+        valueExpressionTitle: "Deaths",
+        valueExpression: createTotalDeathsExpression(startDateFieldName)
+      })
+    ];
+  }
+
+  return new DotDensityRenderer({
+    dotValue: 10,
+    referenceScale: null,
+    attributes,
+    outline: null,
+    dotBlendingEnabled: true,
+    legendOptions: {
+      unit: "cases"
+    }
   });
 }
 
