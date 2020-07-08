@@ -185,7 +185,6 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
         unit: "days"
       })
     },
-    layout: "compact",
     view
   });
 
@@ -309,6 +308,10 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     } else {
       updateLayer(true);
     }
+  });
+
+  slider.viewModel.watch("state", (state: TimeSlider["viewModel"]["state"]) => {
+    slider.loop = !(state === "playing");
   });
 
 })();

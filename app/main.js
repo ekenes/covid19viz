@@ -235,7 +235,6 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 unit: "days"
                             })
                         },
-                        layout: "compact",
                         view: view
                     });
                     checkbox = document.getElementById("difference");
@@ -317,6 +316,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         else {
                             updateLayer(true);
                         }
+                    });
+                    slider.viewModel.watch("state", function (state) {
+                        slider.loop = !(state === "playing");
                     });
                     return [2 /*return*/];
             }
