@@ -259,7 +259,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   });
 
   async function initializeLayer(){
-    map.add(infectionsPopulationLayer);
+    map.add(blendedLayer);
     const activeLayerView = await view.whenLayerView(infectionsPopulationLayer);
 
     watchUtils.whenFalseOnce(activeLayerView, "updating", () => {

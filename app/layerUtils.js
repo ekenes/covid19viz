@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/layers/FeatureLayer", "esri/renderers", "esri/symbols"], function (require, exports, FeatureLayer, renderers_1, symbols_1) {
+define(["require", "exports", "esri/layers/FeatureLayer", "esri/layers/GroupLayer", "esri/layers/ImageryLayer", "esri/renderers", "esri/symbols"], function (require, exports, FeatureLayer, GroupLayer, ImageryLayer, renderers_1, symbols_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     // Data from Johns Hopkins University
@@ -20,7 +20,19 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/renderers", "esr
                 color: null,
                 outline: null
             })
-        })
+        }),
+        blendMode: "source-in"
+    });
+    exports.blendedLayer = new GroupLayer({
+        layers: [
+            new ImageryLayer({
+                portalItem: {
+                    id: "0f83177f15d640ed911bdcf6614810a5"
+                },
+                legendEnabled: false
+            }),
+            exports.infectionsPopulationLayer
+        ]
     });
 });
 //# sourceMappingURL=layerUtils.js.map

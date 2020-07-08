@@ -44,7 +44,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            map.add(layerUtils_1.infectionsPopulationLayer);
+                            map.add(layerUtils_1.blendedLayer);
                             return [4 /*yield*/, view.whenLayerView(layerUtils_1.infectionsPopulationLayer)];
                         case 1:
                             activeLayerView = _a.sent();

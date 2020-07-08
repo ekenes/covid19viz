@@ -1,4 +1,7 @@
 import FeatureLayer = require("esri/layers/FeatureLayer");
+import GroupLayer = require("esri/layers/GroupLayer");
+import ImageryLayer = require("esri/layers/ImageryLayer");
+
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleMarkerSymbol } from "esri/symbols";
 
@@ -24,5 +27,18 @@ export const infectionsPopulationLayer = new FeatureLayer({
       color: null,
       outline: null
     })
-  })
+  }),
+  blendMode: "source-in"
 });
+
+export const blendedLayer = new GroupLayer({
+  layers: [
+    new ImageryLayer({
+      portalItem: {
+        id: "0f83177f15d640ed911bdcf6614810a5"
+      },
+      legendEnabled: false
+    }),
+    infectionsPopulationLayer
+  ]
+})
