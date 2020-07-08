@@ -114,10 +114,10 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     map: map,
     center: {
       "spatialReference": {
-        "wkid": wkid
+        "wkid": 102008
       },
-      "x": 84858.41480916333,
-      "y": -83568.3783140908
+      "x": 261127.07789336453,
+      "y": -658046.0897695143
     },
     scale: 18000000,
     constraints: {
