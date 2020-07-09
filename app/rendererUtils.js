@@ -629,7 +629,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
-            var colors_6 = colorRamps.light[6];
+            var colors_6 = colorRamps.light[4];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new ColorVariable({

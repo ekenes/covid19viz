@@ -750,7 +750,7 @@ function createActiveRateRenderer(params: CreateRendererParams) : COVIDRenderer 
   let visualVariables = null;
 
   if(endDate){
-    const colors = colorRamps.light[6];
+    const colors = colorRamps.light[4];
     const endDateFieldName = getFieldFromDate(endDate);
 
     visualVariables = [

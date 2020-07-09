@@ -40,5 +40,6 @@ export const blendedLayer = new GroupLayer({
       legendEnabled: false
     }),
     infectionsPopulationLayer
-  ]
+  ],
+  blendMode: "darken"
 })

@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils"], function (require, exports, WebMap, MapView, TimeSlider, TimeInterval, watchUtils, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -79,91 +79,99 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, wkid, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+        var rendererSelect, wkid, map, view, midCentury, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     rendererSelect = document.getElementById("renderer-select");
-                    wkid = 102008;
+                    wkid = 3857;
                     map = new WebMap({
                         basemap: {
-                            baseLayers: [
-                                new FeatureLayer({
-                                    portalItem: {
-                                        id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
-                                    },
-                                    spatialReference: {
-                                        wkid: wkid
-                                    },
-                                    popupEnabled: false,
-                                    renderer: new renderers_1.SimpleRenderer({
-                                        symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
-                                            outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
-                                                width: 2.5
-                                            })
-                                        })
-                                    })
-                                }),
-                                new FeatureLayer({
-                                    portalItem: {
-                                        id: "99fd67933e754a1181cc755146be21ca"
-                                    },
-                                    spatialReference: {
-                                        wkid: wkid
-                                    },
-                                    minScale: 25000000,
-                                    maxScale: 0,
-                                    popupEnabled: false,
-                                    renderer: new renderers_1.SimpleRenderer({
-                                        symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
-                                            style: "none",
-                                            outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
-                                                width: 1.2
-                                            })
-                                        })
-                                    })
-                                }),
-                                new FeatureLayer({
-                                    portalItem: {
-                                        id: "7566e0221e5646f99ea249a197116605"
-                                    },
-                                    labelingInfo: [{
-                                            labelExpressionInfo: {
-                                                expression: "$feature.NAME"
-                                            },
-                                            symbol: new symbols_1.TextSymbol({
-                                                font: {
-                                                    family: "Noto Sans",
-                                                    size: 12,
-                                                    weight: "lighter"
-                                                },
-                                                color: new Color("#cfd3d4")
-                                            }),
-                                            minScale: 1500000
-                                        }],
-                                    spatialReference: {
-                                        wkid: wkid
-                                    },
-                                    minScale: 3000000,
-                                    maxScale: 0,
-                                    popupEnabled: false,
-                                    renderer: new renderers_1.SimpleRenderer({
-                                        symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
-                                            style: "none",
-                                            outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
-                                                width: 0.25
-                                            })
-                                        })
-                                    })
-                                })
-                            ]
+                            portalItem: {
+                                id: "b2140d7f0e0d4937a21b08b1464f1300",
+                                portal: {
+                                    url: "https://devext.arcgis.com/"
+                                }
+                            }
                         }
+                        // basemap: {
+                        //   baseLayers: [
+                        //     new FeatureLayer({
+                        //       portalItem: {
+                        //         id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
+                        //       },
+                        //       spatialReference: {
+                        //         wkid
+                        //       },
+                        //       popupEnabled: false,
+                        //       renderer: new SimpleRenderer({
+                        //         symbol: new SimpleFillSymbol({
+                        //           color: new Color("#f3f3f3"),
+                        //           outline: new SimpleLineSymbol({
+                        //             color: new Color("#cfd3d4"),
+                        //             width: 2.5
+                        //           })
+                        //         })
+                        //       })
+                        //     }),
+                        //     new FeatureLayer({
+                        //       portalItem: {
+                        //         id: "99fd67933e754a1181cc755146be21ca"
+                        //       },
+                        //       spatialReference: {
+                        //         wkid
+                        //       },
+                        //       minScale: 25000000,
+                        //       maxScale: 0,
+                        //       popupEnabled: false,
+                        //       renderer: new SimpleRenderer({
+                        //         symbol: new SimpleFillSymbol({
+                        //           color: new Color("#f3f3f3"),
+                        //           style: "none",
+                        //           outline: new SimpleLineSymbol({
+                        //             color: new Color("#cfd3d4"),
+                        //             width: 1.2
+                        //           })
+                        //         })
+                        //       })
+                        //     }),
+                        //     new FeatureLayer({
+                        //       portalItem: {
+                        //         id: "7566e0221e5646f99ea249a197116605"
+                        //       },
+                        //       labelingInfo: [{
+                        //         labelExpressionInfo: {
+                        //           expression: `$feature.NAME`
+                        //         },
+                        //         symbol: new TextSymbol({
+                        //           font: {
+                        //             family: "Noto Sans",
+                        //             size: 12,
+                        //             weight: "lighter"
+                        //           },
+                        //           color: new Color("#cfd3d4")
+                        //         }),
+                        //         minScale: 1500000
+                        //       }],
+                        //       spatialReference: {
+                        //         wkid
+                        //       },
+                        //       minScale: 3000000,
+                        //       maxScale: 0,
+                        //       popupEnabled: false,
+                        //       renderer: new SimpleRenderer({
+                        //         symbol: new SimpleFillSymbol({
+                        //           color: new Color("#f3f3f3"),
+                        //           style: "none",
+                        //           outline: new SimpleLineSymbol({
+                        //             color: new Color("#cfd3d4"),
+                        //             width: 0.25
+                        //           })
+                        //         })
+                        //       })
+                        //     })
+                        //   ]
+                        // }
                     });
                     view = new MapView({
                         container: "viewDiv",
@@ -177,7 +185,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         },
                         scale: 18000000,
                         constraints: {
-                            minScale: 25000000
+                        // minScale: 25000000
                         },
                         popup: {
                             dockEnabled: true,
@@ -190,6 +198,11 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             components: ["attribution"]
                         }
                     });
+                    return [4 /*yield*/, view.when()];
+                case 1:
+                    _a.sent();
+                    midCentury = view.map.basemap.baseLayers.getItemAt(1);
+                    midCentury.blendMode = "multiply";
                     search = new Search({
                         view: view,
                         includeDefaultSources: false,
@@ -302,7 +315,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         updateLayer(false);
                     });
                     return [4 /*yield*/, initializeLayer()];
-                case 1:
+                case 2:
                     _a.sent();
                     slider.watch("values", function () {
                         if (slider.viewModel.state === "playing") {

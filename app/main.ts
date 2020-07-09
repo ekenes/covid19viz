@@ -26,87 +26,95 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   const rendererSelect = document.getElementById("renderer-select") as HTMLSelectElement;
 
   //102008
-  const wkid = 102008;
+  const wkid = 3857;
 
   const map = new WebMap({
     basemap: {
-      baseLayers: [
-        new FeatureLayer({
-          portalItem: {
-            id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
-          },
-          spatialReference: {
-            wkid
-          },
-          popupEnabled: false,
-          renderer: new SimpleRenderer({
-            symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
-              outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
-                width: 2.5
-              })
-            })
-          })
-        }),
-        new FeatureLayer({
-          portalItem: {
-            id: "99fd67933e754a1181cc755146be21ca"
-          },
-          spatialReference: {
-            wkid
-          },
-          minScale: 25000000,
-          maxScale: 0,
-          popupEnabled: false,
-          renderer: new SimpleRenderer({
-            symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
-              style: "none",
-              outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
-                width: 1.2
-              })
-            })
-          })
-        }),
-        new FeatureLayer({
-          portalItem: {
-            id: "7566e0221e5646f99ea249a197116605"
-          },
-          labelingInfo: [{
-            labelExpressionInfo: {
-              expression: `$feature.NAME`
-            },
-            symbol: new TextSymbol({
-              font: {
-                family: "Noto Sans",
-                size: 12,
-                weight: "lighter"
-              },
-              color: new Color("#cfd3d4")
-            }),
-            minScale: 1500000
-          }],
-          spatialReference: {
-            wkid
-          },
-          minScale: 3000000,
-          maxScale: 0,
-          popupEnabled: false,
-          renderer: new SimpleRenderer({
-            symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
-              style: "none",
-              outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
-                width: 0.25
-              })
-            })
-          })
-        })
-      ]
+      portalItem: {
+        id: "b2140d7f0e0d4937a21b08b1464f1300",
+        portal: {
+          url: "https://devext.arcgis.com/"
+        }
+      }
     }
+    // basemap: {
+    //   baseLayers: [
+    //     new FeatureLayer({
+    //       portalItem: {
+    //         id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
+    //       },
+    //       spatialReference: {
+    //         wkid
+    //       },
+    //       popupEnabled: false,
+    //       renderer: new SimpleRenderer({
+    //         symbol: new SimpleFillSymbol({
+    //           color: new Color("#f3f3f3"),
+    //           outline: new SimpleLineSymbol({
+    //             color: new Color("#cfd3d4"),
+    //             width: 2.5
+    //           })
+    //         })
+    //       })
+    //     }),
+    //     new FeatureLayer({
+    //       portalItem: {
+    //         id: "99fd67933e754a1181cc755146be21ca"
+    //       },
+    //       spatialReference: {
+    //         wkid
+    //       },
+    //       minScale: 25000000,
+    //       maxScale: 0,
+    //       popupEnabled: false,
+    //       renderer: new SimpleRenderer({
+    //         symbol: new SimpleFillSymbol({
+    //           color: new Color("#f3f3f3"),
+    //           style: "none",
+    //           outline: new SimpleLineSymbol({
+    //             color: new Color("#cfd3d4"),
+    //             width: 1.2
+    //           })
+    //         })
+    //       })
+    //     }),
+    //     new FeatureLayer({
+    //       portalItem: {
+    //         id: "7566e0221e5646f99ea249a197116605"
+    //       },
+    //       labelingInfo: [{
+    //         labelExpressionInfo: {
+    //           expression: `$feature.NAME`
+    //         },
+    //         symbol: new TextSymbol({
+    //           font: {
+    //             family: "Noto Sans",
+    //             size: 12,
+    //             weight: "lighter"
+    //           },
+    //           color: new Color("#cfd3d4")
+    //         }),
+    //         minScale: 1500000
+    //       }],
+    //       spatialReference: {
+    //         wkid
+    //       },
+    //       minScale: 3000000,
+    //       maxScale: 0,
+    //       popupEnabled: false,
+    //       renderer: new SimpleRenderer({
+    //         symbol: new SimpleFillSymbol({
+    //           color: new Color("#f3f3f3"),
+    //           style: "none",
+    //           outline: new SimpleLineSymbol({
+    //             color: new Color("#cfd3d4"),
+    //             width: 0.25
+    //           })
+    //         })
+    //       })
+    //     })
+    //   ]
+    // }
   });
 
   const view = new MapView({
@@ -121,7 +129,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     },
     scale: 18000000,
     constraints: {
-      minScale: 25000000
+      // minScale: 25000000
     },
     popup: {
       dockEnabled: true,
@@ -134,6 +142,10 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
       components: [ "attribution" ]
     }
   });
+
+  await view.when();
+  const midCentury = view.map.basemap.baseLayers.getItemAt(1);
+  midCentury.blendMode = "multiply";
 
   const search = new Search({
     view,

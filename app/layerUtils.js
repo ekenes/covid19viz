@@ -32,7 +32,8 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/layers/GroupLaye
                 legendEnabled: false
             }),
             exports.infectionsPopulationLayer
-        ]
+        ],
+        blendMode: "darken"
     });
 });
 //# sourceMappingURL=layerUtils.js.map
