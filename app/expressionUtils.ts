@@ -73,13 +73,13 @@ export function createActiveCasesExpression(currentDateFieldName: string, exclud
     var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
     var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
 
-    // Active Cases = (100% of new cases from last 14 days + 19% of days 15-30 + 5% of days 31-56) - Death Count
+    // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
 
     var daysAgo14 = DateAdd(currentDayFieldDate, -14, 'days');
     var daysAgo15 = DateAdd(currentDayFieldDate, -15, 'days');
-    var daysAgo30 = DateAdd(currentDayFieldDate, -30, 'days');
-    var daysAgo31 = DateAdd(currentDayFieldDate, -31, 'days');
-    var daysAgo56 = DateAdd(currentDayFieldDate, -56, 'days');
+    var daysAgo25 = DateAdd(currentDayFieldDate, -25, 'days');
+    var daysAgo26 = DateAdd(currentDayFieldDate, -26, 'days');
+    var daysAgo49 = DateAdd(currentDayFieldDate, -49, 'days');
 
     var startDate = Date(2020, 0, 22);
 
@@ -101,34 +101,34 @@ export function createActiveCasesExpression(currentDateFieldName: string, exclud
     var daysAgo15Infections = Number(daysAgo15ValueParts[0]);
     var daysAgo15Deaths = Number(daysAgo15ValueParts[1]);
 
-    if (daysAgo31 < startDate){
+    if (daysAgo26 < startDate){
       return Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * daysAgo15Infections ) - deaths );
     }
 
-    var daysAgo30FieldName = getFieldFromDate(daysAgo30);
-    var daysAgo30Value = $feature[daysAgo30FieldName];
-    var daysAgo30ValueParts = Split(daysAgo30Value, "|");
-    var daysAgo30Infections = Number(daysAgo30ValueParts[0]);
-    var daysAgo30Deaths = Number(daysAgo30ValueParts[1]);
+    var daysAgo25FieldName = getFieldFromDate(daysAgo25);
+    var daysAgo25Value = $feature[daysAgo25FieldName];
+    var daysAgo25ValueParts = Split(daysAgo25Value, "|");
+    var daysAgo25Infections = Number(daysAgo25ValueParts[0]);
+    var daysAgo25Deaths = Number(daysAgo25ValueParts[1]);
 
-    var daysAgo31FieldName = getFieldFromDate(daysAgo31);
-    var daysAgo31Value = $feature[daysAgo31FieldName];
-    var daysAgo31ValueParts = Split(daysAgo31Value, "|");
-    var daysAgo31Infections = Number(daysAgo31ValueParts[0]);
-    var daysAgo31Deaths = Number(daysAgo31ValueParts[1]);
+    var daysAgo26FieldName = getFieldFromDate(daysAgo26);
+    var daysAgo26Value = $feature[daysAgo26FieldName];
+    var daysAgo26ValueParts = Split(daysAgo26Value, "|");
+    var daysAgo26Infections = Number(daysAgo26ValueParts[0]);
+    var daysAgo26Deaths = Number(daysAgo26ValueParts[1]);
 
-    if (daysAgo56 < startDate){
-      return Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo30Infections ) ) + ( 0.05 * daysAgo31Infections ) - deaths );
+    if (daysAgo49 < startDate){
+      return Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * daysAgo26Infections ) - deaths );
     }
 
-    var daysAgo56FieldName = getFieldFromDate(daysAgo56);
-    var daysAgo56Value = $feature[daysAgo56FieldName];
-    var daysAgo56ValueParts = Split(daysAgo56Value, "|");
-    var daysAgo56Infections = Number(daysAgo56ValueParts[0]);
-    var daysAgo56Deaths = Number(daysAgo56ValueParts[1]);
+    var daysAgo49FieldName = getFieldFromDate(daysAgo49);
+    var daysAgo49Value = $feature[daysAgo49FieldName];
+    var daysAgo49ValueParts = Split(daysAgo49Value, "|");
+    var daysAgo49Infections = Number(daysAgo49ValueParts[0]);
+    var daysAgo49Deaths = Number(daysAgo49ValueParts[1]);
 
-    deaths = currentDayDeaths - daysAgo56Deaths;
-    var activeEstimate = (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo30Infections ) ) + ( 0.05 * ( daysAgo31Infections - daysAgo56Infections) ) - deaths;
+    deaths = currentDayDeaths - daysAgo49Deaths;
+    var activeEstimate = (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * ( daysAgo26Infections - daysAgo49Infections) ) - deaths;
 
     return Round(activeEstimate);
   `;
@@ -229,13 +229,13 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string,
     var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
     var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
 
-    // Active Cases = (100% of new cases from last 14 days + 19% of days 15-30 + 5% of days 31-56) - Death Count
+    // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
 
     var daysAgo14 = DateAdd(currentDayFieldDate, -14, 'days');
     var daysAgo15 = DateAdd(currentDayFieldDate, -15, 'days');
-    var daysAgo30 = DateAdd(currentDayFieldDate, -30, 'days');
-    var daysAgo31 = DateAdd(currentDayFieldDate, -31, 'days');
-    var daysAgo56 = DateAdd(currentDayFieldDate, -56, 'days');
+    var daysAgo25 = DateAdd(currentDayFieldDate, -25, 'days');
+    var daysAgo26 = DateAdd(currentDayFieldDate, -26, 'days');
+    var daysAgo49 = DateAdd(currentDayFieldDate, -49, 'days');
 
     var startDate = Date(2020, 0, 22);
 
@@ -259,36 +259,36 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string,
     var daysAgo15Infections = Number(daysAgo15ValueParts[0]);
     var daysAgo15Deaths = Number(daysAgo15ValueParts[1]);
 
-    if (daysAgo31 < startDate){
+    if (daysAgo26 < startDate){
       activeEstimate = Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * daysAgo15Infections ) - deaths );
       return (activeEstimate / population ) * 100000;
     }
 
-    var daysAgo30FieldName = getFieldFromDate(daysAgo30);
-    var daysAgo30Value = $feature[daysAgo30FieldName];
-    var daysAgo30ValueParts = Split(daysAgo30Value, "|");
-    var daysAgo30Infections = Number(daysAgo30ValueParts[0]);
-    var daysAgo30Deaths = Number(daysAgo30ValueParts[1]);
+    var daysAgo25FieldName = getFieldFromDate(daysAgo25);
+    var daysAgo25Value = $feature[daysAgo25FieldName];
+    var daysAgo25ValueParts = Split(daysAgo25Value, "|");
+    var daysAgo25Infections = Number(daysAgo25ValueParts[0]);
+    var daysAgo25Deaths = Number(daysAgo25ValueParts[1]);
 
-    var daysAgo31FieldName = getFieldFromDate(daysAgo31);
-    var daysAgo31Value = $feature[daysAgo31FieldName];
-    var daysAgo31ValueParts = Split(daysAgo31Value, "|");
-    var daysAgo31Infections = Number(daysAgo31ValueParts[0]);
-    var daysAgo31Deaths = Number(daysAgo31ValueParts[1]);
+    var daysAgo26FieldName = getFieldFromDate(daysAgo26);
+    var daysAgo26Value = $feature[daysAgo26FieldName];
+    var daysAgo26ValueParts = Split(daysAgo26Value, "|");
+    var daysAgo26Infections = Number(daysAgo26ValueParts[0]);
+    var daysAgo26Deaths = Number(daysAgo26ValueParts[1]);
 
-    if (daysAgo56 < startDate){
-      activeEstimate = Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo30Infections ) ) + ( 0.05 * daysAgo31Infections ) - deaths );
+    if (daysAgo49 < startDate){
+      activeEstimate = Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * daysAgo26Infections ) - deaths );
       return (activeEstimate / population ) * 100000;
     }
 
-    var daysAgo56FieldName = getFieldFromDate(daysAgo56);
-    var daysAgo56Value = $feature[daysAgo56FieldName];
-    var daysAgo56ValueParts = Split(daysAgo56Value, "|");
-    var daysAgo56Infections = Number(daysAgo56ValueParts[0]);
-    var daysAgo56Deaths = Number(daysAgo56ValueParts[1]);
+    var daysAgo49FieldName = getFieldFromDate(daysAgo49);
+    var daysAgo49Value = $feature[daysAgo49FieldName];
+    var daysAgo49ValueParts = Split(daysAgo49Value, "|");
+    var daysAgo49Infections = Number(daysAgo49ValueParts[0]);
+    var daysAgo49Deaths = Number(daysAgo49ValueParts[1]);
 
-    deaths = currentDayDeaths - daysAgo56Deaths;
-    activeEstimate = (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo30Infections ) ) + ( 0.05 * ( daysAgo31Infections - daysAgo56Infections) ) - deaths;
+    deaths = currentDayDeaths - daysAgo49Deaths;
+    activeEstimate = (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * ( daysAgo26Infections - daysAgo49Infections) ) - deaths;
 
     return (activeEstimate / population ) * 100000;
   `;

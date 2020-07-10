@@ -147,7 +147,7 @@ const dateRangeConfig = {
 }
 
 function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const colors = colorRamps.light[1];
+  const colors = [ "#feedde", "#fdbe85", "#fd8d3c", "#e6550d", "#a63603" ];
   const { startDate, endDate } = params;
   const startDateFieldName = getFieldFromDate(startDate);
 
@@ -188,22 +188,6 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
           { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
           { value: dateRangeConfig.stops[3], color: colors[3] },
           { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
-        ]
-      }),
-      new OpacityVariable({
-        valueExpression: expressionPercentChange(
-          createTotalInfectionsExpression(startDateFieldName),
-          createTotalInfectionsExpression(endDateFieldName)
-        ),
-        legendOptions: {
-          showLegend: false
-        },
-        stops: [
-          { value: 0, opacity: 0.25 },
-          { value: 100, opacity: 0.65 },
-          { value: 300, opacity: 0.75 },
-          { value: 400, opacity: 0.85 },
-          { value: 500, opacity: 1 }
         ]
       })
     ];
@@ -299,7 +283,7 @@ function createDotDensityRenderer(params: CreateRendererParams) : COVIDRenderer 
 }
 
 function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const colors = colorRamps.light[1];
+  const colors = [ "#f6d7e0", "#e6968e", "#db6a58", "#b44f3b", "#8d331d" ];
 
   const { startDate, endDate } = params;
   const startDateFieldName = getFieldFromDate(startDate);
@@ -342,22 +326,6 @@ function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer
           { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
           { value: dateRangeConfig.stops[3], color: colors[3] },
           { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
-        ]
-      }),
-      new OpacityVariable({
-        valueExpression: expressionPercentChange(
-          createTotalInfectionsExpression(startDateFieldName),
-          createTotalInfectionsExpression(endDateFieldName)
-        ),
-        legendOptions: {
-          showLegend: false
-        },
-        stops: [
-          { value: 0, opacity: 0.25 },
-          { value: 100, opacity: 0.65 },
-          { value: 300, opacity: 0.75 },
-          { value: 400, opacity: 0.85 },
-          { value: 500, opacity: 1 }
         ]
       })
     ];
@@ -451,7 +419,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
 
     visualVariables = [
       new SizeVariable({
-        valueExpressionTitle: `Change in active COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+        valueExpressionTitle: `Change in estimated active COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
         valueExpression: expressionDifference(
           createActiveCasesExpression(startDateFieldName, true),
           createActiveCasesExpression(endDateFieldName, true),
@@ -486,7 +454,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
     ];
   } else {
     visualVariables = [ new SizeVariable({
-      valueExpressionTitle: `Active COVID-19 cases on ${formatDate(startDate)}`,
+      valueExpressionTitle: `Estimated active COVID-19 cases on ${formatDate(startDate)}`,
       valueExpression: createActiveCasesExpression(startDateFieldName),
       stops: [
         { value: 0, size: 0 },
@@ -523,19 +491,20 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
     visualVariables = [
       new SizeVariable({
         valueExpression: expressionDifference(
-          createTotalInfectionsExpression(startDateFieldName),
-          createTotalInfectionsExpression(endDateFieldName)
+          createActiveCasesExpression(startDateFieldName, true),
+          createActiveCasesExpression(endDateFieldName, true),
+          true
         ),
         legendOptions: {
-          title: `New COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
+          title: `Estimated active COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
         },
         stops: [
           { value: 0, size: 0 },
-          { value: 1, size: "2px" },
-          { value: 100, size: "4px" },
-          { value: 1000, size: "10px" },
-          { value: 10000, size: "50px" },
-          { value: 200000, size: "200px" }
+        { value: 1, size: "2px" },
+        { value: 100, size: "4px" },
+        { value: 1000, size: "10px" },
+        { value: 10000, size: "50px" },
+        { value: 100000, size: "200px" }
         ]
       }),
       new ColorVariable({
@@ -557,9 +526,9 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
   } else {
     visualVariables = [
       new SizeVariable({
-        valueExpression: createTotalInfectionsExpression(startDateFieldName),
+        valueExpression: createActiveCasesExpression(startDateFieldName),
         legendOptions: {
-          title: `Total COVID-19 cases as of ${formatDate(startDate)}`
+          title: `Estimated active COVID-19 cases as of ${formatDate(startDate)}`
         },
         stops: [
           { value: 0, size: 0 },
@@ -567,7 +536,7 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
           { value: 100, size: "4px" },
           { value: 1000, size: "10px" },
           { value: 10000, size: "50px" },
-          { value: 200000, size: "200px" }
+          { value: 100000, size: "200px" }
         ]
       }),
       new ColorVariable({
@@ -760,7 +729,7 @@ function createActiveRateRenderer(params: CreateRendererParams) : COVIDRenderer 
           createActiveCasesPer100kExpression(endDateFieldName, true),
           true
         ),
-        valueExpressionTitle: `Change in active COVID-19 cases per 100k people`,
+        valueExpressionTitle: `Change in estimated active COVID-19 cases per 100k people`,
         stops: [
           { value: -1000, color: colors[0] },
           { value: -500, color: colors[1] },
@@ -774,7 +743,7 @@ function createActiveRateRenderer(params: CreateRendererParams) : COVIDRenderer 
     visualVariables = [
       new ColorVariable({
         valueExpression: createActiveCasesPer100kExpression(startDateFieldName),
-        valueExpressionTitle: `Active COVID-19 cases per 100k people`,
+        valueExpressionTitle: `Estimated active COVID-19 cases per 100k people`,
         stops: [
           { value: 50, color: colors[0] },
           { value: 200, color: colors[1] },
