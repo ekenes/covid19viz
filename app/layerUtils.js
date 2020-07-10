@@ -3,16 +3,16 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/renderers", "esr
     Object.defineProperty(exports, "__esModule", { value: true });
     // Data from Johns Hopkins University
     // "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series";
-    var polygonFillPortalItemId = "45389b90ed234ab4be65820e081254c4";
-    var polygonFillLayerId = 2; // polygons
+    exports.polygonFillPortalItemId = "45389b90ed234ab4be65820e081254c4";
+    exports.polygonFillLayerId = 2; // polygons
     exports.separator = "_";
     exports.prefix = "DAYSTRING_";
     exports.infectionsPopulationLayer = new FeatureLayer({
         title: null,
         portalItem: {
-            id: polygonFillPortalItemId
+            id: exports.polygonFillPortalItemId
         },
-        layerId: polygonFillLayerId,
+        layerId: exports.polygonFillLayerId,
         outFields: ["*"],
         renderer: new renderers_1.SimpleRenderer({
             symbol: new symbols_1.SimpleMarkerSymbol({

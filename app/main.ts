@@ -2,6 +2,7 @@ import WebMap = require("esri/WebMap");
 import MapView = require("esri/views/MapView");
 
 import FeatureLayer = require("esri/layers/FeatureLayer");
+import VectorTileLayer = require("esri/layers/VectorTileLayer");
 import TimeSlider = require("esri/widgets/TimeSlider");
 import TimeInterval = require("esri/TimeInterval");
 import watchUtils = require("esri/core/watchUtils");
@@ -17,7 +18,7 @@ import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 import { initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
-import { infectionsPopulationLayer } from "./layerUtils";
+import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
@@ -32,51 +33,15 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     basemap: {
       baseLayers: [
         new FeatureLayer({
+          title: null,
           portalItem: {
-            id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
+            id: polygonFillPortalItemId
           },
-          spatialReference: {
-            wkid
-          },
-          popupEnabled: false,
-          renderer: new SimpleRenderer({
-            symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
-              outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
-                width: 2.5
-              })
-            })
-          })
-        }),
-        new FeatureLayer({
-          portalItem: {
-            id: "99fd67933e754a1181cc755146be21ca"
-          },
-          spatialReference: {
-            wkid
-          },
-          minScale: 25000000,
-          maxScale: 0,
-          popupEnabled: false,
-          renderer: new SimpleRenderer({
-            symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
-              style: "none",
-              outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
-                width: 1.2
-              })
-            })
-          })
-        }),
-        new FeatureLayer({
-          portalItem: {
-            id: "7566e0221e5646f99ea249a197116605"
-          },
+          layerId: polygonFillLayerId,
+          outFields: ["Admin2"],
           labelingInfo: [{
             labelExpressionInfo: {
-              expression: `$feature.NAME`
+              expression: `$feature.Admin2`
             },
             symbol: new TextSymbol({
               font: {
@@ -91,16 +56,15 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
           spatialReference: {
             wkid
           },
-          minScale: 3000000,
+          minScale: 0,
           maxScale: 0,
           popupEnabled: false,
           renderer: new SimpleRenderer({
             symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
-              style: "none",
+              color: new Color("#ece8e8"),
               outline: new SimpleLineSymbol({
                 color: new Color("#cfd3d4"),
-                width: 0.25
+                width: 0
               })
             })
           })
@@ -113,11 +77,9 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     container: "viewDiv",
     map: map,
     center: {
-      "spatialReference": {
-        "wkid": 102008
-      },
-      "x": 261127.07789336453,
-      "y": -658046.0897695143
+      spatialReference: { wkid },
+      x: 261127.07789336453,
+      y: -658046.0897695143
     },
     scale: 18000000,
     constraints: {

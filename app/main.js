@@ -89,51 +89,15 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         basemap: {
                             baseLayers: [
                                 new FeatureLayer({
+                                    title: null,
                                     portalItem: {
-                                        id: "2b93b06dc0dc4e809d3c8db5cb96ba69"
+                                        id: layerUtils_1.polygonFillPortalItemId
                                     },
-                                    spatialReference: {
-                                        wkid: wkid
-                                    },
-                                    popupEnabled: false,
-                                    renderer: new renderers_1.SimpleRenderer({
-                                        symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
-                                            outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
-                                                width: 2.5
-                                            })
-                                        })
-                                    })
-                                }),
-                                new FeatureLayer({
-                                    portalItem: {
-                                        id: "99fd67933e754a1181cc755146be21ca"
-                                    },
-                                    spatialReference: {
-                                        wkid: wkid
-                                    },
-                                    minScale: 25000000,
-                                    maxScale: 0,
-                                    popupEnabled: false,
-                                    renderer: new renderers_1.SimpleRenderer({
-                                        symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
-                                            style: "none",
-                                            outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
-                                                width: 1.2
-                                            })
-                                        })
-                                    })
-                                }),
-                                new FeatureLayer({
-                                    portalItem: {
-                                        id: "7566e0221e5646f99ea249a197116605"
-                                    },
+                                    layerId: layerUtils_1.polygonFillLayerId,
+                                    outFields: ["Admin2"],
                                     labelingInfo: [{
                                             labelExpressionInfo: {
-                                                expression: "$feature.NAME"
+                                                expression: "$feature.Admin2"
                                             },
                                             symbol: new symbols_1.TextSymbol({
                                                 font: {
@@ -148,16 +112,15 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     spatialReference: {
                                         wkid: wkid
                                     },
-                                    minScale: 3000000,
+                                    minScale: 0,
                                     maxScale: 0,
                                     popupEnabled: false,
                                     renderer: new renderers_1.SimpleRenderer({
                                         symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
-                                            style: "none",
+                                            color: new Color("#ece8e8"),
                                             outline: new symbols_1.SimpleLineSymbol({
                                                 color: new Color("#cfd3d4"),
-                                                width: 0.25
+                                                width: 0
                                             })
                                         })
                                     })
@@ -169,11 +132,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         container: "viewDiv",
                         map: map,
                         center: {
-                            "spatialReference": {
-                                "wkid": 102008
-                            },
-                            "x": 261127.07789336453,
-                            "y": -658046.0897695143
+                            spatialReference: { wkid: wkid },
+                            x: 261127.07789336453,
+                            y: -658046.0897695143
                         },
                         scale: 18000000,
                         constraints: {
