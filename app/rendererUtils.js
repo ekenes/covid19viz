@@ -85,10 +85,14 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             ["#a6611a", "#dfc27d", "#f5f5f5", "#80cdc1", "#018571"]
         ],
         dark: [
+            ["#005353", "#007b7b", "#00a4a4", "#00cccc", "#00ffff"],
+            ["#45537a", "#4e6dbd", "#5686ff", "#96b8fe", "#e6f5fa"],
+            ["#2f3f56", "#455873", "#3f83a1", "#1ec1d5", "#00ffff"],
             ["#0010d9", "#0040ff", "#0080ff", "#00bfff", "#00ffff"],
             ["#481295", "#6535a6", "#7d6aa1", "#9e97b8", "#c4bedc"],
             ["#00590f", "#008c1a", "#00bf25", "#76df13", "#d0ff00"],
             ["#3b3734", "#54504c", "#ab3da9", "#eb44e8", "#ff80ff"],
+            ["#12c0ff", "#2589ad", "#474033", "#9b6e20", "#ffa300"],
             ["#ff4d6a", "#a63245", "#453437", "#2b819b", "#23ccff"],
             ["#23ccff", "#2c8eac", "#42422f", "#9b9b15", "#ffff00"],
             ["#ff00ff", "#b21bb2", "#414537", "#76961d", "#beff00"],
@@ -421,12 +425,12 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         });
     }
     function createDoublingTimeRenderer(params) {
-        var colors = colorRamps.light[0];
+        var colors = colorRamps.dark[0];
         var startDate = params.startDate, endDate = params.endDate;
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
-            var colors_3 = colorRamps.light[4];
+            var colors_3 = colorRamps.dark[7];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new SizeVariable({
@@ -624,12 +628,12 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         });
     }
     function createActiveRateRenderer(params) {
-        var colors = colorRamps.light[0];
+        var colors = colorRamps.dark[2];
         var startDate = params.startDate, endDate = params.endDate;
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
-            var colors_6 = colorRamps.light[6];
+            var colors_6 = colorRamps.dark[7];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new ColorVariable({

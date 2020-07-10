@@ -28,6 +28,9 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   //102008
   const wkid = 102008;
 
+  const landColor = [65, 65, 65, 1];  // "#f3f3f3"
+  const waterColor = [50, 50, 50, 0.75];  // "#cfd3d4"
+
   const map = new WebMap({
     basemap: {
       baseLayers: [
@@ -41,9 +44,9 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
           popupEnabled: false,
           renderer: new SimpleRenderer({
             symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
+              color: new Color(landColor),
               outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
+                color: new Color(waterColor),
                 width: 2.5
               })
             })
@@ -61,10 +64,10 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
           popupEnabled: false,
           renderer: new SimpleRenderer({
             symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
+              color: new Color(landColor),
               style: "none",
               outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
+                color: new Color(waterColor),
                 width: 1.2
               })
             })
@@ -84,7 +87,7 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
                 size: 12,
                 weight: "lighter"
               },
-              color: new Color("#cfd3d4")
+              color: new Color(waterColor)
             }),
             minScale: 1500000
           }],
@@ -96,10 +99,10 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
           popupEnabled: false,
           renderer: new SimpleRenderer({
             symbol: new SimpleFillSymbol({
-              color: new Color("#f3f3f3"),
+              color: new Color(landColor),
               style: "none",
               outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
+                color: new Color(waterColor),
                 width: 0.25
               })
             })
@@ -134,6 +137,9 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
       components: [ "attribution" ]
     }
   });
+
+  const viewDiv = view.container;
+  viewDiv.style.backgroundColor = "rgba(50, 50, 50, 0.75)";
 
   const search = new Search({
     view,

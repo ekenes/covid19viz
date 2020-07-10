@@ -113,10 +113,14 @@ const colorRamps = {
     [ "#a6611a", "#dfc27d", "#f5f5f5", "#80cdc1", "#018571" ]
   ],
   dark: [
-    [ "#0010d9", "#0040ff", "#0080ff", "#00bfff", "#00ffff" ],
+    [ "#005353", "#007b7b", "#00a4a4", "#00cccc", "#00ffff" ],// blue 16
+    [ "#45537a", "#4e6dbd", "#5686ff", "#96b8fe", "#e6f5fa" ], // blue 12
+    [ "#2f3f56", "#455873", "#3f83a1", "#1ec1d5", "#00ffff" ],//blue 21
+    [ "#0010d9", "#0040ff", "#0080ff", "#00bfff", "#00ffff" ],  // blue 23
     [ "#481295", "#6535a6", "#7d6aa1", "#9e97b8", "#c4bedc" ],
     [ "#00590f", "#008c1a", "#00bf25", "#76df13", "#d0ff00" ],
     [ "#3b3734", "#54504c", "#ab3da9", "#eb44e8", "#ff80ff" ],
+    [ "#12c0ff", "#2589ad", "#474033", "#9b6e20", "#ffa300" ],
     [ "#ff4d6a", "#a63245", "#453437", "#2b819b", "#23ccff" ],
     [ "#23ccff", "#2c8eac", "#42422f", "#9b9b15", "#ffff00" ],
     [ "#ff00ff", "#b21bb2", "#414537", "#76961d", "#beff00" ],
@@ -510,14 +514,14 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
 }
 
 function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const colors = colorRamps.light[0];
+  const colors = colorRamps.dark[0];
   const { startDate, endDate } = params;
   const startDateFieldName = getFieldFromDate(startDate);
 
   let visualVariables = null;
 
   if(endDate){
-    const colors = colorRamps.light[4];
+    const colors = colorRamps.dark[7];
     const endDateFieldName = getFieldFromDate(endDate);
 
     visualVariables = [
@@ -743,14 +747,14 @@ function createCaseRateRenderer(params: CreateRendererParams) : COVIDRenderer {
 }
 
 function createActiveRateRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const colors = colorRamps.light[0];
+  const colors = colorRamps.dark[2];
   const { startDate, endDate } = params;
   const startDateFieldName = getFieldFromDate(startDate);
 
   let visualVariables = null;
 
   if(endDate){
-    const colors = colorRamps.light[6];
+    const colors = colorRamps.dark[7];
     const endDateFieldName = getFieldFromDate(endDate);
 
     visualVariables = [

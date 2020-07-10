@@ -79,12 +79,14 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, wkid, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+        var rendererSelect, wkid, landColor, waterColor, map, view, viewDiv, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     rendererSelect = document.getElementById("renderer-select");
                     wkid = 102008;
+                    landColor = [65, 65, 65, 1];
+                    waterColor = [50, 50, 50, 0.75];
                     map = new WebMap({
                         basemap: {
                             baseLayers: [
@@ -98,9 +100,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     popupEnabled: false,
                                     renderer: new renderers_1.SimpleRenderer({
                                         symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
+                                            color: new Color(landColor),
                                             outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
+                                                color: new Color(waterColor),
                                                 width: 2.5
                                             })
                                         })
@@ -118,10 +120,10 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     popupEnabled: false,
                                     renderer: new renderers_1.SimpleRenderer({
                                         symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
+                                            color: new Color(landColor),
                                             style: "none",
                                             outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
+                                                color: new Color(waterColor),
                                                 width: 1.2
                                             })
                                         })
@@ -141,7 +143,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                                     size: 12,
                                                     weight: "lighter"
                                                 },
-                                                color: new Color("#cfd3d4")
+                                                color: new Color(waterColor)
                                             }),
                                             minScale: 1500000
                                         }],
@@ -153,10 +155,10 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     popupEnabled: false,
                                     renderer: new renderers_1.SimpleRenderer({
                                         symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#f3f3f3"),
+                                            color: new Color(landColor),
                                             style: "none",
                                             outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
+                                                color: new Color(waterColor),
                                                 width: 0.25
                                             })
                                         })
@@ -190,6 +192,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             components: ["attribution"]
                         }
                     });
+                    viewDiv = view.container;
+                    viewDiv.style.backgroundColor = "rgba(50, 50, 50, 0.75)";
                     search = new Search({
                         view: view,
                         includeDefaultSources: false,
