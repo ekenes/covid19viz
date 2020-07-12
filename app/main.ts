@@ -76,12 +76,18 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   const view = new MapView({
     container: "viewDiv",
     map: map,
-    center: {
-      spatialReference: { wkid },
-      x: 261127.07789336453,
-      y: -658046.0897695143
+    extent: {
+      spatialReference: {
+        wkid
+      },
+      xmin: -3100906,
+      ymin: -2531665,
+      xmax: 4190495,
+      ymax: 1602192
     },
-    scale: 18000000,
+    spatialReference: {
+      wkid
+    },
     constraints: {
       minScale: 25000000
     },

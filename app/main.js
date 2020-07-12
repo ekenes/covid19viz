@@ -131,12 +131,18 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     view = new MapView({
                         container: "viewDiv",
                         map: map,
-                        center: {
-                            spatialReference: { wkid: wkid },
-                            x: 261127.07789336453,
-                            y: -658046.0897695143
+                        extent: {
+                            spatialReference: {
+                                wkid: wkid
+                            },
+                            xmin: -3100906,
+                            ymin: -2531665,
+                            xmax: 4190495,
+                            ymax: 1602192
                         },
-                        scale: 18000000,
+                        spatialReference: {
+                            wkid: wkid
+                        },
                         constraints: {
                             minScale: 25000000
                         },
