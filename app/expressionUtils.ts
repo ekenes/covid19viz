@@ -136,6 +136,82 @@ export function createActiveCasesExpression(currentDateFieldName: string, exclud
   return excludeGetFieldFromDate ? base : getFieldFromDate + base;
 }
 
+export function createRecoveredCasesExpression(currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
+  const getFieldFromDate = getFieldFromDateFunction();
+
+  const base = `
+    var currentDayFieldName = "${currentDateFieldName}";
+    var currentDayValue = $feature[currentDayFieldName];
+    var currentDayValueParts = Split(currentDayValue, "|");
+    var currentDayInfections = Number(currentDayValueParts[0]);
+    var currentDayDeaths = Number(currentDayValueParts[1]);
+
+    var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
+    var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
+
+    // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
+
+    var daysAgo14 = DateAdd(currentDayFieldDate, -14, 'days');
+    var daysAgo15 = DateAdd(currentDayFieldDate, -15, 'days');
+    var daysAgo25 = DateAdd(currentDayFieldDate, -25, 'days');
+    var daysAgo26 = DateAdd(currentDayFieldDate, -26, 'days');
+    var daysAgo49 = DateAdd(currentDayFieldDate, -49, 'days');
+
+    var startDate = Date(2020, 0, 22);
+
+    var deaths = currentDayDeaths;
+
+    if (daysAgo15 < startDate){
+      return currentDayInfections - deaths;
+    }
+
+    var daysAgo14FieldName = getFieldFromDate(daysAgo14);
+    var daysAgo14Value = $feature[daysAgo14FieldName];
+    var daysAgo14ValueParts = Split(daysAgo14Value, "|");
+    var daysAgo14Infections = Number(daysAgo14ValueParts[0]);
+    var daysAgo14Deaths = Number(daysAgo14ValueParts[1]);
+
+    var daysAgo15FieldName = getFieldFromDate(daysAgo15);
+    var daysAgo15Value = $feature[daysAgo15FieldName];
+    var daysAgo15ValueParts = Split(daysAgo15Value, "|");
+    var daysAgo15Infections = Number(daysAgo15ValueParts[0]);
+    var daysAgo15Deaths = Number(daysAgo15ValueParts[1]);
+
+    if (daysAgo26 < startDate){
+      return Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * daysAgo15Infections ) - deaths );
+    }
+
+    var daysAgo25FieldName = getFieldFromDate(daysAgo25);
+    var daysAgo25Value = $feature[daysAgo25FieldName];
+    var daysAgo25ValueParts = Split(daysAgo25Value, "|");
+    var daysAgo25Infections = Number(daysAgo25ValueParts[0]);
+    var daysAgo25Deaths = Number(daysAgo25ValueParts[1]);
+
+    var daysAgo26FieldName = getFieldFromDate(daysAgo26);
+    var daysAgo26Value = $feature[daysAgo26FieldName];
+    var daysAgo26ValueParts = Split(daysAgo26Value, "|");
+    var daysAgo26Infections = Number(daysAgo26ValueParts[0]);
+    var daysAgo26Deaths = Number(daysAgo26ValueParts[1]);
+
+    if (daysAgo49 < startDate){
+      return Round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * daysAgo26Infections ) - deaths );
+    }
+
+    var daysAgo49FieldName = getFieldFromDate(daysAgo49);
+    var daysAgo49Value = $feature[daysAgo49FieldName];
+    var daysAgo49ValueParts = Split(daysAgo49Value, "|");
+    var daysAgo49Infections = Number(daysAgo49ValueParts[0]);
+    var daysAgo49Deaths = Number(daysAgo49ValueParts[1]);
+
+    deaths = currentDayDeaths - daysAgo49Deaths;
+    var activeEstimate = (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * ( daysAgo26Infections - daysAgo49Infections) ) - deaths;
+
+    return Round(currentDayInfections - activeEstimate - currentDayDeaths);
+  `;
+
+  return excludeGetFieldFromDate ? base : getFieldFromDate + base;
+}
+
 export function createDoublingTimeExpression (currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
   const getFieldFromDate = getFieldFromDateFunction();
 

@@ -7,9 +7,10 @@ import AttributeColorInfo = require("esri/renderers/support/AttributeColorInfo")
 
 import CSVLayer = require("esri/layers/CSVLayer");
 import FeatureLayer = require("esri/layers/FeatureLayer");
+import lang = require("esri/core/lang");
 
 import { getFieldFromDate, formatDate } from "./timeUtils";
-import { createTotalInfectionsExpression, createNewInfectionsExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createInfectionRateExpression, createActiveCasesExpression, createNewInfectionPercentTotalExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference } from "./expressionUtils";
+import { createTotalInfectionsExpression, createNewInfectionsAverageExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createInfectionRateExpression, createActiveCasesExpression, createNewInfectionPercentTotalExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference, createRecoveredCasesExpression } from "./expressionUtils";
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
 import { DotDensityRenderer } from "esri/renderers";
 
@@ -256,11 +257,7 @@ function createDotDensityRenderer(params: CreateRendererParams) : COVIDRenderer 
       new AttributeColorInfo({
         color: colors[1],
         valueExpressionTitle: "Recovered",
-        valueExpression: expressionDifference(
-          createActiveCasesExpression(startDateFieldName, true),
-          createTotalInfectionsExpression(startDateFieldName),
-          true
-        ),
+        valueExpression: createRecoveredCasesExpression(startDateFieldName),
       }),
       new AttributeColorInfo({
         color: colors[2],
@@ -359,6 +356,7 @@ function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer
 }
 
 function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
+  const colors = lang.clone(colorRamps.light[6]);
   const { startDate, endDate } = params;
   const startDateFieldName = getFieldFromDate(startDate);
 
@@ -367,37 +365,47 @@ function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
   if(endDate){
     const endDateFieldName = getFieldFromDate(endDate);
 
-    visualVariables = [ new SizeVariable({
-      valueExpressionTitle: `7-day rolling average of new COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
-      valueExpression: expressionDifference(
-        createNewInfectionsExpression(startDateFieldName, true),
-        createNewInfectionsExpression(endDateFieldName, true),
-        true
-      ),
-      stops: [
-        { value: 0, size: 0 },
-        { value: 1, size: "2px" },
-        { value: 100, size: "10px" },
-        { value: 1000, size: "50px" },
-        { value: 5000, size: "200px" }
-      ]
-    }) ];
+    visualVariables = [
+      new SizeVariable({
+        valueExpressionTitle: `7-day rolling average of new COVID-19 cases as of ${formatDate(startDate)}`,
+        valueExpression: createNewInfectionsAverageExpression(startDateFieldName),
+        stops: [
+          { value: 0, size: 0 },
+          { value: 1, size: "2px" },
+          { value: 100, size: "10px" },
+          { value: 1000, size: "50px" },
+          { value: 5000, size: "100px" }
+        ]
+      }), new ColorVariable({
+        valueExpressionTitle: `Change in 7-day rolling average of new COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+        valueExpression: expressionDifference(
+          createNewInfectionsAverageExpression(startDateFieldName, true),
+          createNewInfectionsAverageExpression(endDateFieldName, true),
+          true
+        ),
+        stops: [
+          { value: -1, color: colors[0], label: "Decrease"},
+          { value: 0, color: colors[2] },
+          { value: 1, color: colors[4], label: "Increase" },
+        ]
+      })
+    ];
   } else {
     visualVariables = [ new SizeVariable({
       valueExpressionTitle: `7-day rolling average of new COVID-19 cases as of ${formatDate(startDate)}`,
-      valueExpression: createNewInfectionsExpression(startDateFieldName),
+      valueExpression: createNewInfectionsAverageExpression(startDateFieldName),
       stops: [
         { value: 0, size: 0 },
         { value: 1, size: "2px" },
         { value: 100, size: "10px" },
         { value: 1000, size: "50px" },
-        { value: 5000, size: "200px" }
+        { value: 5000, size: "100px" }
       ]
     }) ];
   }
   return new SimpleRenderer({
     symbol: createDefaultSymbol(null, new SimpleLineSymbol({
-      color: new Color("rgba(222, 18, 222, 0.5)"),
+      color: new Color("rgba(212, 74, 0,1)"),
       width: endDate ? 0 : 0.5
     })),
     label: "County",

@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "esri/renderers/support/AttributeColorInfo", "./timeUtils", "./expressionUtils", "esri/symbols", "esri/renderers"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, AttributeColorInfo, timeUtils_1, expressionUtils_1, symbols_1, renderers_1) {
+define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "esri/renderers/support/AttributeColorInfo", "esri/core/lang", "./timeUtils", "./expressionUtils", "esri/symbols", "esri/renderers"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, AttributeColorInfo, lang, timeUtils_1, expressionUtils_1, symbols_1, renderers_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var RendererVars = /** @class */ (function () {
@@ -209,7 +209,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                 new AttributeColorInfo({
                     color: colors[1],
                     valueExpressionTitle: "Recovered",
-                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createActiveCasesExpression(startDateFieldName, true), expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), true),
+                    valueExpression: expressionUtils_1.createRecoveredCasesExpression(startDateFieldName),
                 }),
                 new AttributeColorInfo({
                     color: colors[2],
@@ -296,39 +296,50 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         });
     }
     function createNewCasesRenderer(params) {
+        var colors = lang.clone(colorRamps.light[6]);
         var startDate = params.startDate, endDate = params.endDate;
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
         if (endDate) {
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
-            visualVariables = [new SizeVariable({
-                    valueExpressionTitle: "7-day rolling average of new COVID-19 cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
-                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createNewInfectionsExpression(startDateFieldName, true), expressionUtils_1.createNewInfectionsExpression(endDateFieldName, true), true),
+            visualVariables = [
+                new SizeVariable({
+                    valueExpressionTitle: "7-day rolling average of new COVID-19 cases as of " + timeUtils_1.formatDate(startDate),
+                    valueExpression: expressionUtils_1.createNewInfectionsAverageExpression(startDateFieldName),
                     stops: [
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
                         { value: 100, size: "10px" },
                         { value: 1000, size: "50px" },
-                        { value: 5000, size: "200px" }
+                        { value: 5000, size: "100px" }
                     ]
-                })];
+                }), new ColorVariable({
+                    valueExpressionTitle: "Change in 7-day rolling average of new COVID-19 cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createNewInfectionsAverageExpression(startDateFieldName, true), expressionUtils_1.createNewInfectionsAverageExpression(endDateFieldName, true), true),
+                    stops: [
+                        { value: -1, color: colors[0], label: "Decrease" },
+                        { value: 0, color: colors[2] },
+                        { value: 1, color: colors[4], label: "Increase" },
+                    ]
+                })
+            ];
         }
         else {
             visualVariables = [new SizeVariable({
                     valueExpressionTitle: "7-day rolling average of new COVID-19 cases as of " + timeUtils_1.formatDate(startDate),
-                    valueExpression: expressionUtils_1.createNewInfectionsExpression(startDateFieldName),
+                    valueExpression: expressionUtils_1.createNewInfectionsAverageExpression(startDateFieldName),
                     stops: [
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
                         { value: 100, size: "10px" },
                         { value: 1000, size: "50px" },
-                        { value: 5000, size: "200px" }
+                        { value: 5000, size: "100px" }
                     ]
                 })];
         }
         return new SimpleRenderer({
             symbol: createDefaultSymbol(null, new symbols_1.SimpleLineSymbol({
-                color: new Color("rgba(222, 18, 222, 0.5)"),
+                color: new Color("rgba(212, 74, 0,1)"),
                 width: endDate ? 0 : 0.5
             })),
             label: "County",

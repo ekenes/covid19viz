@@ -1,4 +1,4 @@
-define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/content/TextContent", "esri/popup/content/MediaContent", "esri/popup/FieldInfo", "esri/popup/ExpressionInfo", "./expressionUtils"], function (require, exports, timeUtils_1, PopupTemplate, TextContent, MediaContent, FieldInfo, ExpressionInfo, expressionUtils_1) {
+define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/content/TextContent", "esri/popup/content/MediaContent", "esri/popup/FieldInfo", "esri/popup/ExpressionInfo", "./expressionUtils", "esri/popup/content"], function (require, exports, timeUtils_1, PopupTemplate, TextContent, MediaContent, FieldInfo, ExpressionInfo, expressionUtils_1, content_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function updatePopupTemplate(params) {
@@ -47,6 +47,16 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                     existingTemplate: existingTemplate
                 });
                 break;
+            case "new-total":
+                popupTemplate = createNewInfectionsPopupTemplate({
+                    currentDate: currentDate,
+                    existingTemplate: existingTemplate
+                });
+            case "dot-density":
+                popupTemplate = createSIRsPopupTemplate({
+                    currentDate: currentDate,
+                    existingTemplate: existingTemplate
+                });
             default:
                 break;
         }
@@ -238,7 +248,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
         if (existingTemplate) {
             existingTemplate.content[0] = new TextContent({
-                text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 7 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
             });
             existingTemplate.expressionInfos = [new ExpressionInfo({
                     expression: expressionUtils_1.createDoublingTimeExpression(currentFieldName),
@@ -267,7 +277,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             outFields: ["*"],
             content: [
                 new TextContent({
-                    text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                    text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 7 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
                 }),
                 new MediaContent({
                     mediaInfos: [{
@@ -346,7 +356,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
         if (existingTemplate) {
             existingTemplate.content[0] = new TextContent({
-                text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 7 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
             });
             var expressionInfosLength = existingTemplate.expressionInfos.length;
             var replacementIndex = expressionInfosLength - 2;
@@ -399,7 +409,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             outFields: ["*"],
             content: [
                 new TextContent({
-                    text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 14 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
+                    text: "<b>{expression/new-infections}</b> people tested positive for COVID-19 in the last 7 days.\n        The number of new cases has a doubling time of <b>{expression/doubling-time} days</b>.\n        "
                 }),
                 new MediaContent({
                     mediaInfos: [{
@@ -610,6 +620,107 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                     expression: expressionUtils_1.createActiveCasesExpression(currentFieldName),
                     name: "active-infections",
                     title: "Active cases"
+                })]
+        });
+    }
+    function createSIRsPopupTemplate(params) {
+        var currentDate = params.currentDate;
+        var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
+        return new PopupTemplate({
+            title: "{Admin2}, {Province_State}, {Country_Region}",
+            outFields: ["*"],
+            content: [
+                new TextContent({
+                    text: "An estimated <b>{expression/active}</b> out of {POPULATION} people were sick with COVID-19 on " + timeUtils_1.formatDate(currentDate) + " here. That equates to about <b>{expression/active-rate}</b> cases for every 100,000 people."
+                }),
+                new content_1.FieldsContent({
+                    fieldInfos: [new FieldInfo({
+                            fieldName: "expression/active",
+                            format: {
+                                places: 0,
+                                digitSeparator: true
+                            }
+                        }),
+                        new FieldInfo({
+                            fieldName: "expression/recovered",
+                            format: {
+                                places: 0,
+                                digitSeparator: true
+                            }
+                        }),
+                        new FieldInfo({
+                            fieldName: "expression/deaths",
+                            format: {
+                                places: 0,
+                                digitSeparator: true
+                            }
+                        }),
+                        new FieldInfo({
+                            fieldName: "expression/total",
+                            format: {
+                                places: 0,
+                                digitSeparator: true
+                            }
+                        })]
+                })
+            ],
+            fieldInfos: [
+                new FieldInfo({
+                    fieldName: "POPULATION",
+                    format: {
+                        places: 0,
+                        digitSeparator: true
+                    }
+                }),
+                new FieldInfo({
+                    fieldName: "expression/active",
+                    format: {
+                        places: 0,
+                        digitSeparator: true
+                    }
+                }),
+                new FieldInfo({
+                    fieldName: "expression/recovered",
+                    format: {
+                        places: 0,
+                        digitSeparator: true
+                    }
+                }),
+                new FieldInfo({
+                    fieldName: "expression/deaths",
+                    format: {
+                        places: 0,
+                        digitSeparator: true
+                    }
+                }),
+                new FieldInfo({
+                    fieldName: "expression/active-rate",
+                    format: {
+                        places: 0,
+                        digitSeparator: true
+                    }
+                })
+            ],
+            expressionInfos: [new ExpressionInfo({
+                    expression: expressionUtils_1.createActiveCasesExpression(currentFieldName),
+                    name: "active",
+                    title: "Active cases (est.)"
+                }), new ExpressionInfo({
+                    expression: expressionUtils_1.createRecoveredCasesExpression(currentFieldName),
+                    name: "recovered",
+                    title: "Recovered (est.)"
+                }), new ExpressionInfo({
+                    expression: expressionUtils_1.createTotalDeathsExpression(currentFieldName),
+                    name: "deaths",
+                    title: "Deaths"
+                }), new ExpressionInfo({
+                    expression: expressionUtils_1.createActiveCasesPer100kExpression(currentFieldName),
+                    name: "active-rate",
+                    title: "Active rate"
+                }), new ExpressionInfo({
+                    expression: expressionUtils_1.createTotalInfectionsExpression(currentFieldName),
+                    name: "total",
+                    title: "Total cases"
                 })]
         });
     }
