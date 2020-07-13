@@ -414,6 +414,22 @@ export function createTotalInfectionsExpression (currentDateFieldName: string){
   `;
 }
 
+export function createSusceptiblePopulationExpression (currentDateFieldName: string){
+  return `
+    var currentDayFieldName = "${currentDateFieldName}";
+    var currentDayValue = $feature[currentDayFieldName];
+
+    var parts = Split(currentDayValue, "|");
+
+    var infections = Number(parts[0]);
+    var deaths = Number(parts[1]);
+
+    var population = $feature.POPULATION;
+
+    return population - infections;
+  `;
+}
+
 function getFieldFromDateFunction (){
   return `
     function getFieldFromDate(d) {

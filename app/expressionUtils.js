@@ -59,6 +59,10 @@ define(["require", "exports", "./layerUtils"], function (require, exports, layer
         return "\n    var currentDayFieldName = \"" + currentDateFieldName + "\";\n    var currentDayValue = $feature[currentDayFieldName];\n\n    var parts = Split(currentDayValue, \"|\");\n\n    var infections = Number(parts[0]);\n    var deaths = Number(parts[1]);\n\n    return infections;\n  ";
     }
     exports.createTotalInfectionsExpression = createTotalInfectionsExpression;
+    function createSusceptiblePopulationExpression(currentDateFieldName) {
+        return "\n    var currentDayFieldName = \"" + currentDateFieldName + "\";\n    var currentDayValue = $feature[currentDayFieldName];\n\n    var parts = Split(currentDayValue, \"|\");\n\n    var infections = Number(parts[0]);\n    var deaths = Number(parts[1]);\n\n    var population = $feature.POPULATION;\n\n    return population - infections;\n  ";
+    }
+    exports.createSusceptiblePopulationExpression = createSusceptiblePopulationExpression;
     function getFieldFromDateFunction() {
         return "\n    function getFieldFromDate(d) {\n      var fieldName = \"" + layerUtils_1.prefix + "\" + Text(d, \"MM" + layerUtils_1.separator + "DD" + layerUtils_1.separator + "Y\");\n      return fieldName;\n    }\n\n  ";
     }

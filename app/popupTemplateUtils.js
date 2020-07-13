@@ -100,6 +100,48 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         }
         return expressionInfos;
     }
+    function createTotalActiveCasesExpressionInfos(startDate, endDate) {
+        var expressionInfos = [];
+        var currentDate = startDate;
+        while (currentDate <= endDate) {
+            var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
+            expressionInfos.push(new ExpressionInfo({
+                expression: expressionUtils_1.createActiveCasesExpression(currentFieldName),
+                name: "total-active-" + currentFieldName,
+                title: timeUtils_1.formatDate(currentDate)
+            }));
+            currentDate = timeUtils_1.getNextDay(currentDate);
+        }
+        return expressionInfos;
+    }
+    function createTotalRecoveredCasesExpressionInfos(startDate, endDate) {
+        var expressionInfos = [];
+        var currentDate = startDate;
+        while (currentDate <= endDate) {
+            var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
+            expressionInfos.push(new ExpressionInfo({
+                expression: expressionUtils_1.createRecoveredCasesExpression(currentFieldName),
+                name: "total-recovered-" + currentFieldName,
+                title: timeUtils_1.formatDate(currentDate)
+            }));
+            currentDate = timeUtils_1.getNextDay(currentDate);
+        }
+        return expressionInfos;
+    }
+    function createTotalSusceptibleExpressionInfos(startDate, endDate) {
+        var expressionInfos = [];
+        var currentDate = startDate;
+        while (currentDate <= endDate) {
+            var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
+            expressionInfos.push(new ExpressionInfo({
+                expression: expressionUtils_1.createSusceptiblePopulationExpression(currentFieldName),
+                name: "total-susceptible-" + currentFieldName,
+                title: timeUtils_1.formatDate(currentDate)
+            }));
+            currentDate = timeUtils_1.getNextDay(currentDate);
+        }
+        return expressionInfos;
+    }
     function createTotalCasesPopupTemplate(params) {
         var currentDate = params.currentDate, existingTemplate = params.existingTemplate;
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
@@ -624,8 +666,100 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         });
     }
     function createSIRsPopupTemplate(params) {
-        var currentDate = params.currentDate;
+        var currentDate = params.currentDate, existingTemplate = params.existingTemplate;
         var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
+        if (existingTemplate) {
+            existingTemplate.content[0] = new TextContent({
+                text: "An estimated <b>{expression/active}</b> out of {POPULATION} people were sick with COVID-19 on " + timeUtils_1.formatDate(currentDate) + " here. That equates to about <b>{expression/active-rate}</b> cases for every 100,000 people."
+            });
+            existingTemplate.content[1] = new content_1.FieldsContent({
+                fieldInfos: [new FieldInfo({
+                        fieldName: "expression/active",
+                        format: {
+                            places: 0,
+                            digitSeparator: true
+                        }
+                    }),
+                    new FieldInfo({
+                        fieldName: "expression/recovered",
+                        format: {
+                            places: 0,
+                            digitSeparator: true
+                        }
+                    }),
+                    new FieldInfo({
+                        fieldName: "expression/deaths",
+                        format: {
+                            places: 0,
+                            digitSeparator: true
+                        }
+                    }),
+                    new FieldInfo({
+                        fieldName: "expression/total",
+                        format: {
+                            places: 0,
+                            digitSeparator: true
+                        }
+                    })]
+            });
+            var expressionInfosLength = existingTemplate.expressionInfos.length;
+            var replacementIndex = expressionInfosLength - 5;
+            existingTemplate.expressionInfos.splice(replacementIndex, 5, new ExpressionInfo({
+                expression: expressionUtils_1.createActiveCasesExpression(currentFieldName),
+                name: "active",
+                title: "Active cases (est.)"
+            }), new ExpressionInfo({
+                expression: expressionUtils_1.createRecoveredCasesExpression(currentFieldName),
+                name: "recovered",
+                title: "Recovered (est.)"
+            }), new ExpressionInfo({
+                expression: expressionUtils_1.createTotalDeathsExpression(currentFieldName),
+                name: "deaths",
+                title: "Deaths"
+            }), new ExpressionInfo({
+                expression: expressionUtils_1.createActiveCasesPer100kExpression(currentFieldName),
+                name: "active-rate",
+                title: "Active rate"
+            }), new ExpressionInfo({
+                expression: expressionUtils_1.createTotalInfectionsExpression(currentFieldName),
+                name: "total",
+                title: "Total cases"
+            }));
+            return existingTemplate.clone();
+        }
+        var activeExpressionInfos = createTotalActiveCasesExpressionInfos(timeUtils_1.initialTimeExtent.start, timeUtils_1.initialTimeExtent.end);
+        var activeExpressionNameList = activeExpressionInfos.map(function (expressionInfo) { return "expression/" + expressionInfo.name; });
+        var activeExpressionFieldInfos = activeExpressionNameList.map(function (name) {
+            return {
+                fieldName: name,
+                format: {
+                    places: 0,
+                    digitSeparator: true
+                }
+            };
+        });
+        var deathsExpressionInfos = createTotalDeathsExpressionInfos(timeUtils_1.initialTimeExtent.start, timeUtils_1.initialTimeExtent.end);
+        var deathsExpressionNameList = deathsExpressionInfos.map(function (expressionInfo) { return "expression/" + expressionInfo.name; });
+        var deathsExpressionFieldInfos = deathsExpressionNameList.map(function (name) {
+            return {
+                fieldName: name,
+                format: {
+                    places: 0,
+                    digitSeparator: true
+                }
+            };
+        });
+        var recoveredExpressionInfos = createTotalRecoveredCasesExpressionInfos(timeUtils_1.initialTimeExtent.start, timeUtils_1.initialTimeExtent.end);
+        var recoveredExpressionNameList = recoveredExpressionInfos.map(function (expressionInfo) { return "expression/" + expressionInfo.name; });
+        var recoveredExpressionFieldInfos = recoveredExpressionNameList.map(function (name) {
+            return {
+                fieldName: name,
+                format: {
+                    places: 0,
+                    digitSeparator: true
+                }
+            };
+        });
         return new PopupTemplate({
             title: "{Admin2}, {Province_State}, {Country_Region}",
             outFields: ["*"],
@@ -662,9 +796,33 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                                 digitSeparator: true
                             }
                         })]
+                }),
+                new MediaContent({
+                    mediaInfos: [{
+                            type: "line-chart",
+                            title: "Active cases",
+                            value: {
+                                fields: activeExpressionNameList
+                            }
+                        }, {
+                            type: "line-chart",
+                            title: "Recovered cases",
+                            value: {
+                                fields: recoveredExpressionNameList
+                            }
+                        }, {
+                            type: "line-chart",
+                            title: "Deaths",
+                            value: {
+                                fields: deathsExpressionNameList
+                            }
+                        }]
                 })
             ],
-            fieldInfos: [
+            fieldInfos: activeExpressionFieldInfos
+                .concat(recoveredExpressionFieldInfos)
+                .concat(deathsExpressionFieldInfos)
+                .concat([
                 new FieldInfo({
                     fieldName: "POPULATION",
                     format: {
@@ -700,8 +858,11 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                         digitSeparator: true
                     }
                 })
-            ],
-            expressionInfos: [new ExpressionInfo({
+            ]),
+            expressionInfos: activeExpressionInfos
+                .concat(recoveredExpressionInfos)
+                .concat(deathsExpressionInfos)
+                .concat([new ExpressionInfo({
                     expression: expressionUtils_1.createActiveCasesExpression(currentFieldName),
                     name: "active",
                     title: "Active cases (est.)"
@@ -721,7 +882,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                     expression: expressionUtils_1.createTotalInfectionsExpression(currentFieldName),
                     name: "total",
                     title: "Total cases"
-                })]
+                })])
         });
     }
 });
