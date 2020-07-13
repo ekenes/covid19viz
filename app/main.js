@@ -79,12 +79,15 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, wkid, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+        var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     rendererSelect = document.getElementById("renderer-select");
                     wkid = 102008;
+                    fillColor = "#ece8e8";
+                    outlineColor = [214, 214, 214, 0.5];
+                    textColor = [163, 162, 162, 0.7];
                     map = new WebMap({
                         basemap: {
                             baseLayers: [
@@ -105,7 +108,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                                     size: 12,
                                                     weight: "lighter"
                                                 },
-                                                color: new Color("#cfd3d4")
+                                                haloColor: new Color(textColor),
+                                                haloSize: 0.8,
+                                                color: new Color(fillColor)
                                             }),
                                             minScale: 1500000
                                         }],
@@ -117,10 +122,33 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     popupEnabled: false,
                                     renderer: new renderers_1.SimpleRenderer({
                                         symbol: new symbols_1.SimpleFillSymbol({
-                                            color: new Color("#ece8e8"),
+                                            color: new Color(fillColor),
                                             outline: new symbols_1.SimpleLineSymbol({
-                                                color: new Color("#cfd3d4"),
-                                                width: 0
+                                                color: new Color(outlineColor),
+                                                width: 0.3
+                                            })
+                                        })
+                                    })
+                                })
+                            ],
+                            referenceLayers: [
+                                new FeatureLayer({
+                                    portalItem: {
+                                        id: "99fd67933e754a1181cc755146be21ca"
+                                    },
+                                    spatialReference: {
+                                        wkid: wkid
+                                    },
+                                    minScale: 25000000,
+                                    maxScale: 1500000,
+                                    popupEnabled: false,
+                                    renderer: new renderers_1.SimpleRenderer({
+                                        symbol: new symbols_1.SimpleFillSymbol({
+                                            color: new Color(fillColor),
+                                            style: "none",
+                                            outline: new symbols_1.SimpleLineSymbol({
+                                                color: new Color([200, 200, 200, 0.3]),
+                                                width: 0.7
                                             })
                                         })
                                     })

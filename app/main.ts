@@ -28,6 +28,9 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
   //102008
   const wkid = 102008;
+  const fillColor = "#ece8e8";
+  const outlineColor = [214, 214, 214,0.5];
+  const textColor = [163, 162, 162,0.7]
 
   const map = new WebMap({
     basemap: {
@@ -49,7 +52,9 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
                 size: 12,
                 weight: "lighter"
               },
-              color: new Color("#cfd3d4")
+              haloColor: new Color(textColor),
+              haloSize: 0.8,
+              color: new Color(fillColor)
             }),
             minScale: 1500000
           }],
@@ -61,10 +66,33 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
           popupEnabled: false,
           renderer: new SimpleRenderer({
             symbol: new SimpleFillSymbol({
-              color: new Color("#ece8e8"),
+              color: new Color(fillColor),
               outline: new SimpleLineSymbol({
-                color: new Color("#cfd3d4"),
-                width: 0
+                color: new Color(outlineColor),
+                width: 0.3
+              })
+            })
+          })
+        })
+      ],
+      referenceLayers: [
+        new FeatureLayer({
+          portalItem: {
+            id: "99fd67933e754a1181cc755146be21ca"
+          },
+          spatialReference: {
+            wkid
+          },
+          minScale: 25000000,
+          maxScale: 1500000,
+          popupEnabled: false,
+          renderer: new SimpleRenderer({
+            symbol: new SimpleFillSymbol({
+              color: new Color(fillColor),
+              style: "none",
+              outline: new SimpleLineSymbol({
+                color: new Color([200,200,200,0.3]),
+                width: 0.7
               })
             })
           })
