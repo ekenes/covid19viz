@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./annotations"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, annotations_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -45,6 +45,12 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     switch (_a.label) {
                         case 0:
                             map.add(layerUtils_1.infectionsPopulationLayer);
+                            map.add(layerUtils_1.annotationLayer);
+                            // infectionsPopulationLayer.blendMode = "color-burn";
+                            // map.add(new GroupLayer({
+                            //   layers: [ infectionsPopulationLayer, annotationLayer]
+                            // }))
+                            console.log(annotations_1.annotations.map(layerUtils_1.createAnnotationGraphics).reduce(function (acc, val) { return acc.concat(val); }, []));
                             return [4 /*yield*/, view.whenLayerView(layerUtils_1.infectionsPopulationLayer)];
                         case 1:
                             activeLayerView = _a.sent();
@@ -79,12 +85,11 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+        var rendererSelect, fillColor, outlineColor, textColor, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     rendererSelect = document.getElementById("renderer-select");
-                    wkid = 102008;
                     fillColor = "#ece8e8";
                     outlineColor = [214, 214, 214, 0.5];
                     textColor = [163, 162, 162, 0.7];
@@ -115,7 +120,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                             minScale: 1500000
                                         }],
                                     spatialReference: {
-                                        wkid: wkid
+                                        wkid: layerUtils_1.wkid
                                     },
                                     minScale: 0,
                                     maxScale: 0,
@@ -137,7 +142,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                         id: "99fd67933e754a1181cc755146be21ca"
                                     },
                                     spatialReference: {
-                                        wkid: wkid
+                                        wkid: layerUtils_1.wkid
                                     },
                                     minScale: 25000000,
                                     maxScale: 1500000,
@@ -161,7 +166,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         map: map,
                         extent: {
                             spatialReference: {
-                                wkid: wkid
+                                wkid: layerUtils_1.wkid
                             },
                             xmin: -3100906,
                             ymin: -2531665,
@@ -169,7 +174,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             ymax: 1602192
                         },
                         spatialReference: {
-                            wkid: wkid
+                            wkid: layerUtils_1.wkid
                         },
                         constraints: {
                             minScale: 25000000
@@ -314,6 +319,10 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     });
                     slider.viewModel.watch("state", function (state) {
                         slider.loop = !(state === "playing");
+                    });
+                    view.on("click", function (event) {
+                        console.log(event);
+                        console.log(JSON.stringify(event.mapPoint.toJSON()));
                     });
                     return [2 /*return*/];
             }

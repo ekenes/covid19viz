@@ -15,19 +15,20 @@ import Zoom = require("esri/widgets/Zoom");
 import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 
+import GroupLayer = require("esri/layers/GroupLayer");
+
 import { initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
-import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId } from "./layerUtils";
+import { createAnnotationGraphics, infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId, wkid, annotationLayer } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
+import { annotations } from "./annotations";
 
 (async () => {
 
   const rendererSelect = document.getElementById("renderer-select") as HTMLSelectElement;
 
-  //102008
-  const wkid = 102008;
   const fillColor = "#ece8e8";
   const outlineColor = [214, 214, 214,0.5];
   const textColor = [163, 162, 162,0.7]
@@ -255,6 +256,14 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 
   async function initializeLayer(){
     map.add(infectionsPopulationLayer);
+    map.add(annotationLayer);
+    // infectionsPopulationLayer.blendMode = "color-burn";
+
+    // map.add(new GroupLayer({
+    //   layers: [ infectionsPopulationLayer, annotationLayer]
+    // }))
+
+    console.log(annotations.map( createAnnotationGraphics ).reduce((acc, val) => acc.concat(val), []))
     const activeLayerView = await view.whenLayerView(infectionsPopulationLayer);
 
     watchUtils.whenFalseOnce(activeLayerView, "updating", () => {
@@ -309,5 +318,10 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
   slider.viewModel.watch("state", (state: TimeSlider["viewModel"]["state"]) => {
     slider.loop = !(state === "playing");
   });
+
+  view.on("click", (event)=>{
+    console.log(event);
+    console.log(JSON.stringify(event.mapPoint.toJSON()))
+  })
 
 })();
