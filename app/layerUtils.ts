@@ -105,14 +105,7 @@ export const annotationLayer = new FeatureLayer({
 
 let nextId: number = 0;
 export function createAnnotationGraphics(params: Annotation, index: number): Graphic[] {
-  const { begin, end, label, center, radius } = params;
-
-  const geometry = new Circle({
-    spatialReference: { wkid },
-    center,
-    radius,
-    radiusUnit: "kilometers"
-  });
+  const { begin, end, label, geometry } = params;
 
   return [
     new Graphic({
@@ -140,7 +133,7 @@ export function createAnnotationGraphics(params: Annotation, index: number): Gra
           spatialReference: { wkid }
         }),
         radiusUnit: "meters",
-        radius: 10000,
+        radius: 1000,
         spatialReference: { wkid }
       })
     }),

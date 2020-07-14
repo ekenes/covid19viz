@@ -90,13 +90,7 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/renderers", "esr
     });
     var nextId = 0;
     function createAnnotationGraphics(params, index) {
-        var begin = params.begin, end = params.end, label = params.label, center = params.center, radius = params.radius;
-        var geometry = new Circle({
-            spatialReference: { wkid: exports.wkid },
-            center: center,
-            radius: radius,
-            radiusUnit: "kilometers"
-        });
+        var begin = params.begin, end = params.end, label = params.label, geometry = params.geometry;
         return [
             new Graphic({
                 attributes: {
@@ -123,7 +117,7 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/renderers", "esr
                         spatialReference: { wkid: exports.wkid }
                     }),
                     radiusUnit: "meters",
-                    radius: 10000,
+                    radius: 1000,
                     spatialReference: { wkid: exports.wkid }
                 })
             }),

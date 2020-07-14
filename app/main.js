@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./annotations"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, annotations_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "esri/layers/GraphicsLayer", "esri/widgets/Sketch", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, GraphicsLayer, Sketch, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -46,11 +46,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         case 0:
                             map.add(layerUtils_1.infectionsPopulationLayer);
                             map.add(layerUtils_1.annotationLayer);
-                            // infectionsPopulationLayer.blendMode = "color-burn";
-                            // map.add(new GroupLayer({
-                            //   layers: [ infectionsPopulationLayer, annotationLayer]
-                            // }))
-                            console.log(annotations_1.annotations.map(layerUtils_1.createAnnotationGraphics).reduce(function (acc, val) { return acc.concat(val); }, []));
+                            map.add(sketch.layer);
                             return [4 /*yield*/, view.whenLayerView(layerUtils_1.infectionsPopulationLayer)];
                         case 1:
                             activeLayerView = _a.sent();
@@ -85,7 +81,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, fillColor, outlineColor, textColor, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+        var rendererSelect, fillColor, outlineColor, textColor, map, view, search, slider, checkbox, updateSlider, gl, sketch, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -277,7 +273,25 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             }
                         }
                     };
+                    gl = new GraphicsLayer();
                     view.ui.add("timeOptions", "bottom-center");
+                    sketch = new Sketch({
+                        view: view,
+                        layer: gl
+                    });
+                    view.ui.add(sketch, "top-left");
+                    sketch.on("create", function (event) {
+                        if (event.state === "complete") {
+                            console.log(event.graphic.layer === gl);
+                            console.log(JSON.stringify(event.graphic.geometry.toJSON()));
+                        }
+                    });
+                    sketch.on("update", function (event) {
+                        // if(event.state === "complete"){
+                        var lastIndex = event.graphics.length - 1;
+                        console.log(JSON.stringify(event.graphics[lastIndex].geometry.toJSON()));
+                        // }
+                    });
                     timeVisibilityBtn = document.getElementById("time-slider-toggle");
                     timeOptions = document.getElementById("timeOptions");
                     btns = [].slice.call(document.getElementsByTagName("button"));
@@ -319,10 +333,6 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     });
                     slider.viewModel.watch("state", function (state) {
                         slider.loop = !(state === "playing");
-                    });
-                    view.on("click", function (event) {
-                        console.log(event);
-                        console.log(JSON.stringify(event.mapPoint.toJSON()));
                     });
                     return [2 /*return*/];
             }

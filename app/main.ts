@@ -16,6 +16,9 @@ import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 
 import GroupLayer = require("esri/layers/GroupLayer");
+import GraphicsLayer = require("esri/layers/GraphicsLayer")
+
+import Sketch = require("esri/widgets/Sketch");
 
 import { initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
@@ -229,7 +232,30 @@ import { annotations } from "./annotations";
     }
   };
 
+  const gl = new GraphicsLayer();
+
   view.ui.add("timeOptions", "bottom-center");
+
+  const sketch = new Sketch({
+    view,
+    layer: gl
+  });
+
+  view.ui.add(sketch, "top-left");
+
+  sketch.on("create", (event) => {
+    if(event.state === "complete"){
+      console.log(event.graphic.layer === gl);
+      console.log(JSON.stringify(event.graphic.geometry.toJSON()));
+    }
+  });
+
+  sketch.on("update", (event) => {
+    // if(event.state === "complete"){
+      const lastIndex = event.graphics.length - 1;
+      console.log(JSON.stringify(event.graphics[lastIndex].geometry.toJSON()));
+    // }
+  });
 
   const timeVisibilityBtn = document.getElementById("time-slider-toggle");
   const timeOptions = document.getElementById("timeOptions");
@@ -257,13 +283,14 @@ import { annotations } from "./annotations";
   async function initializeLayer(){
     map.add(infectionsPopulationLayer);
     map.add(annotationLayer);
+    map.add(sketch.layer);
     // infectionsPopulationLayer.blendMode = "color-burn";
 
     // map.add(new GroupLayer({
     //   layers: [ infectionsPopulationLayer, annotationLayer]
     // }))
 
-    console.log(annotations.map( createAnnotationGraphics ).reduce((acc, val) => acc.concat(val), []))
+    // console.log(annotations.map( createAnnotationGraphics ).reduce((acc, val) => acc.concat(val), []))
     const activeLayerView = await view.whenLayerView(infectionsPopulationLayer);
 
     watchUtils.whenFalseOnce(activeLayerView, "updating", () => {
@@ -319,9 +346,9 @@ import { annotations } from "./annotations";
     slider.loop = !(state === "playing");
   });
 
-  view.on("click", (event)=>{
-    console.log(event);
-    console.log(JSON.stringify(event.mapPoint.toJSON()))
-  })
+  // view.on("click", (event)=>{
+  //   console.log(event);
+  //   console.log(JSON.stringify(event.mapPoint.toJSON()))
+  // })
 
 })();
