@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./statistics", "esri/intl"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, statistics_1, intl_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -60,6 +60,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     rendererType: rendererSelect.value
                                 });
                             });
+                            updateStats();
                             return [2 /*return*/];
                     }
                 });
@@ -79,7 +80,30 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
             });
         }
-        var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+        function updateStats() {
+            return __awaiter(this, void 0, void 0, function () {
+                var stats, format;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, statistics_1.getEstimatedRecoveries({
+                                layer: layerUtils_1.infectionsPopulationLayer,
+                                startDate: slider.values[0]
+                            })];
+                        case 1:
+                            stats = _a.sent();
+                            format = intl_1.convertNumberFormatToIntlOptions({
+                                places: 0,
+                                digitSeparator: true
+                            });
+                            activeCountElement.innerText = intl_1.formatNumber(stats.active, format);
+                            recoveredCountElement.innerText = intl_1.formatNumber(stats.recovered, format);
+                            deathCountElement.innerText = intl_1.formatNumber(stats.deaths, format);
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        }
+        var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -218,6 +242,14 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         view: view,
                         content: search
                     }), "top-left");
+                    view.ui.add(new Expand({
+                        view: view,
+                        content: document.getElementById("info"),
+                        expanded: false
+                    }), "top-left");
+                    activeCountElement = document.getElementById("active-count");
+                    recoveredCountElement = document.getElementById("recovered-count");
+                    deathCountElement = document.getElementById("death-count");
                     slider = new TimeSlider({
                         container: "timeSlider",
                         playRate: 100,
@@ -311,6 +343,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         else {
                             updateLayer(true);
                         }
+                        updateStats();
                     });
                     slider.viewModel.watch("state", function (state) {
                         slider.loop = !(state === "playing");

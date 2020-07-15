@@ -2,7 +2,6 @@ import WebMap = require("esri/WebMap");
 import MapView = require("esri/views/MapView");
 
 import FeatureLayer = require("esri/layers/FeatureLayer");
-import VectorTileLayer = require("esri/layers/VectorTileLayer");
 import TimeSlider = require("esri/widgets/TimeSlider");
 import TimeInterval = require("esri/TimeInterval");
 import watchUtils = require("esri/core/watchUtils");
@@ -21,6 +20,8 @@ import { updatePopupTemplate } from "./popupTemplateUtils";
 import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
+import { getEstimatedRecoveries } from "./statistics";
+import { formatNumber, convertNumberFormatToIntlOptions } from "esri/intl";
 
 (async () => {
 
@@ -169,6 +170,16 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     content: search
   }), "top-left");
 
+  view.ui.add(new Expand({
+    view,
+    content: document.getElementById("info"),
+    expanded: false
+  }), "top-left");
+
+  const activeCountElement = document.getElementById("active-count");
+  const recoveredCountElement = document.getElementById("recovered-count");
+  const deathCountElement = document.getElementById("death-count");
+
   const slider = new TimeSlider({
     container: "timeSlider",
     playRate: 100,
@@ -269,6 +280,8 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
         rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
       });
     });
+
+    updateStats();
   }
 
   function updateLayer (useExistingTemplate?: boolean) {
@@ -304,10 +317,28 @@ import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
     } else {
       updateLayer(true);
     }
+
+    updateStats();
   });
 
   slider.viewModel.watch("state", (state: TimeSlider["viewModel"]["state"]) => {
     slider.loop = !(state === "playing");
   });
+
+  async function updateStats(){
+    const stats = await getEstimatedRecoveries({
+      layer: infectionsPopulationLayer,
+      startDate: slider.values[0]
+    });
+
+    const format = convertNumberFormatToIntlOptions({
+      places: 0,
+      digitSeparator: true
+    });
+
+    activeCountElement.innerText = formatNumber(stats.active, format);
+    recoveredCountElement.innerText = formatNumber(stats.recovered, format);
+    deathCountElement.innerText = formatNumber(stats.deaths, format);
+  }
 
 })();
