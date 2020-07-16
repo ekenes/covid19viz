@@ -135,7 +135,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 100, size: "4px" },
                         { value: 1000, size: "10px" },
                         { value: 20000, size: "40px" },
-                        { value: 200000, size: "220px" }
+                        { value: 250000, size: "220px" }
                     ]
                 }),
                 new ColorVariable({
@@ -165,7 +165,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 100, size: "4px" },
                         { value: 1000, size: "10px" },
                         { value: 20000, size: "40px" },
-                        { value: 200000, size: "220px" }
+                        { value: 250000, size: "220px" }
                     ]
                 })];
         }

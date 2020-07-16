@@ -38,6 +38,7 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var allFeatures = null;
+    var allStats = {};
     function getTotalCases(params) {
         return __awaiter(this, void 0, void 0, function () {
             var layer, startDate, endDate, startDateFieldName, totalCount;
@@ -121,6 +122,9 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
                         totalRecovered = 0;
                         totalActive = 0;
                         startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
+                        if (allStats[startDateFieldName]) {
+                            return [2 /*return*/, allStats[startDateFieldName]];
+                        }
                         daysAgo14 = timeUtils_1.dateAdd(startDate, -14);
                         daysAgo15 = timeUtils_1.dateAdd(startDate, -15);
                         daysAgo25 = timeUtils_1.dateAdd(startDate, -25);
@@ -185,6 +189,7 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
                             active: totalActive,
                             recovered: totalRecovered
                         };
+                        allStats[startDateFieldName] = stats;
                         return [2 /*return*/, stats];
                 }
             });

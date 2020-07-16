@@ -9,6 +9,7 @@ interface StatisticsParams {
 }
 
 let allFeatures: Graphic[] = null;
+let allStats = {};
 
 export async function getTotalCases(params: StatisticsParams ){
   const { layer, startDate, endDate } = params;
@@ -65,6 +66,11 @@ export async function getEstimatedRecoveries( params: StatisticsParams){
   let totalActive = 0;
 
   const startDateFieldName = getFieldFromDate(startDate);
+
+  if (allStats[startDateFieldName]){
+    return allStats[startDateFieldName];
+  }
+
   const daysAgo14 = dateAdd(startDate, -14);
   const daysAgo15 = dateAdd(startDate, -15);
   const daysAgo25 = dateAdd(startDate, -25);
@@ -140,5 +146,6 @@ export async function getEstimatedRecoveries( params: StatisticsParams){
     recovered: totalRecovered
   };
 
+  allStats[startDateFieldName] = stats;
   return stats;
 }
