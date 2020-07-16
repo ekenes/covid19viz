@@ -203,7 +203,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             attributes = [
                 new AttributeColorInfo({
                     color: colors[0],
-                    valueExpressionTitle: "Sick",
+                    valueExpressionTitle: "Active",
                     valueExpression: expressionUtils_1.createActiveCasesExpression(startDateFieldName),
                 }),
                 new AttributeColorInfo({

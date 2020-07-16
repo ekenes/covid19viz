@@ -251,7 +251,7 @@ function createDotDensityRenderer(params: CreateRendererParams) : COVIDRenderer 
     attributes = [
       new AttributeColorInfo({
         color: colors[0],
-        valueExpressionTitle: "Sick",
+        valueExpressionTitle: "Active",
         valueExpression: createActiveCasesExpression(startDateFieldName),
       }),
       new AttributeColorInfo({
