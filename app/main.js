@@ -84,7 +84,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 }
                 function updateStats() {
                     return __awaiter(this, void 0, void 0, function () {
-                        var stats, format;
+                        var stats, format, dateOptions;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0: return [4 /*yield*/, statistics_1.getEstimatedRecoveries({
@@ -97,6 +97,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                         places: 0,
                                         digitSeparator: true
                                     });
+                                    dateOptions = intl_1.convertDateFormatToIntlOptions("long-date");
+                                    displayDateElement.innerText = intl_1.formatDate(slider.values[0], dateOptions);
                                     activeCountElement.innerText = intl_1.formatNumber(stats.active, format);
                                     recoveredCountElement.innerText = intl_1.formatNumber(stats.recovered, format);
                                     deathCountElement.innerText = intl_1.formatNumber(stats.deaths, format);
@@ -105,7 +107,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         });
                     });
                 }
-                var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+                var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -255,6 +257,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             activeCountElement = document.getElementById("active-count");
                             recoveredCountElement = document.getElementById("recovered-count");
                             deathCountElement = document.getElementById("death-count");
+                            displayDateElement = document.getElementById("display-date");
+                            // const statisticsElement = document.getElementById("statistics");
+                            view.ui.add("statistics", "top-center");
                             slider = new TimeSlider({
                                 container: "timeSlider",
                                 playRate: 100,

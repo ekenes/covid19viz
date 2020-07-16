@@ -71,12 +71,24 @@ body,
   border: 1px solid #4c4c4c;
 }
 
-#statistics {
+#header {
+  display: flex;
+  flex-direction: column;
   font-family: Lucida Sans Typewriter,Lucida Console,monaco,Bitstream Vera Sans Mono,monospace;
+  font-size: 12pt;
+  justify-content: center;
+  align-content: center;
   position: absolute;
   top: 10px;
-  left: 25%;
-  font-size: 12pt;
+  left: 30%;
+}
+#statistics {
+  display: flex;
+  justify-content: center;
+}
+#date-info{
+  display: flex;
+  justify-content: center;
 }
 
 .count{
@@ -85,17 +97,17 @@ body,
 
 #active-label{
   color: #e60049;
-  float: left;
   margin: 5px;
 }
 #recovered-label{
   color: #b3cde3;
-  float: left;
-  margin: 5px;
+  margin:5px;
 }
 #deaths-label{
   color: #000000;
-  float: left;
+  margin: 5px;
+}
+#date-label{
   margin: 5px;
 }
 
@@ -103,4 +115,12 @@ body,
   padding: 10px;
   font-size: 10pt;
   background-color: white;
+}
+.time-buttons{
+  display: flex;
+  justify-content: center;
+}
+
+.esri-view-height-medium .esri-ui-corner .esri-component .esri-expand__content{
+  max-height: 1000px;
 }

@@ -21,7 +21,7 @@ import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId 
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 import { getEstimatedRecoveries } from "./statistics";
-import { formatNumber, convertNumberFormatToIntlOptions } from "esri/intl";
+import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDateFormatToIntlOptions } from "esri/intl";
 
 (async () => {
 
@@ -202,6 +202,9 @@ import { formatNumber, convertNumberFormatToIntlOptions } from "esri/intl";
     const activeCountElement = document.getElementById("active-count");
     const recoveredCountElement = document.getElementById("recovered-count");
     const deathCountElement = document.getElementById("death-count");
+    const displayDateElement = document.getElementById("display-date");
+    // const statisticsElement = document.getElementById("statistics");
+    view.ui.add("statistics", "top-center");
 
     const slider = new TimeSlider({
       container: "timeSlider",
@@ -359,6 +362,8 @@ import { formatNumber, convertNumberFormatToIntlOptions } from "esri/intl";
         digitSeparator: true
       });
 
+      const dateOptions = convertDateFormatToIntlOptions("long-date");
+      displayDateElement.innerText = formatDate(slider.values[0], dateOptions);
       activeCountElement.innerText = formatNumber(stats.active, format);
       recoveredCountElement.innerText = formatNumber(stats.recovered, format);
       deathCountElement.innerText = formatNumber(stats.deaths, format);
