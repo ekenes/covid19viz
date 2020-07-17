@@ -1,13 +1,6 @@
 define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "esri/renderers/support/AttributeColorInfo", "esri/core/lang", "./timeUtils", "./expressionUtils", "esri/symbols", "esri/renderers"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, AttributeColorInfo, lang, timeUtils_1, expressionUtils_1, symbols_1, renderers_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var RendererVars = /** @class */ (function () {
-        function RendererVars() {
-        }
-        RendererVars.activeRendererType = "total-infections";
-        return RendererVars;
-    }());
-    exports.RendererVars = RendererVars;
     function updateRenderer(params) {
         var layer = params.layer, rendererType = params.rendererType, currentDate = params.currentDate, endDate = params.endDate;
         var startDate = currentDate;

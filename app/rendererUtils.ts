@@ -14,10 +14,6 @@ import { createTotalInfectionsExpression, createNewInfectionsAverageExpression, 
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
 import { DotDensityRenderer } from "esri/renderers";
 
-export class RendererVars {
-  public static activeRendererType: UpdateRendererParams["rendererType"] = "total-infections";
-}
-
 export type COVIDRenderer = SimpleRenderer | DotDensityRenderer;
 
 export interface UpdateRendererParams {
