@@ -239,11 +239,11 @@ export function createDoublingTimeExpression (currentDateFieldName: string, excl
     var oldInfections = totalInfectionsValue - newInfections;
 
     if(newInfections == 0 || oldInfections == 0){
-      return "n/a";
+      return 0;
     }
 
     var doublingTimeDays = Floor(unit / (newInfections / oldInfections))
-    return IIF(doublingTimeDays >= 0, doublingTimeDays, "n/a");
+    return IIF(doublingTimeDays >= 0, doublingTimeDays, 0);
   `;
 
   return excludeGetFieldFromDate ? base : getFieldFromDate + base;
@@ -382,7 +382,7 @@ export function createDeathRateExpression (currentDateFieldName: string){
     var infections = Number(parts[0]);
     var deaths = Number(parts[1]);
 
-    return (deaths / infections) * 100;
+    return IIF(infections <= 0, 0, (deaths / infections) * 100);
   `;
 }
 

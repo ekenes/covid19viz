@@ -362,7 +362,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
         digitSeparator: true
       });
 
-      const dateOptions = convertDateFormatToIntlOptions("long-date");
+      const dateOptions = convertDateFormatToIntlOptions("long-month-day-year");
       displayDateElement.innerText = formatDate(slider.values[0], dateOptions);
       activeCountElement.innerText = formatNumber(stats.active, format);
       recoveredCountElement.innerText = formatNumber(stats.recovered, format);

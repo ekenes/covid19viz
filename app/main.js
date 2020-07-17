@@ -97,7 +97,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                         places: 0,
                                         digitSeparator: true
                                     });
-                                    dateOptions = intl_1.convertDateFormatToIntlOptions("long-date");
+                                    dateOptions = intl_1.convertDateFormatToIntlOptions("long-month-day-year");
                                     displayDateElement.innerText = intl_1.formatDate(slider.values[0], dateOptions);
                                     activeCountElement.innerText = intl_1.formatNumber(stats.active, format);
                                     recoveredCountElement.innerText = intl_1.formatNumber(stats.recovered, format);
