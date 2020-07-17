@@ -639,7 +639,7 @@ function createDeathRateRenderer(params: CreateRendererParams) : COVIDRenderer {
         ]
       }),
       new ColorVariable({
-        valueExpressionTitle: "Death rate",
+        valueExpressionTitle: "Deaths as % of cases",
         valueExpression: createDeathRateExpression(startDateFieldName),
         stops: [
           { value: 1, color: colors[0] },

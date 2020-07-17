@@ -535,7 +535,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     ]
                 }),
                 new ColorVariable({
-                    valueExpressionTitle: "Death rate",
+                    valueExpressionTitle: "Deaths as % of cases",
                     valueExpression: expressionUtils_1.createDeathRateExpression(startDateFieldName),
                     stops: [
                         { value: 1, color: colors[0] },
