@@ -124,3 +124,11 @@ body,
 .esri-view-height-medium .esri-ui-corner .esri-component .esri-expand__content{
   max-height: 1000px;
 }
+
+.esri-view-height-large .esri-ui-corner .esri-component .esri-expand__content{
+  max-height: 1000px;
+}
+
+.esri-view-height-small .esri-ui-corner .esri-component .esri-expand__content{
+  max-height: 1000px;
+}
