@@ -98,7 +98,12 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                         digitSeparator: true
                                     });
                                     dateOptions = intl_1.convertDateFormatToIntlOptions("long-month-day-year");
-                                    displayDateElement.innerText = intl_1.formatDate(slider.values[0], dateOptions);
+                                    if (slider.values.length > 1) {
+                                        displayDateElement.innerText = intl_1.formatDate(slider.values[0], dateOptions) + " - " + intl_1.formatDate(slider.values[1], dateOptions);
+                                    }
+                                    else {
+                                        displayDateElement.innerText = intl_1.formatDate(slider.values[0], dateOptions);
+                                    }
                                     activeCountElement.innerText = intl_1.formatNumber(stats.active, format);
                                     recoveredCountElement.innerText = intl_1.formatNumber(stats.recovered, format);
                                     deathCountElement.innerText = intl_1.formatNumber(stats.deaths, format);

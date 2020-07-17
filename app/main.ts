@@ -363,7 +363,11 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       });
 
       const dateOptions = convertDateFormatToIntlOptions("long-month-day-year");
-      displayDateElement.innerText = formatDate(slider.values[0], dateOptions);
+      if (slider.values.length > 1){
+        displayDateElement.innerText = `${formatDate(slider.values[0], dateOptions)} - ${formatDate(slider.values[1], dateOptions)}`;
+      } else {
+        displayDateElement.innerText = formatDate(slider.values[0], dateOptions);
+      }
       activeCountElement.innerText = formatNumber(stats.active, format);
       recoveredCountElement.innerText = formatNumber(stats.recovered, format);
       deathCountElement.innerText = formatNumber(stats.deaths, format);
