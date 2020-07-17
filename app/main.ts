@@ -236,6 +236,16 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       filter?: string
     }
 
+    const btns = [].slice.call(document.getElementsByTagName("button"));
+
+    btns.forEach( (btn: HTMLButtonElement) => {
+      if(Object.keys(timeExtents).indexOf(btn.id) > -1){
+        btn.addEventListener( "click", () => {
+          updateSlider({ filter: btn.id });
+        });
+      }
+    });
+
     const updateSlider = (params: UpdateSliderParams) => {
       const { mode, filter } = params;
       const newMode = mode || slider.mode;
@@ -263,21 +273,17 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
           ];
         }
       }
+
+      btns[0].innerText = (newMode === "time-window") ? "Last 2 weeks" : "Two weeks ago";
+      btns[1].innerText = (newMode === "time-window") ? "Last month" : "One month ago";
+      btns[2].innerText = (newMode === "time-window") ? "Since July 4th" : "July 4th";
+      btns[3].innerText = (newMode === "time-window") ? "Since Memorial Day" : "Memorial Day";
     };
 
     view.ui.add("timeOptions", "bottom-center");
 
     const timeVisibilityBtn = document.getElementById("time-slider-toggle");
     const timeOptions = document.getElementById("timeOptions");
-    const btns = [].slice.call(document.getElementsByTagName("button"));
-
-    btns.forEach( (btn: HTMLButtonElement) => {
-      if(Object.keys(timeExtents).indexOf(btn.id) > -1){
-        btn.addEventListener( "click", () => {
-          updateSlider({ filter: btn.id });
-        });
-      }
-    });
 
     timeVisibilityBtn.addEventListener("click", () => {
       timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";

@@ -112,7 +112,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         });
                     });
                 }
-                var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, slider, checkbox, updateSlider, timeVisibilityBtn, timeOptions, btns;
+                var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -288,6 +288,14 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     updateSlider({ mode: "instant" });
                                 }
                             });
+                            btns = [].slice.call(document.getElementsByTagName("button"));
+                            btns.forEach(function (btn) {
+                                if (Object.keys(timeUtils_1.timeExtents).indexOf(btn.id) > -1) {
+                                    btn.addEventListener("click", function () {
+                                        updateSlider({ filter: btn.id });
+                                    });
+                                }
+                            });
                             updateSlider = function (params) {
                                 var mode = params.mode, filter = params.filter;
                                 var newMode = mode || slider.mode;
@@ -318,18 +326,14 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                         ];
                                     }
                                 }
+                                btns[0].innerText = (newMode === "time-window") ? "Last 2 weeks" : "Two weeks ago";
+                                btns[1].innerText = (newMode === "time-window") ? "Last month" : "One month ago";
+                                btns[2].innerText = (newMode === "time-window") ? "Since July 4th" : "July 4th";
+                                btns[3].innerText = (newMode === "time-window") ? "Since Memorial Day" : "Memorial Day";
                             };
                             view.ui.add("timeOptions", "bottom-center");
                             timeVisibilityBtn = document.getElementById("time-slider-toggle");
                             timeOptions = document.getElementById("timeOptions");
-                            btns = [].slice.call(document.getElementsByTagName("button"));
-                            btns.forEach(function (btn) {
-                                if (Object.keys(timeUtils_1.timeExtents).indexOf(btn.id) > -1) {
-                                    btn.addEventListener("click", function () {
-                                        updateSlider({ filter: btn.id });
-                                    });
-                                }
-                            });
                             timeVisibilityBtn.addEventListener("click", function () {
                                 timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
                                 if (timeVisibilityBtn.classList.contains("esri-icon-time-clock")) {
