@@ -25,7 +25,7 @@
   </head>
   <body>
     <div id="viewDiv"></div>
-    <div id="header">
+    <div id="info" class="esri-expand__content esri-expand__content--expanded">
       <div id="date-info">
         <div id="date-label">
           <span class="count" id="display-date"></span>
@@ -33,18 +33,18 @@
       </div>
       <div id="statistics">
         <div id="active-label">
-          active: <span class="count" id="active-count"></span>
+          Active <span class="count" id="active-count"></span> <div class="rate">(<span id="active-rate"></span> per 100k)</div>
         </div>
         <div id="deaths-label">
-          deaths: <span class="count" id="death-count"></span>
+          Deaths <span class="count" id="death-count"></span> <div class="rate">(<span id="death-rate"></span> per 100k)</div>
         </div>
         <div id="recovered-label">
-          recovered: <span class="count" id="recovered-count"></span>
+          Recovered <span class="count" id="recovered-count"></span> <div class="rate">(<span id="recovered-rate"></span> per 100k)</div>
         </div>
       </div>
-    </div>
-    <div id="info">
-      Active and recovered totals are estimates based on the CDC formula documented <a href="https://www.arcgis.com/home/item.html?id=a16bb8b137ba4d8bbe645301b80e5740">here</a>.
+      <div class="note">
+        Active and recovered totals are estimates based on the CDC formula documented <a href="https://www.arcgis.com/home/item.html?id=a16bb8b137ba4d8bbe645301b80e5740">here</a>.
+      </div>
     </div>
     <div id="ui-controls" class="esri-widget">
       <div style="text-align: center;">
@@ -55,9 +55,9 @@
           Explore the spread of COVID-19 in the United States by county
         </div>
         <select id="renderer-select" class="esri-select">
-          <option value="total-infections" selected>Total cases</option>
+          <option value="total-infections">Total cases</option>
           <option value="infection-rate-per-100k">Total cases per 100k </option>
-          <option value="dot-density">Density of cases </option>
+          <option value="dot-density" selected>Density of cases </option>
           <option value="doubling-time">Doubling time</option>
           <option value="total-active">Active cases</option>
           <option value="active-rate">Active cases per 100k</option>
@@ -84,6 +84,7 @@
       </nav>
       <div id="timeSlider"></div>
     </div>
+    <!-- <button class="esri-icon-expand" id="info-toggle"></button> -->
     <button class="esri-icon-expand" id="time-slider-toggle"></button>
     <script>require(["app/main"]);</script>
   </body>

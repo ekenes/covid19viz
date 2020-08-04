@@ -40,6 +40,16 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
     (function () { return __awaiter(void 0, void 0, void 0, function () {
         function loadApp() {
             return __awaiter(this, void 0, void 0, function () {
+                // const infoVisibilityBtn = document.getElementById("info-toggle");
+                // const infoElement = document.getElementById("info");
+                // infoVisibilityBtn.addEventListener("click", () => {
+                //   infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
+                //   if(infoVisibilityBtn.classList.contains("esri-icon-description")){
+                //     infoVisibilityBtn.classList.replace("esri-icon-description", "esri-icon-expand");
+                //   } else {
+                //     infoVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-description");
+                //   }
+                // });
                 function initializeLayer() {
                     return __awaiter(this, void 0, void 0, function () {
                         var activeLayerView;
@@ -107,12 +117,15 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     activeCountElement.innerText = intl_1.formatNumber(stats.active, format);
                                     recoveredCountElement.innerText = intl_1.formatNumber(stats.recovered, format);
                                     deathCountElement.innerText = intl_1.formatNumber(stats.deaths, format);
+                                    activeRateElement.innerText = intl_1.formatNumber(stats.activeRate, format);
+                                    deathRateElement.innerText = intl_1.formatNumber(stats.deathRate, format);
+                                    recoveredRateElement.innerText = intl_1.formatNumber(stats.recoveredRate, format);
                                     return [2 /*return*/];
                             }
                         });
                     });
                 }
-                var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions;
+                var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, activeRateElement, deathRateElement, recoveredRateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions, infoElement;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -253,17 +266,13 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 view: view,
                                 content: search
                             }), "top-left");
-                            view.ui.add(new Expand({
-                                view: view,
-                                content: document.getElementById("info"),
-                                expanded: false,
-                                expandIconClass: "esri-icon-notice-round",
-                            }), "top-left");
                             activeCountElement = document.getElementById("active-count");
                             recoveredCountElement = document.getElementById("recovered-count");
                             deathCountElement = document.getElementById("death-count");
                             displayDateElement = document.getElementById("display-date");
-                            // const statisticsElement = document.getElementById("statistics");
+                            activeRateElement = document.getElementById("active-rate");
+                            deathRateElement = document.getElementById("death-rate");
+                            recoveredRateElement = document.getElementById("recovered-rate");
                             view.ui.add("statistics", "top-center");
                             slider = new TimeSlider({
                                 container: "timeSlider",
@@ -334,8 +343,10 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             view.ui.add("timeOptions", "bottom-center");
                             timeVisibilityBtn = document.getElementById("time-slider-toggle");
                             timeOptions = document.getElementById("timeOptions");
+                            infoElement = document.getElementById("info");
                             timeVisibilityBtn.addEventListener("click", function () {
                                 timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
+                                infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
                                 if (timeVisibilityBtn.classList.contains("esri-icon-time-clock")) {
                                     timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
                                 }

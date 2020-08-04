@@ -64,6 +64,7 @@ export async function getEstimatedRecoveries( params: StatisticsParams){
   let totalDeaths = 0;
   let totalRecovered = 0;
   let totalActive = 0;
+  let totalPopulation = 0;
 
   const startDateFieldName = getFieldFromDate(startDate);
 
@@ -137,13 +138,17 @@ export async function getEstimatedRecoveries( params: StatisticsParams){
     totalDeaths += currentDayDeaths;
     totalActive += activeEstimate;
     totalRecovered += recoveredEstimate;
+    totalPopulation += feature.attributes.POPULATION;
   });
 
   const stats = {
     cases: totalCases,
     deaths: totalDeaths,
     active: totalActive,
-    recovered: totalRecovered
+    recovered: totalRecovered,
+    activeRate: (totalActive / totalPopulation ) * 100000,
+    recoveredRate: (totalRecovered / totalPopulation ) * 100000,
+    deathRate: (totalDeaths / totalPopulation ) * 100000,
   };
 
   allStats[startDateFieldName] = stats;

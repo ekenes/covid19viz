@@ -112,7 +112,7 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
     }
     function getEstimatedRecoveries(params) {
         return __awaiter(this, void 0, void 0, function () {
-            var layer, startDate, endDate, totalCases, totalDeaths, totalRecovered, totalActive, startDateFieldName, daysAgo14, daysAgo15, daysAgo25, daysAgo26, daysAgo49, stats;
+            var layer, startDate, endDate, totalCases, totalDeaths, totalRecovered, totalActive, totalPopulation, startDateFieldName, daysAgo14, daysAgo15, daysAgo25, daysAgo26, daysAgo49, stats;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -121,6 +121,7 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
                         totalDeaths = 0;
                         totalRecovered = 0;
                         totalActive = 0;
+                        totalPopulation = 0;
                         startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
                         if (allStats[startDateFieldName]) {
                             return [2 /*return*/, allStats[startDateFieldName]];
@@ -182,12 +183,16 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
                             totalDeaths += currentDayDeaths;
                             totalActive += activeEstimate;
                             totalRecovered += recoveredEstimate;
+                            totalPopulation += feature.attributes.POPULATION;
                         });
                         stats = {
                             cases: totalCases,
                             deaths: totalDeaths,
                             active: totalActive,
-                            recovered: totalRecovered
+                            recovered: totalRecovered,
+                            activeRate: (totalActive / totalPopulation) * 100000,
+                            recoveredRate: (totalRecovered / totalPopulation) * 100000,
+                            deathRate: (totalDeaths / totalPopulation) * 100000,
                         };
                         allStats[startDateFieldName] = stats;
                         return [2 /*return*/, stats];

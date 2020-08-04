@@ -93,6 +93,13 @@ body,
 
 .count{
   font-weight: 900;
+  font-size: 18px;
+}
+.rate{
+  font-size: 12px;
+}
+.note {
+  font-size: 10px;
 }
 
 #active-label{
@@ -111,10 +118,28 @@ body,
   margin: 5px;
 }
 
+#info-toggle {
+  position: absolute;
+  left: 15px;
+  bottom: 130px;
+  height: 32px;
+  width: 32px;
+}
+#info-toggle:hover{
+  cursor: pointer;
+}
+
 #info{
+  display: flex;
+  flex-direction: column;
   padding: 10px;
-  font-size: 10pt;
+  font-size: 16px;
   background-color: white;
+  width: 340px;
+  position: absolute;
+  left: 47px;
+  bottom: 130px;
+  visibility: visible;
 }
 .time-buttons{
   display: flex;

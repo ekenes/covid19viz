@@ -192,18 +192,20 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       content: search
     }), "top-left");
 
-    view.ui.add(new Expand({
-      view,
-      content: document.getElementById("info"),
-      expanded: false,
-      expandIconClass: "esri-icon-notice-round",
-    }), "top-left");
+    // view.ui.add(new Expand({
+    //   view,
+    //   content: document.getElementById("info"),
+    //   expanded: true,
+    //   expandIconClass: "esri-icon-notice-round",
+    // }), "top-left");
 
     const activeCountElement = document.getElementById("active-count");
     const recoveredCountElement = document.getElementById("recovered-count");
     const deathCountElement = document.getElementById("death-count");
     const displayDateElement = document.getElementById("display-date");
-    // const statisticsElement = document.getElementById("statistics");
+    const activeRateElement = document.getElementById("active-rate");
+    const deathRateElement = document.getElementById("death-rate");
+    const recoveredRateElement = document.getElementById("recovered-rate");
     view.ui.add("statistics", "top-center");
 
     const slider = new TimeSlider({
@@ -284,9 +286,11 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
 
     const timeVisibilityBtn = document.getElementById("time-slider-toggle");
     const timeOptions = document.getElementById("timeOptions");
+    const infoElement = document.getElementById("info");
 
     timeVisibilityBtn.addEventListener("click", () => {
       timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
+      infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
 
       if(timeVisibilityBtn.classList.contains("esri-icon-time-clock")){
         timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
@@ -295,6 +299,19 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       }
 
     });
+
+    // const infoVisibilityBtn = document.getElementById("info-toggle");
+    // const infoElement = document.getElementById("info");
+
+    // infoVisibilityBtn.addEventListener("click", () => {
+    //   infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
+
+    //   if(infoVisibilityBtn.classList.contains("esri-icon-description")){
+    //     infoVisibilityBtn.classList.replace("esri-icon-description", "esri-icon-expand");
+    //   } else {
+    //     infoVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-description");
+    //   }
+    // });
 
     async function initializeLayer(){
       map.add(infectionsPopulationLayer);
@@ -377,6 +394,9 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       activeCountElement.innerText = formatNumber(stats.active, format);
       recoveredCountElement.innerText = formatNumber(stats.recovered, format);
       deathCountElement.innerText = formatNumber(stats.deaths, format);
+      activeRateElement.innerText = formatNumber(stats.activeRate, format);
+      deathRateElement.innerText = formatNumber(stats.deathRate, format);
+      recoveredRateElement.innerText = formatNumber(stats.recoveredRate, format);
     }
   }
 
