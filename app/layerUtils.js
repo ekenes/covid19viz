@@ -12,6 +12,7 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/layers/support/L
         portalItem: {
             id: exports.polygonFillPortalItemId
         },
+        copyright: "App and maps by <a href=\"https://github.com/ekenes\">Kristian Ekenes</a>",
         layerId: exports.polygonFillLayerId,
         outFields: ["*"],
         renderer: new renderers_1.SimpleRenderer({

@@ -105,14 +105,17 @@ body,
 #active-label{
   color: #e60049;
   margin: 5px;
+  text-align: center;
 }
 #recovered-label{
   color: #b3cde3;
   margin:5px;
+  text-align: center;
 }
 #deaths-label{
   color: #000000;
   margin: 5px;
+  text-align: center;
 }
 #date-label{
   margin: 5px;

@@ -18,6 +18,7 @@ export const infectionsPopulationLayer = new FeatureLayer({
   portalItem: {
     id: polygonFillPortalItemId
   },
+  copyright: `App and maps by <a href="https://github.com/ekenes">Kristian Ekenes</a>`,
   layerId: polygonFillLayerId,
   outFields: ["*"],
   renderer: new SimpleRenderer({
