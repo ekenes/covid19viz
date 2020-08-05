@@ -1,5 +1,6 @@
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import Graphic = require("esri/Graphic");
+import promiseUtils = require("esri/core/promiseUtils");
 import { getFieldFromDate, dateAdd } from "./timeUtils";
 
 interface StatisticsParams {
@@ -57,7 +58,7 @@ async function queryAllFeatures(layer: FeatureLayer){
   return features;
 }
 
-export async function getEstimatedRecoveries( params: StatisticsParams){
+export async function getStatsForDate( params: StatisticsParams ){
   const { layer, startDate, endDate } = params;
 
   let totalCases = 0;
@@ -153,4 +154,33 @@ export async function getEstimatedRecoveries( params: StatisticsParams){
 
   allStats[startDateFieldName] = stats;
   return stats;
+}
+
+export async function getStats(params: StatisticsParams){
+  const { layer, startDate, endDate } = params;
+
+  const startStats = await getStatsForDate({
+    layer,
+    startDate
+  });
+
+  if(endDate){
+    const endStats = await getStatsForDate({
+      layer,
+      startDate: endDate
+    });
+
+    const diffStats = {
+      cases: endStats.cases - startStats.cases,
+      deaths: endStats.deaths - startStats.deaths,
+      active: endStats.active - startStats.active,
+      recovered: endStats.recovered - startStats.recovered,
+      activeRate: endStats.activeRate - startStats.activeRate,
+      recoveredRate: endStats.recoveredRate - startStats.recoveredRate,
+      deathRate: endStats.deathRate - startStats.deathRate,
+    };
+    return diffStats;
+  } else {
+    return startStats;
+  }
 }

@@ -87,9 +87,10 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         var stats, format, dateOptions;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
-                                case 0: return [4 /*yield*/, statistics_1.getEstimatedRecoveries({
+                                case 0: return [4 /*yield*/, statistics_1.getStats({
                                         layer: layerUtils_1.infectionsPopulationLayer,
-                                        startDate: slider.values[0]
+                                        startDate: slider.values[0],
+                                        endDate: slider.values.length > 1 ? slider.values[1] : null
                                     })];
                                 case 1:
                                     stats = _a.sent();

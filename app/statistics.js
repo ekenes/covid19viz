@@ -110,7 +110,7 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
             });
         });
     }
-    function getEstimatedRecoveries(params) {
+    function getStatsForDate(params) {
         return __awaiter(this, void 0, void 0, function () {
             var layer, startDate, endDate, totalCases, totalDeaths, totalRecovered, totalActive, totalPopulation, startDateFieldName, daysAgo14, daysAgo15, daysAgo25, daysAgo26, daysAgo49, stats;
             return __generator(this, function (_a) {
@@ -200,6 +200,42 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
             });
         });
     }
-    exports.getEstimatedRecoveries = getEstimatedRecoveries;
+    exports.getStatsForDate = getStatsForDate;
+    function getStats(params) {
+        return __awaiter(this, void 0, void 0, function () {
+            var layer, startDate, endDate, startStats, endStats, diffStats;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        layer = params.layer, startDate = params.startDate, endDate = params.endDate;
+                        return [4 /*yield*/, getStatsForDate({
+                                layer: layer,
+                                startDate: startDate
+                            })];
+                    case 1:
+                        startStats = _a.sent();
+                        if (!endDate) return [3 /*break*/, 3];
+                        return [4 /*yield*/, getStatsForDate({
+                                layer: layer,
+                                startDate: endDate
+                            })];
+                    case 2:
+                        endStats = _a.sent();
+                        diffStats = {
+                            cases: endStats.cases - startStats.cases,
+                            deaths: endStats.deaths - startStats.deaths,
+                            active: endStats.active - startStats.active,
+                            recovered: endStats.recovered - startStats.recovered,
+                            activeRate: endStats.activeRate - startStats.activeRate,
+                            recoveredRate: endStats.recoveredRate - startStats.recoveredRate,
+                            deathRate: endStats.deathRate - startStats.deathRate,
+                        };
+                        return [2 /*return*/, diffStats];
+                    case 3: return [2 /*return*/, startStats];
+                }
+            });
+        });
+    }
+    exports.getStats = getStats;
 });
 //# sourceMappingURL=statistics.js.map

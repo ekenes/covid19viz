@@ -20,7 +20,7 @@ import { updatePopupTemplate } from "./popupTemplateUtils";
 import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId, citiesContextLayer, fillColor } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
-import { getEstimatedRecoveries } from "./statistics";
+import { getStats } from "./statistics";
 import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDateFormatToIntlOptions } from "esri/intl";
 
 (async () => {
@@ -363,9 +363,10 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     });
 
     async function updateStats(){
-      const stats = await getEstimatedRecoveries({
+      const stats = await getStats({
         layer: infectionsPopulationLayer,
-        startDate: slider.values[0]
+        startDate: slider.values[0],
+        endDate: slider.values.length > 1 ? slider.values[1] : null
       });
 
       const format = convertNumberFormatToIntlOptions({
