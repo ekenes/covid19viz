@@ -217,7 +217,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     dockEnabled: true,
                                     dockOptions: {
                                         breakpoint: false,
-                                        position: "top-left"
+                                        position: "top-right"
                                     }
                                 },
                                 ui: {

@@ -147,7 +147,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
         dockEnabled: true,
         dockOptions: {
           breakpoint: false,
-          position: "top-left"
+          position: "top-right"
         }
       },
       ui: {
