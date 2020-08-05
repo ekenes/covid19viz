@@ -17,7 +17,7 @@ import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 import { initialTimeExtent, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
-import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId } from "./layerUtils";
+import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId, citiesContextLayer, fillColor } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 import { getEstimatedRecoveries } from "./statistics";
@@ -51,7 +51,6 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
 
     //102008
     const wkid = 102008;
-    const fillColor = "#ece8e8";
     const outlineColor = [214, 214, 214,0.5];
     const textColor = [163, 162, 162,0.7]
 
@@ -119,7 +118,8 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
                 })
               })
             })
-          })
+          }),
+          citiesContextLayer
         ]
       }
     });
@@ -140,7 +140,8 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
         wkid
       },
       constraints: {
-        minScale: 25000000
+        minScale: 25000000,
+        maxScale: 200000
       },
       popup: {
         dockEnabled: true,
@@ -300,19 +301,6 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
 
     });
 
-    // const infoVisibilityBtn = document.getElementById("info-toggle");
-    // const infoElement = document.getElementById("info");
-
-    // infoVisibilityBtn.addEventListener("click", () => {
-    //   infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
-
-    //   if(infoVisibilityBtn.classList.contains("esri-icon-description")){
-    //     infoVisibilityBtn.classList.replace("esri-icon-description", "esri-icon-expand");
-    //   } else {
-    //     infoVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-description");
-    //   }
-    // });
-
     async function initializeLayer(){
       map.add(infectionsPopulationLayer);
       const activeLayerView = await view.whenLayerView(infectionsPopulationLayer);
@@ -399,5 +387,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       recoveredRateElement.innerText = formatNumber(stats.recoveredRate, format);
     }
   }
+
+
 
 })();

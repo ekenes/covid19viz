@@ -140,6 +140,7 @@ body,
   left: 47px;
   bottom: 130px;
   visibility: visible;
+  z-index: 1;
 }
 .time-buttons{
   display: flex;

@@ -40,16 +40,6 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
     (function () { return __awaiter(void 0, void 0, void 0, function () {
         function loadApp() {
             return __awaiter(this, void 0, void 0, function () {
-                // const infoVisibilityBtn = document.getElementById("info-toggle");
-                // const infoElement = document.getElementById("info");
-                // infoVisibilityBtn.addEventListener("click", () => {
-                //   infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
-                //   if(infoVisibilityBtn.classList.contains("esri-icon-description")){
-                //     infoVisibilityBtn.classList.replace("esri-icon-description", "esri-icon-expand");
-                //   } else {
-                //     infoVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-description");
-                //   }
-                // });
                 function initializeLayer() {
                     return __awaiter(this, void 0, void 0, function () {
                         var activeLayerView;
@@ -125,7 +115,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         });
                     });
                 }
-                var rendererSelect, wkid, fillColor, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, activeRateElement, deathRateElement, recoveredRateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions, infoElement;
+                var rendererSelect, wkid, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, activeRateElement, deathRateElement, recoveredRateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions, infoElement;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -133,7 +123,6 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             document.body.style.visibility = "visible";
                             rendererSelect = document.getElementById("renderer-select");
                             wkid = 102008;
-                            fillColor = "#ece8e8";
                             outlineColor = [214, 214, 214, 0.5];
                             textColor = [163, 162, 162, 0.7];
                             map = new WebMap({
@@ -158,7 +147,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                                         },
                                                         haloColor: new Color(textColor),
                                                         haloSize: 0.8,
-                                                        color: new Color(fillColor)
+                                                        color: new Color(layerUtils_1.fillColor)
                                                     }),
                                                     minScale: 1500000
                                                 }],
@@ -170,7 +159,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                             popupEnabled: false,
                                             renderer: new renderers_1.SimpleRenderer({
                                                 symbol: new symbols_1.SimpleFillSymbol({
-                                                    color: new Color(fillColor),
+                                                    color: new Color(layerUtils_1.fillColor),
                                                     outline: new symbols_1.SimpleLineSymbol({
                                                         color: new Color(outlineColor),
                                                         width: 0.3
@@ -192,7 +181,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                             popupEnabled: false,
                                             renderer: new renderers_1.SimpleRenderer({
                                                 symbol: new symbols_1.SimpleFillSymbol({
-                                                    color: new Color(fillColor),
+                                                    color: new Color(layerUtils_1.fillColor),
                                                     style: "none",
                                                     outline: new symbols_1.SimpleLineSymbol({
                                                         color: new Color([200, 200, 200, 0.3]),
@@ -200,7 +189,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                                     })
                                                 })
                                             })
-                                        })
+                                        }),
+                                        layerUtils_1.citiesContextLayer
                                     ]
                                 }
                             });
@@ -220,7 +210,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     wkid: wkid
                                 },
                                 constraints: {
-                                    minScale: 25000000
+                                    minScale: 25000000,
+                                    maxScale: 200000
                                 },
                                 popup: {
                                     dockEnabled: true,
