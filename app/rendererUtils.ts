@@ -473,7 +473,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
 
   return new SimpleRenderer({
     symbol: createDefaultSymbol(null, new SimpleLineSymbol({
-      color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(222, 18, 222, 1)"),
+      color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(222, 18, 222, 0.8)"),
       width: endDate ? 0.5 : 0.5
     })),
     label: "County",
