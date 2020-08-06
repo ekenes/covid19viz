@@ -343,7 +343,7 @@ function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer
   }
   return new SimpleRenderer({
     symbol: createDefaultSymbol(null, new SimpleLineSymbol({
-      color: new Color("rgba(227, 0, 106,0.6)"),
+      color: new Color("rgba(15, 15, 15,0.8)"),
       width: endDate ? 0 : 0.5
     })),
     label: "County",
@@ -473,7 +473,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
 
   return new SimpleRenderer({
     symbol: createDefaultSymbol(null, new SimpleLineSymbol({
-      color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(222, 18, 222, 0.8)"),
+      color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(230, 0, 73, 0.8)"),
       width: endDate ? 0.5 : 0.5
     })),
     label: "County",
