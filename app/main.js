@@ -38,6 +38,15 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
+        // if(!isMobileBrowser()){
+        //   loadApp();
+        // } else {
+        //   document.body.innerHTML = null;
+        //   const mobileMessage = document.createElement("div");
+        //   mobileMessage.classList.add("mobile-message");
+        //   mobileMessage.innerHTML = `This app loads too much data for mobile devices. 🤷‍♂️ Please try again on a desktop browser.`;
+        //   document.body.appendChild(mobileMessage);
+        // }
         function loadApp() {
             return __awaiter(this, void 0, void 0, function () {
                 function initializeLayer() {
@@ -376,7 +385,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 });
             });
         }
-        var isMobileBrowser, mobileMessage;
+        var isMobileBrowser;
         return __generator(this, function (_a) {
             isMobileBrowser = function () {
                 var check = false;
@@ -384,16 +393,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     check = true; })(navigator.userAgent || navigator.vendor || window.opera);
                 return check;
             };
-            if (!isMobileBrowser()) {
-                loadApp();
-            }
-            else {
-                document.body.innerHTML = null;
-                mobileMessage = document.createElement("div");
-                mobileMessage.classList.add("mobile-message");
-                mobileMessage.innerHTML = "This app loads too much data for mobile devices. \uD83E\uDD37\u200D\u2642\uFE0F Please try again on a desktop browser.";
-                document.body.appendChild(mobileMessage);
-            }
+            loadApp();
             return [2 /*return*/];
         });
     }); })();
