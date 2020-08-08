@@ -34,22 +34,24 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     return check;
   };
   loadApp();
-
-  // if(!isMobileBrowser()){
-  //   loadApp();
-  // } else {
-  //   document.body.innerHTML = null;
-  //   const mobileMessage = document.createElement("div");
-  //   mobileMessage.classList.add("mobile-message");
-  //   mobileMessage.innerHTML = `This app loads too much data for mobile devices. 🤷‍♂️ Please try again on a desktop browser.`;
-  //   document.body.appendChild(mobileMessage);
-  // }
+  let minScaleFactor = 1;
 
   async function loadApp() {
     // display the body style so message or content renders
     document.body.style.visibility = "visible";
 
     const rendererSelect = document.getElementById("renderer-select") as HTMLSelectElement;
+
+    if(!isMobileBrowser()){
+      minScaleFactor = 2;
+      toggleTimeOptionsVisibility();
+    } else {
+      // document.body.innerHTML = null;
+      // const mobileMessage = document.createElement("div");
+      // mobileMessage.classList.add("mobile-message");
+      // mobileMessage.innerHTML = `This app loads too much data for mobile devices. 🤷‍♂️ Please try again on a desktop browser.`;
+      // document.body.appendChild(mobileMessage);
+    }
 
     //102008
     const wkid = 102008;
@@ -142,7 +144,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
         wkid
       },
       constraints: {
-        minScale: 25000000,
+        minScale: 25000000 * minScaleFactor,
         maxScale: 200000
       },
       popup: {
@@ -293,7 +295,9 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     const timeOptions = document.getElementById("timeOptions");
     const infoElement = document.getElementById("info");
 
-    timeVisibilityBtn.addEventListener("click", () => {
+    timeVisibilityBtn.addEventListener("click", toggleTimeOptionsVisibility);
+
+    function toggleTimeOptionsVisibility() {
       timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
       infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
 
@@ -303,7 +307,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
         timeVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-time-clock");
       }
 
-    });
+    }
 
     async function initializeLayer(){
       map.add(infectionsPopulationLayer);

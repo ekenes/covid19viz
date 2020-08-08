@@ -38,17 +38,18 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
-        // if(!isMobileBrowser()){
-        //   loadApp();
-        // } else {
-        //   document.body.innerHTML = null;
-        //   const mobileMessage = document.createElement("div");
-        //   mobileMessage.classList.add("mobile-message");
-        //   mobileMessage.innerHTML = `This app loads too much data for mobile devices. 🤷‍♂️ Please try again on a desktop browser.`;
-        //   document.body.appendChild(mobileMessage);
-        // }
         function loadApp() {
             return __awaiter(this, void 0, void 0, function () {
+                function toggleTimeOptionsVisibility() {
+                    timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
+                    infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
+                    if (timeVisibilityBtn.classList.contains("esri-icon-time-clock")) {
+                        timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
+                    }
+                    else {
+                        timeVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-time-clock");
+                    }
+                }
                 function initializeLayer() {
                     return __awaiter(this, void 0, void 0, function () {
                         var activeLayerView;
@@ -132,6 +133,17 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             // display the body style so message or content renders
                             document.body.style.visibility = "visible";
                             rendererSelect = document.getElementById("renderer-select");
+                            if (!isMobileBrowser()) {
+                                minScaleFactor = 2;
+                                toggleTimeOptionsVisibility();
+                            }
+                            else {
+                                // document.body.innerHTML = null;
+                                // const mobileMessage = document.createElement("div");
+                                // mobileMessage.classList.add("mobile-message");
+                                // mobileMessage.innerHTML = `This app loads too much data for mobile devices. 🤷‍♂️ Please try again on a desktop browser.`;
+                                // document.body.appendChild(mobileMessage);
+                            }
                             wkid = 102008;
                             outlineColor = [214, 214, 214, 0.5];
                             textColor = [163, 162, 162, 0.7];
@@ -220,7 +232,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     wkid: wkid
                                 },
                                 constraints: {
-                                    minScale: 25000000,
+                                    minScale: 25000000 * minScaleFactor,
                                     maxScale: 200000
                                 },
                                 popup: {
@@ -346,16 +358,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             timeVisibilityBtn = document.getElementById("time-slider-toggle");
                             timeOptions = document.getElementById("timeOptions");
                             infoElement = document.getElementById("info");
-                            timeVisibilityBtn.addEventListener("click", function () {
-                                timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
-                                infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
-                                if (timeVisibilityBtn.classList.contains("esri-icon-time-clock")) {
-                                    timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
-                                }
-                                else {
-                                    timeVisibilityBtn.classList.replace("esri-icon-expand", "esri-icon-time-clock");
-                                }
-                            });
+                            timeVisibilityBtn.addEventListener("click", toggleTimeOptionsVisibility);
                             rendererSelect.addEventListener("change", function () {
                                 updateLayer(false);
                             });
@@ -385,7 +388,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 });
             });
         }
-        var isMobileBrowser;
+        var isMobileBrowser, minScaleFactor;
         return __generator(this, function (_a) {
             isMobileBrowser = function () {
                 var check = false;
@@ -394,6 +397,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 return check;
             };
             loadApp();
+            minScaleFactor = 1;
             return [2 /*return*/];
         });
     }); })();
