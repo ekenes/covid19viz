@@ -122,9 +122,7 @@ body,
 }
 
 #info-toggle {
-  position: absolute;
-  left: 15px;
-  bottom: 130px;
+  visibility: hidden;
   height: 32px;
   width: 32px;
 }

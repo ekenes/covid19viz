@@ -42,17 +42,6 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
 
     const rendererSelect = document.getElementById("renderer-select") as HTMLSelectElement;
 
-    if(isMobileBrowser()){
-      minScaleFactor = 2;
-      toggleTimeOptionsVisibility();
-    } else {
-      // document.body.innerHTML = null;
-      // const mobileMessage = document.createElement("div");
-      // mobileMessage.classList.add("mobile-message");
-      // mobileMessage.innerHTML = `This app loads too much data for mobile devices. 🤷‍♂️ Please try again on a desktop browser.`;
-      // document.body.appendChild(mobileMessage);
-    }
-
     //102008
     const wkid = 102008;
     const outlineColor = [214, 214, 214,0.5];
@@ -199,13 +188,6 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
 
     view.ui.add( new Home({ view }), "top-left");
 
-    // view.ui.add(new Expand({
-    //   view,
-    //   content: document.getElementById("info"),
-    //   expanded: true,
-    //   expandIconClass: "esri-icon-notice-round",
-    // }), "top-left");
-
     const activeCountElement = document.getElementById("active-count");
     const recoveredCountElement = document.getElementById("recovered-count");
     const deathCountElement = document.getElementById("death-count");
@@ -295,11 +277,14 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     const timeOptions = document.getElementById("timeOptions");
     const infoElement = document.getElementById("info");
 
+    const infoToggleButton = document.getElementById("info-toggle");
+    view.ui.add(infoToggleButton, "top-left");
+
     timeVisibilityBtn.addEventListener("click", toggleTimeOptionsVisibility);
 
     function toggleTimeOptionsVisibility() {
       timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
-      infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
+      infoElement.style.visibility = !isMobileBrowser() && infoElement.style.visibility === "hidden" ? "visible" : "hidden";
 
       if(timeVisibilityBtn.classList.contains("esri-icon-time-clock")){
         timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
@@ -347,6 +332,29 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     rendererSelect.addEventListener("change", () => {
       updateLayer(false);
     });
+
+    if(isMobileBrowser()){
+      minScaleFactor = 2;
+      toggleTimeOptionsVisibility();
+
+      infoElement.style.position = null;
+      infoElement.style.left = null;
+      infoElement.style.bottom = "100px";
+
+      infoToggleButton.style.visibility = "visible";
+
+      const toggleInfoVisibility = function () {
+        infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
+
+        if(infoElement.classList.contains("esri-icon-table")){
+          infoElement.classList.replace("esri-icon-table", "esri-icon-expand");
+        } else {
+          infoElement.classList.replace("esri-icon-expand", "esri-icon-table");
+        }
+      }
+
+      infoToggleButton.addEventListener("click", toggleInfoVisibility);
+    }
 
     await initializeLayer();
 
@@ -396,7 +404,6 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       recoveredRateElement.innerText = formatNumber(stats.recoveredRate, format);
     }
   }
-
 
 
 })();

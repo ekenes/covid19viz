@@ -42,7 +42,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
             return __awaiter(this, void 0, void 0, function () {
                 function toggleTimeOptionsVisibility() {
                     timeOptions.style.visibility = timeOptions.style.visibility === "visible" ? "hidden" : "visible";
-                    infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
+                    infoElement.style.visibility = !isMobileBrowser() && infoElement.style.visibility === "hidden" ? "visible" : "hidden";
                     if (timeVisibilityBtn.classList.contains("esri-icon-time-clock")) {
                         timeVisibilityBtn.classList.replace("esri-icon-time-clock", "esri-icon-expand");
                     }
@@ -126,24 +126,13 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         });
                     });
                 }
-                var rendererSelect, wkid, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, activeRateElement, deathRateElement, recoveredRateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions, infoElement;
+                var rendererSelect, wkid, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, activeRateElement, deathRateElement, recoveredRateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions, infoElement, infoToggleButton, toggleInfoVisibility;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             // display the body style so message or content renders
                             document.body.style.visibility = "visible";
                             rendererSelect = document.getElementById("renderer-select");
-                            if (isMobileBrowser()) {
-                                minScaleFactor = 2;
-                                toggleTimeOptionsVisibility();
-                            }
-                            else {
-                                // document.body.innerHTML = null;
-                                // const mobileMessage = document.createElement("div");
-                                // mobileMessage.classList.add("mobile-message");
-                                // mobileMessage.innerHTML = `This app loads too much data for mobile devices. 🤷‍♂️ Please try again on a desktop browser.`;
-                                // document.body.appendChild(mobileMessage);
-                            }
                             wkid = 102008;
                             outlineColor = [214, 214, 214, 0.5];
                             textColor = [163, 162, 162, 0.7];
@@ -358,10 +347,30 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             timeVisibilityBtn = document.getElementById("time-slider-toggle");
                             timeOptions = document.getElementById("timeOptions");
                             infoElement = document.getElementById("info");
+                            infoToggleButton = document.getElementById("info-toggle");
+                            view.ui.add(infoToggleButton, "top-left");
                             timeVisibilityBtn.addEventListener("click", toggleTimeOptionsVisibility);
                             rendererSelect.addEventListener("change", function () {
                                 updateLayer(false);
                             });
+                            if (isMobileBrowser()) {
+                                minScaleFactor = 2;
+                                toggleTimeOptionsVisibility();
+                                infoElement.style.position = null;
+                                infoElement.style.left = null;
+                                infoElement.style.bottom = "100px";
+                                infoToggleButton.style.visibility = "visible";
+                                toggleInfoVisibility = function () {
+                                    infoElement.style.visibility = infoElement.style.visibility === "hidden" ? "visible" : "hidden";
+                                    if (infoElement.classList.contains("esri-icon-table")) {
+                                        infoElement.classList.replace("esri-icon-table", "esri-icon-expand");
+                                    }
+                                    else {
+                                        infoElement.classList.replace("esri-icon-expand", "esri-icon-table");
+                                    }
+                                };
+                                infoToggleButton.addEventListener("click", toggleInfoVisibility);
+                            }
                             return [4 /*yield*/, initializeLayer()];
                         case 1:
                             _a.sent();
