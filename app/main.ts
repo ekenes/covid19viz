@@ -11,6 +11,7 @@ import Color = require("esri/Color");
 import Legend = require("esri/widgets/Legend");
 import Expand = require("esri/widgets/Expand");
 import Zoom = require("esri/widgets/Zoom");
+import Home = require("esri/widgets/Home")
 import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 
@@ -192,6 +193,8 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       view,
       content: search
     }), "top-left");
+
+    view.ui.add( new Home({ view }), "top-left");
 
     // view.ui.add(new Expand({
     //   view,

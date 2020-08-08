@@ -10,7 +10,7 @@ import FeatureLayer = require("esri/layers/FeatureLayer");
 import lang = require("esri/core/lang");
 
 import { getFieldFromDate, formatDate } from "./timeUtils";
-import { createTotalInfectionsExpression, createNewInfectionsAverageExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createInfectionRateExpression, createActiveCasesExpression, createNewInfectionPercentTotalExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference, createRecoveredCasesExpression } from "./expressionUtils";
+import { createTotalCasesExpression, createNewCasesAverageExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createCaseRateExpression, createActiveCasesExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference, createRecoveredCasesExpression } from "./expressionUtils";
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
 import { DotDensityRenderer } from "esri/renderers";
 
@@ -156,8 +156,8 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
     visualVariables = [
       new SizeVariable({
         valueExpression: expressionDifference(
-          createTotalInfectionsExpression(startDateFieldName),
-          createTotalInfectionsExpression(endDateFieldName)
+          createTotalCasesExpression(startDateFieldName),
+          createTotalCasesExpression(endDateFieldName)
         ),
         legendOptions: {
           title: `New COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
@@ -173,8 +173,8 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
       }),
       new ColorVariable({
         valueExpression: expressionPercentChange(
-          createTotalInfectionsExpression(startDateFieldName),
-          createTotalInfectionsExpression(endDateFieldName)
+          createTotalCasesExpression(startDateFieldName),
+          createTotalCasesExpression(endDateFieldName)
         ),
         legendOptions: {
           title: `% increase in total cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
@@ -191,7 +191,7 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
 
   } else {
     visualVariables = [ new SizeVariable({
-      valueExpression: createTotalInfectionsExpression(startDateFieldName),
+      valueExpression: createTotalCasesExpression(startDateFieldName),
       legendOptions: {
         title: `Total COVID-19 cases as of ${formatDate(startDate)}`
       },
@@ -232,14 +232,14 @@ function createDotDensityRenderer(params: CreateRendererParams) : COVIDRenderer 
         color: colors[0],
         valueExpressionTitle: `Cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
         valueExpression: expressionDifference(
-          createTotalInfectionsExpression(startDateFieldName),
-          createTotalInfectionsExpression(endDateFieldName)
+          createTotalCasesExpression(startDateFieldName),
+          createTotalCasesExpression(endDateFieldName)
         ),
       }),
       new AttributeColorInfo({
         color: colors[1],
         valueExpressionTitle: "All cases",
-        valueExpression: createTotalInfectionsExpression(startDateFieldName),
+        valueExpression: createTotalCasesExpression(startDateFieldName),
       })
     ];
 
@@ -307,8 +307,8 @@ function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer
       }),
       new ColorVariable({
         valueExpression: expressionPercentChange(
-          createTotalInfectionsExpression(startDateFieldName),
-          createTotalInfectionsExpression(endDateFieldName)
+          createTotalCasesExpression(startDateFieldName),
+          createTotalCasesExpression(endDateFieldName)
         ),
         legendOptions: {
           title: `% increase in deaths from ${formatDate(startDate)} - ${formatDate(endDate)}`
@@ -364,7 +364,7 @@ function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
     visualVariables = [
       new SizeVariable({
         valueExpressionTitle: `7-day rolling average of new COVID-19 cases as of ${formatDate(startDate)}`,
-        valueExpression: createNewInfectionsAverageExpression(startDateFieldName),
+        valueExpression: createNewCasesAverageExpression(startDateFieldName),
         stops: [
           { value: 0, size: 0 },
           { value: 1, size: "2px" },
@@ -375,8 +375,8 @@ function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
       }), new ColorVariable({
         valueExpressionTitle: `Change in 7-day rolling average of new COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
         valueExpression: expressionDifference(
-          createNewInfectionsAverageExpression(startDateFieldName, true),
-          createNewInfectionsAverageExpression(endDateFieldName, true),
+          createNewCasesAverageExpression(startDateFieldName, true),
+          createNewCasesAverageExpression(endDateFieldName, true),
           true
         ),
         stops: [
@@ -389,7 +389,7 @@ function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
   } else {
     visualVariables = [ new SizeVariable({
       valueExpressionTitle: `7-day rolling average of new COVID-19 cases as of ${formatDate(startDate)}`,
-      valueExpression: createNewInfectionsAverageExpression(startDateFieldName),
+      valueExpression: createNewCasesAverageExpression(startDateFieldName),
       stops: [
         { value: 0, size: 0 },
         { value: 1, size: "2px" },
@@ -674,8 +674,8 @@ function createCaseRateRenderer(params: CreateRendererParams) : COVIDRenderer {
     visualVariables = [
       new ColorVariable({
         valueExpression: expressionDifference(
-          createInfectionRateExpression(startDateFieldName),
-          createInfectionRateExpression(endDateFieldName)
+          createCaseRateExpression(startDateFieldName),
+          createCaseRateExpression(endDateFieldName)
         ),
         valueExpressionTitle: `Change in COVID-19 cases per 100k people`,
         stops: [
@@ -690,7 +690,7 @@ function createCaseRateRenderer(params: CreateRendererParams) : COVIDRenderer {
   } else {
     visualVariables = [
       new ColorVariable({
-        valueExpression: createInfectionRateExpression(startDateFieldName),
+        valueExpression: createCaseRateExpression(startDateFieldName),
         valueExpressionTitle: `Total COVID-19 cases per 100k people`,
         stops: [
           { value: 50, color: colors[0] },

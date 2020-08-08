@@ -18,7 +18,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         while (currentDate <= endDate) {
             var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
             expressionInfos.push(new ExpressionInfo({
-                expression: expressionUtils_1.createTotalInfectionsExpression(currentFieldName),
+                expression: expressionUtils_1.createTotalCasesExpression(currentFieldName),
                 name: "total-infections-" + currentFieldName,
                 title: timeUtils_1.formatDate(currentDate)
             }));
@@ -74,7 +74,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
         while (currentDate <= endDate) {
             var currentFieldName = timeUtils_1.getFieldFromDate(currentDate);
             expressionInfos.push(new ExpressionInfo({
-                expression: expressionUtils_1.createNewInfectionsAverageExpression(currentFieldName),
+                expression: expressionUtils_1.createNewCasesAverageExpression(currentFieldName),
                 name: "new-cases-" + currentFieldName,
                 title: timeUtils_1.formatDate(currentDate)
             }));
@@ -198,7 +198,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 name: "active-rate",
                 title: "Active rate"
             }), new ExpressionInfo({
-                expression: expressionUtils_1.createTotalInfectionsExpression(currentFieldName),
+                expression: expressionUtils_1.createTotalCasesExpression(currentFieldName),
                 name: "total",
                 title: "Total cases"
             }), new ExpressionInfo({
@@ -206,7 +206,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 name: "doubling-time",
                 title: "Doubling time (days)"
             }), new ExpressionInfo({
-                expression: expressionUtils_1.createNewInfectionsExpression(currentFieldName),
+                expression: expressionUtils_1.createNewCasesExpression(currentFieldName),
                 name: "new-infections",
                 title: "New cases"
             }), new ExpressionInfo({
@@ -454,7 +454,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                     name: "active-rate",
                     title: "Active rate"
                 }), new ExpressionInfo({
-                    expression: expressionUtils_1.createTotalInfectionsExpression(currentFieldName),
+                    expression: expressionUtils_1.createTotalCasesExpression(currentFieldName),
                     name: "total",
                     title: "Total cases"
                 }), new ExpressionInfo({
@@ -462,7 +462,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                     name: "doubling-time",
                     title: "Doubling time (days)"
                 }), new ExpressionInfo({
-                    expression: expressionUtils_1.createNewInfectionsExpression(currentFieldName),
+                    expression: expressionUtils_1.createNewCasesExpression(currentFieldName),
                     name: "new-infections",
                     title: "New cases"
                 }), new ExpressionInfo({

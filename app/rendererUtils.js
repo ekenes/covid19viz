@@ -118,7 +118,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new SizeVariable({
-                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), expressionUtils_1.createTotalInfectionsExpression(endDateFieldName)),
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createTotalCasesExpression(startDateFieldName), expressionUtils_1.createTotalCasesExpression(endDateFieldName)),
                     legendOptions: {
                         title: "New COVID-19 cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate)
                     },
@@ -132,7 +132,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     ]
                 }),
                 new ColorVariable({
-                    valueExpression: expressionUtils_1.expressionPercentChange(expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), expressionUtils_1.createTotalInfectionsExpression(endDateFieldName)),
+                    valueExpression: expressionUtils_1.expressionPercentChange(expressionUtils_1.createTotalCasesExpression(startDateFieldName), expressionUtils_1.createTotalCasesExpression(endDateFieldName)),
                     legendOptions: {
                         title: "% increase in total cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate)
                     },
@@ -148,7 +148,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         }
         else {
             visualVariables = [new SizeVariable({
-                    valueExpression: expressionUtils_1.createTotalInfectionsExpression(startDateFieldName),
+                    valueExpression: expressionUtils_1.createTotalCasesExpression(startDateFieldName),
                     legendOptions: {
                         title: "Total COVID-19 cases as of " + timeUtils_1.formatDate(startDate)
                     },
@@ -183,12 +183,12 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                 new AttributeColorInfo({
                     color: colors_1[0],
                     valueExpressionTitle: "Cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
-                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), expressionUtils_1.createTotalInfectionsExpression(endDateFieldName)),
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createTotalCasesExpression(startDateFieldName), expressionUtils_1.createTotalCasesExpression(endDateFieldName)),
                 }),
                 new AttributeColorInfo({
                     color: colors_1[1],
                     valueExpressionTitle: "All cases",
-                    valueExpression: expressionUtils_1.createTotalInfectionsExpression(startDateFieldName),
+                    valueExpression: expressionUtils_1.createTotalCasesExpression(startDateFieldName),
                 })
             ];
         }
@@ -246,7 +246,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     ]
                 }),
                 new ColorVariable({
-                    valueExpression: expressionUtils_1.expressionPercentChange(expressionUtils_1.createTotalInfectionsExpression(startDateFieldName), expressionUtils_1.createTotalInfectionsExpression(endDateFieldName)),
+                    valueExpression: expressionUtils_1.expressionPercentChange(expressionUtils_1.createTotalCasesExpression(startDateFieldName), expressionUtils_1.createTotalCasesExpression(endDateFieldName)),
                     legendOptions: {
                         title: "% increase in deaths from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate)
                     },
@@ -298,7 +298,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             visualVariables = [
                 new SizeVariable({
                     valueExpressionTitle: "7-day rolling average of new COVID-19 cases as of " + timeUtils_1.formatDate(startDate),
-                    valueExpression: expressionUtils_1.createNewInfectionsAverageExpression(startDateFieldName),
+                    valueExpression: expressionUtils_1.createNewCasesAverageExpression(startDateFieldName),
                     stops: [
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
@@ -308,7 +308,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     ]
                 }), new ColorVariable({
                     valueExpressionTitle: "Change in 7-day rolling average of new COVID-19 cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
-                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createNewInfectionsAverageExpression(startDateFieldName, true), expressionUtils_1.createNewInfectionsAverageExpression(endDateFieldName, true), true),
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createNewCasesAverageExpression(startDateFieldName, true), expressionUtils_1.createNewCasesAverageExpression(endDateFieldName, true), true),
                     stops: [
                         { value: -1, color: colors[0], label: "Decrease" },
                         { value: 0, color: colors[2] },
@@ -320,7 +320,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         else {
             visualVariables = [new SizeVariable({
                     valueExpressionTitle: "7-day rolling average of new COVID-19 cases as of " + timeUtils_1.formatDate(startDate),
-                    valueExpression: expressionUtils_1.createNewInfectionsAverageExpression(startDateFieldName),
+                    valueExpression: expressionUtils_1.createNewCasesAverageExpression(startDateFieldName),
                     stops: [
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
@@ -563,7 +563,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
             visualVariables = [
                 new ColorVariable({
-                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createInfectionRateExpression(startDateFieldName), expressionUtils_1.createInfectionRateExpression(endDateFieldName)),
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createCaseRateExpression(startDateFieldName), expressionUtils_1.createCaseRateExpression(endDateFieldName)),
                     valueExpressionTitle: "Change in COVID-19 cases per 100k people",
                     stops: [
                         { value: 0, color: colors_5[0] },
@@ -578,7 +578,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         else {
             visualVariables = [
                 new ColorVariable({
-                    valueExpression: expressionUtils_1.createInfectionRateExpression(startDateFieldName),
+                    valueExpression: expressionUtils_1.createCaseRateExpression(startDateFieldName),
                     valueExpressionTitle: "Total COVID-19 cases per 100k people",
                     stops: [
                         { value: 50, color: colors[0] },

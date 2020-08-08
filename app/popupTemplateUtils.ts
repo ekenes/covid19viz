@@ -7,7 +7,7 @@ import MediaContent = require("esri/popup/content/MediaContent");
 import FieldInfo = require("esri/popup/FieldInfo");
 import ExpressionInfo = require("esri/popup/ExpressionInfo");
 
-import { createRecoveredCasesExpression, createActiveCasesExpression, createDoublingTimeExpression, createNewInfectionsAverageExpression, createNewInfectionsExpression, createTotalDeathsExpression, createDeathRateExpression, createTotalInfectionsExpression, createInfectionRateExpression, createActiveCasesPer100kExpression } from "./expressionUtils";
+import { createRecoveredCasesExpression, createActiveCasesExpression, createDoublingTimeExpression, createNewCasesAverageExpression, createNewCasesExpression, createTotalDeathsExpression, createDeathRateExpression, createTotalCasesExpression, createCaseRateExpression, createActiveCasesPer100kExpression } from "./expressionUtils";
 import { UpdateRendererParams } from "./rendererUtils";
 import { FieldsContent } from "esri/popup/content";
 
@@ -41,7 +41,7 @@ function createTotalCasesExpressionInfos(startDate: Date, endDate: Date): Expres
   while (currentDate <= endDate){
     const currentFieldName = getFieldFromDate(currentDate);
     expressionInfos.push( new ExpressionInfo({
-      expression: createTotalInfectionsExpression(currentFieldName),
+      expression: createTotalCasesExpression(currentFieldName),
       name: `total-infections-${currentFieldName}`,
       title: formatDate(currentDate)
     }));
@@ -110,7 +110,7 @@ function createNewCasesExpressionInfos(startDate: Date, endDate: Date): Expressi
   while (currentDate <= endDate){
     const currentFieldName = getFieldFromDate(currentDate);
     expressionInfos.push( new ExpressionInfo({
-      expression: createNewInfectionsAverageExpression(currentFieldName),
+      expression: createNewCasesAverageExpression(currentFieldName),
       name: `new-cases-${currentFieldName}`,
       title: formatDate(currentDate)
     }));
@@ -243,7 +243,7 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
       name: "active-rate",
       title: "Active rate"
     }), new ExpressionInfo({
-      expression: createTotalInfectionsExpression(currentFieldName),
+      expression: createTotalCasesExpression(currentFieldName),
       name: "total",
       title: "Total cases"
     }), new ExpressionInfo({
@@ -251,7 +251,7 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
       name: "doubling-time",
       title: "Doubling time (days)"
     }), new ExpressionInfo({
-      expression: createNewInfectionsExpression(currentFieldName),
+      expression: createNewCasesExpression(currentFieldName),
       name: "new-infections",
       title: "New cases"
     }), new ExpressionInfo({
@@ -513,7 +513,7 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
         name: "active-rate",
         title: "Active rate"
       }), new ExpressionInfo({
-        expression: createTotalInfectionsExpression(currentFieldName),
+        expression: createTotalCasesExpression(currentFieldName),
         name: "total",
         title: "Total cases"
       }), new ExpressionInfo({
@@ -521,7 +521,7 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
         name: "doubling-time",
         title: "Doubling time (days)"
       }), new ExpressionInfo({
-        expression: createNewInfectionsExpression(currentFieldName),
+        expression: createNewCasesExpression(currentFieldName),
         name: "new-infections",
         title: "New cases"
       }), new ExpressionInfo({

@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./statistics", "esri/intl"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, statistics_1, intl_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Home", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./statistics", "esri/intl"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Home, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, statistics_1, intl_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -258,6 +258,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 view: view,
                                 content: search
                             }), "top-left");
+                            view.ui.add(new Home({ view: view }), "top-left");
                             activeCountElement = document.getElementById("active-count");
                             recoveredCountElement = document.getElementById("recovered-count");
                             deathCountElement = document.getElementById("death-count");

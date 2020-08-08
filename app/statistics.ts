@@ -1,6 +1,5 @@
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import Graphic = require("esri/Graphic");
-import promiseUtils = require("esri/core/promiseUtils");
 import { getFieldFromDate, dateAdd } from "./timeUtils";
 
 interface StatisticsParams {
