@@ -42,7 +42,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
 
     const rendererSelect = document.getElementById("renderer-select") as HTMLSelectElement;
 
-    if(!isMobileBrowser()){
+    if(isMobileBrowser()){
       minScaleFactor = 2;
       toggleTimeOptionsVisibility();
     } else {

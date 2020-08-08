@@ -133,7 +133,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             // display the body style so message or content renders
                             document.body.style.visibility = "visible";
                             rendererSelect = document.getElementById("renderer-select");
-                            if (!isMobileBrowser()) {
+                            if (isMobileBrowser()) {
                                 minScaleFactor = 2;
                                 toggleTimeOptionsVisibility();
                             }
