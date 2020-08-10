@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Home", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./statistics", "esri/intl"], function (require, exports, WebMap, MapView, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Home, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, statistics_1, intl_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/lang", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Home", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./statistics", "esri/intl"], function (require, exports, WebMap, MapView, lang, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Home, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, statistics_1, intl_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -221,7 +221,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                     wkid: wkid
                                 },
                                 constraints: {
-                                    minScale: 25000000 * minScaleFactor,
+                                    minScale: 25000000,
                                     maxScale: 200000
                                 },
                                 popup: {
@@ -354,7 +354,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 updateLayer(false);
                             });
                             if (isMobileBrowser()) {
-                                minScaleFactor = 2;
+                                view.constraints.minScale = lang.clone(view.constraints.minScale) * 2;
                                 toggleTimeOptionsVisibility();
                                 infoElement.style.position = null;
                                 infoElement.style.left = null;
@@ -397,7 +397,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 });
             });
         }
-        var isMobileBrowser, minScaleFactor;
+        var isMobileBrowser;
         return __generator(this, function (_a) {
             isMobileBrowser = function () {
                 var check = false;
@@ -406,7 +406,6 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                 return check;
             };
             loadApp();
-            minScaleFactor = 1;
             return [2 /*return*/];
         });
     }); })();

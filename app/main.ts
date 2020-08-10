@@ -1,5 +1,6 @@
 import WebMap = require("esri/WebMap");
 import MapView = require("esri/views/MapView");
+import lang = require("esri/core/lang");
 
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import TimeSlider = require("esri/widgets/TimeSlider");
@@ -34,7 +35,6 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     return check;
   };
   loadApp();
-  let minScaleFactor = 1;
 
   async function loadApp() {
     // display the body style so message or content renders
@@ -133,7 +133,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
         wkid
       },
       constraints: {
-        minScale: 25000000 * minScaleFactor,
+        minScale: 25000000,
         maxScale: 200000
       },
       popup: {
@@ -334,7 +334,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     });
 
     if(isMobileBrowser()){
-      minScaleFactor = 2;
+      view.constraints.minScale = lang.clone(view.constraints.minScale) * 2;
       toggleTimeOptionsVisibility();
 
       infoElement.style.position = null;
