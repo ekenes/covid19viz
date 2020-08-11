@@ -165,10 +165,10 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
         stops: [
           { value: 0, size: 0 },
           { value: 1, size: "2px" },
-          { value: 100, size: "4px" },
-          { value: 1000, size: "10px" },
-          { value: 20000, size: "40px" },
-          { value: 250000, size: "220px" }
+          { value: 100, size: "3px" },
+          { value: 1000, size: "5px" },
+          { value: 20000, size: "20px" },
+          { value: 250000, size: "250px" }
         ]
       }),
       new ColorVariable({
@@ -198,10 +198,10 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
       stops: [
         { value: 0, size: 0 },
         { value: 1, size: "2px" },
-        { value: 100, size: "4px" },
-        { value: 1000, size: "10px" },
-        { value: 20000, size: "40px" },
-        { value: 250000, size: "220px" }
+        { value: 100, size: "3px" },
+        { value: 1000, size: "5px" },
+        { value: 20000, size: "20px" },
+        { value: 250000, size: "250px" }
       ]
     }) ];
   }
