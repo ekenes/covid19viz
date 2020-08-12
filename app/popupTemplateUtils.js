@@ -116,6 +116,9 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
             case "death-rate":
                 firstMediaInfoTitle = "Deaths";
                 break;
+            case "death-rate-per-100k":
+                firstMediaInfoTitle = "Deaths";
+                break;
             case "active-rate":
                 firstMediaInfoTitle = "Active cases";
                 break;
@@ -176,12 +179,19 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                             places: 0,
                             digitSeparator: true
                         }
+                    }),
+                    new FieldInfo({
+                        fieldName: "expression/death-rate-100k",
+                        format: {
+                            places: 0,
+                            digitSeparator: true
+                        }
                     })
                 ]
             });
             var expressionInfosLength = existingTemplate.expressionInfos.length;
-            var replacementIndex = expressionInfosLength - 8;
-            existingTemplate.expressionInfos.splice(replacementIndex, 8, new ExpressionInfo({
+            var replacementIndex = expressionInfosLength - 9;
+            existingTemplate.expressionInfos.splice(replacementIndex, 9, new ExpressionInfo({
                 expression: expressionUtils_1.createActiveCasesExpression(currentFieldName),
                 name: "active",
                 title: "Active cases (est.)"
@@ -213,6 +223,10 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 expression: expressionUtils_1.createDeathRateExpression(currentFieldName),
                 name: "death-rate",
                 title: "Death rate (% of cases)"
+            }), new ExpressionInfo({
+                expression: expressionUtils_1.createDeathRate100kExpression(currentFieldName),
+                name: "death-rate-100k",
+                title: "Deaths per 100,000"
             }));
             var mediaInfos_1 = existingTemplate.content[2].mediaInfos;
             var firstMediaInfo_1 = mediaInfos_1.filter(function (info) { return info.title === firstMediaInfoTitle; })[0];
@@ -369,6 +383,13 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                             }
                         }),
                         new FieldInfo({
+                            fieldName: "expression/death-rate-100k",
+                            format: {
+                                places: 0,
+                                digitSeparator: true
+                            }
+                        }),
+                        new FieldInfo({
                             fieldName: "expression/doubling-time",
                             format: {
                                 places: 0,
@@ -411,6 +432,13 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 }),
                 new FieldInfo({
                     fieldName: "expression/deaths",
+                    format: {
+                        places: 0,
+                        digitSeparator: true
+                    }
+                }),
+                new FieldInfo({
+                    fieldName: "expression/death-rate-100k",
                     format: {
                         places: 0,
                         digitSeparator: true
@@ -469,6 +497,10 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                     expression: expressionUtils_1.createDeathRateExpression(currentFieldName),
                     name: "death-rate",
                     title: "Death rate (% of cases)"
+                }), new ExpressionInfo({
+                    expression: expressionUtils_1.createDeathRate100kExpression(currentFieldName),
+                    name: "death-rate-100k",
+                    title: "Deaths per 100,000"
                 })])
         });
     }

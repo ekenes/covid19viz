@@ -10,7 +10,7 @@ import FeatureLayer = require("esri/layers/FeatureLayer");
 import lang = require("esri/core/lang");
 
 import { getFieldFromDate, formatDate } from "./timeUtils";
-import { createTotalCasesExpression, createNewCasesAverageExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createCaseRateExpression, createActiveCasesExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference, createRecoveredCasesExpression } from "./expressionUtils";
+import { createTotalCasesExpression, createNewCasesAverageExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createCaseRateExpression, createActiveCasesExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference, createRecoveredCasesExpression, createDeathRate100kExpression } from "./expressionUtils";
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
 import { DotDensityRenderer } from "esri/renderers";
 
@@ -19,7 +19,7 @@ export type COVIDRenderer = SimpleRenderer | DotDensityRenderer;
 export interface UpdateRendererParams {
   layer: CSVLayer | FeatureLayer,
   rendererType: "total-infections" | "doubling-time" | "total-deaths" | "total-active" |
-    "active-rate" | "infection-rate-per-100k" | "death-rate" | "total-color" |
+    "active-rate" | "infection-rate-per-100k" | "death-rate" | "death-rate-per-100k" | "total-color" |
     "new-total" | "total-color-new-total-size" | "dot-density"
   currentDate: Date,
   endDate?: Date
@@ -80,6 +80,12 @@ export function updateRenderer(params: UpdateRendererParams){
         endDate
       });
       break;
+    case "death-rate-per-100k":
+      renderer = createDeaths100kRenderer({
+        startDate,
+        endDate
+      });
+      break;
     case "new-total":
       renderer = createNewCasesRenderer({
         startDate,
@@ -107,7 +113,10 @@ const colorRamps = {
     [ "#54bebe", "#98d1d1", "#dedad2", "#df979e", "#c80064" ],
     [ "#8100e6", "#b360d1", "#f2cf9e", "#6eb830", "#2b9900" ],
     [ "#00998c", "#69d4cb", "#f2f2aa", "#d98346", "#b34a00" ],
-    [ "#a6611a", "#dfc27d", "#f5f5f5", "#80cdc1", "#018571" ]
+    [ "#a6611a", "#dfc27d", "#f5f5f5", "#80cdc1", "#018571" ],
+    [ "#454545", "#686868", "#8c8c8c", "#c2c2c2", "#f7f7f7" ].reverse(),
+    [ "#f7f7f7", "#cccccc", "#969696", "#636363", "#252525" ],
+    [ "#484c59", "#63687a", "#948889", "#e0b9b5", "#ffe9e6" ].reverse()
   ],
   dark: [
     [ "#0010d9", "#0040ff", "#0080ff", "#00bfff", "#00ffff" ],
@@ -698,6 +707,61 @@ function createCaseRateRenderer(params: CreateRendererParams) : COVIDRenderer {
           { value: 1000, color: colors[2] },
           { value: 2000, color: colors[3] },
           { value: 3000, color: colors[4] }
+        ]
+      })
+    ];
+  }
+
+  return new SimpleRenderer({
+    symbol: new SimpleFillSymbol({
+      outline: new SimpleLineSymbol({
+        color: "rgba(128,128,128,0.4)",
+        width: 0
+      })
+    }),
+    label: "County",
+    visualVariables
+  });
+}
+
+function createDeaths100kRenderer(params: CreateRendererParams) : COVIDRenderer {
+  const colors = colorRamps.light[8];
+
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+
+  let visualVariables = null;
+
+  if(endDate){
+    const endDateFieldName = getFieldFromDate(endDate);
+
+    visualVariables = [
+      new ColorVariable({
+        valueExpression: expressionDifference(
+          createDeathRate100kExpression(startDateFieldName),
+          createDeathRate100kExpression(endDateFieldName)
+        ),
+        valueExpressionTitle: `Change in COVID-19 deaths per 100k people`,
+        stops: [
+          { value: 0, color: colors[0] },
+          { value: 25, color: colors[1] },
+          { value: 50, color: colors[2] },
+          { value: 75, color: colors[3] },
+          { value: 100, color: colors[4] }
+        ]
+      })
+    ];
+  } else {
+    visualVariables = [
+      new ColorVariable({
+        valueExpression: createDeathRate100kExpression(startDateFieldName),
+        valueExpressionTitle: `Total COVID-19 deaths per 100k people`,
+        stops: [
+          { value: 0, color: colors[0] },
+          { value: 50, color: colors[1] },
+          { value: 100, color: colors[2] },
+          { value: 150, color: colors[3] },
+          { value: 200, color: colors[4] }
         ]
       })
     ];

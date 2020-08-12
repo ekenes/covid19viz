@@ -7,7 +7,7 @@ import MediaContent = require("esri/popup/content/MediaContent");
 import FieldInfo = require("esri/popup/FieldInfo");
 import ExpressionInfo = require("esri/popup/ExpressionInfo");
 
-import { createRecoveredCasesExpression, createActiveCasesExpression, createDoublingTimeExpression, createNewCasesAverageExpression, createNewCasesExpression, createTotalDeathsExpression, createDeathRateExpression, createTotalCasesExpression, createCaseRateExpression, createActiveCasesPer100kExpression } from "./expressionUtils";
+import { createRecoveredCasesExpression, createActiveCasesExpression, createDoublingTimeExpression, createNewCasesAverageExpression, createNewCasesExpression, createTotalDeathsExpression, createDeathRateExpression, createTotalCasesExpression, createCaseRateExpression, createActiveCasesPer100kExpression, createDeathRate100kExpression } from "./expressionUtils";
 import { UpdateRendererParams } from "./rendererUtils";
 import { FieldsContent } from "esri/popup/content";
 
@@ -158,6 +158,9 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
     case "death-rate":
       firstMediaInfoTitle = "Deaths";
       break;
+    case "death-rate-per-100k":
+      firstMediaInfoTitle = "Deaths";
+      break;
     case "active-rate":
       firstMediaInfoTitle = "Active cases";
       break;
@@ -221,12 +224,19 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
             places: 0,
             digitSeparator: true
           }
+        }),
+        new FieldInfo({
+          fieldName: "expression/death-rate-100k",
+          format: {
+            places: 0,
+            digitSeparator: true
+          }
         })
       ]
     });
     const expressionInfosLength = existingTemplate.expressionInfos.length;
-    const replacementIndex = expressionInfosLength - 8;
-    existingTemplate.expressionInfos.splice(replacementIndex, 8,  new ExpressionInfo({
+    const replacementIndex = expressionInfosLength - 9;
+    existingTemplate.expressionInfos.splice(replacementIndex, 9,  new ExpressionInfo({
       expression: createActiveCasesExpression(currentFieldName),
       name: "active",
       title: "Active cases (est.)"
@@ -258,6 +268,10 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
       expression: createDeathRateExpression(currentFieldName),
       name: "death-rate",
       title: "Death rate (% of cases)"
+    }), new ExpressionInfo({
+      expression: createDeathRate100kExpression(currentFieldName),
+      name: "death-rate-100k",
+      title: "Deaths per 100,000"
     }));
 
     const mediaInfos = existingTemplate.content[2].mediaInfos;
@@ -426,6 +440,13 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
             }
           }),
           new FieldInfo({
+            fieldName: "expression/death-rate-100k",
+            format: {
+              places: 0,
+              digitSeparator: true
+            }
+          }),
+          new FieldInfo({
             fieldName: "expression/doubling-time",
             format: {
               places: 0,
@@ -469,6 +490,13 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
         }),
         new FieldInfo({
           fieldName: "expression/deaths",
+          format: {
+            places: 0,
+            digitSeparator: true
+          }
+        }),
+        new FieldInfo({
+          fieldName: "expression/death-rate-100k",
           format: {
             places: 0,
             digitSeparator: true
@@ -528,6 +556,10 @@ function createComprehensivePopupTemplate(params: PopupTemplateCreateParams) : P
         expression: createDeathRateExpression(currentFieldName),
         name: "death-rate",
         title: "Death rate (% of cases)"
+      }), new ExpressionInfo({
+        expression: createDeathRate100kExpression(currentFieldName),
+        name: "death-rate-100k",
+        title: "Deaths per 100,000"
       })])
   });
 }

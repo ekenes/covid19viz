@@ -261,6 +261,18 @@ export function createCaseRateExpression(currentDateFieldName: string){
   `;
 }
 
+export function createDeathRate100kExpression(currentDateFieldName: string){
+  return `
+    var currentDayFieldName = "${currentDateFieldName}";
+    var currentDayValue = $feature[currentDayFieldName];
+    var currentDaySplit = Split(currentDayValue, "|");
+    var cases = Number(currentDaySplit[0]);
+    var deaths = Number(currentDaySplit[1]);
+    var population = $feature.POPULATION;
+    return (deaths / population ) * 100000;
+  `;
+}
+
 export function createActiveCasesPer100kExpression(currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
   const getFieldFromDate = getFieldFromDateFunction();
 
