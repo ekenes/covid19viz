@@ -335,6 +335,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     });
 
     if(isMobileBrowser()){
+      infectionsPopulationLayer.popupEnabled = false;
       view.constraints.minScale = lang.clone(view.constraints.minScale) * 2;
       toggleTimeOptionsVisibility();
 

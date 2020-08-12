@@ -355,6 +355,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 updateLayer(false);
                             });
                             if (isMobileBrowser()) {
+                                layerUtils_1.infectionsPopulationLayer.popupEnabled = false;
                                 view.constraints.minScale = lang.clone(view.constraints.minScale) * 2;
                                 toggleTimeOptionsVisibility();
                                 infoElement.style.position = null;
