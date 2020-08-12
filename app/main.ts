@@ -187,6 +187,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     }), "top-left");
 
     view.ui.add( new Home({ view }), "top-left");
+    view.ui.add("time-slider-toggle", "bottom-left");
 
     const activeCountElement = document.getElementById("active-count");
     const recoveredCountElement = document.getElementById("recovered-count");

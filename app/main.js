@@ -269,6 +269,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 content: search
                             }), "top-left");
                             view.ui.add(new Home({ view: view }), "top-left");
+                            view.ui.add("time-slider-toggle", "bottom-left");
                             activeCountElement = document.getElementById("active-count");
                             recoveredCountElement = document.getElementById("recovered-count");
                             deathCountElement = document.getElementById("death-count");

@@ -34,14 +34,6 @@ body,
   bottom: 30px;
 }
 
-#time-slider-toggle {
-  position: absolute;
-  left: 15px;
-  bottom: 30px;
-  height: 32px;
-  width: 32px;
-}
-
 #time-slider-toggle:hover{
   cursor: pointer;
 }
