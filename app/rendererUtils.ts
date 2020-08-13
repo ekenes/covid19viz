@@ -25,6 +25,8 @@ export interface UpdateRendererParams {
   endDate?: Date
 }
 
+const legendNote = document.getElementById("legend-note");
+
 export function updateRenderer(params: UpdateRendererParams){
   const { layer, rendererType, currentDate, endDate } = params;
   const startDate = currentDate;
@@ -37,60 +39,70 @@ export function updateRenderer(params: UpdateRendererParams){
         startDate,
         endDate
       });
+      legendNote.style.display = "none";
       break;
     case "dot-density":
       renderer = createDotDensityRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "block";
       break;
     case "doubling-time":
       renderer = createDoublingTimeRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "none";
       break;
     case "total-deaths":
       renderer = createTotalDeathsRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "none";
       break;
     case "total-active":
       renderer = createActiveCasesRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "block";
       break;
     case "active-rate":
       renderer = createActiveRateRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "block";
       break;
     case "infection-rate-per-100k":
       renderer = createCaseRateRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "none";
       break;
     case "death-rate":
       renderer = createDeathRateRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "none";
       break;
     case "death-rate-per-100k":
       renderer = createDeaths100kRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "none";
       break;
     case "new-total":
       renderer = createNewCasesRenderer({
         startDate,
         endDate
       });
+      legendNote.style.display = "none";
       break;
     default:
       break;

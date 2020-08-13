@@ -1,6 +1,7 @@
 define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "esri/renderers/support/AttributeColorInfo", "esri/core/lang", "./timeUtils", "./expressionUtils", "esri/symbols", "esri/renderers"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, AttributeColorInfo, lang, timeUtils_1, expressionUtils_1, symbols_1, renderers_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var legendNote = document.getElementById("legend-note");
     function updateRenderer(params) {
         var layer = params.layer, rendererType = params.rendererType, currentDate = params.currentDate, endDate = params.endDate;
         var startDate = currentDate;
@@ -11,60 +12,70 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "none";
                 break;
             case "dot-density":
                 renderer = createDotDensityRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "block";
                 break;
             case "doubling-time":
                 renderer = createDoublingTimeRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "none";
                 break;
             case "total-deaths":
                 renderer = createTotalDeathsRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "none";
                 break;
             case "total-active":
                 renderer = createActiveCasesRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "block";
                 break;
             case "active-rate":
                 renderer = createActiveRateRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "block";
                 break;
             case "infection-rate-per-100k":
                 renderer = createCaseRateRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "none";
                 break;
             case "death-rate":
                 renderer = createDeathRateRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "none";
                 break;
             case "death-rate-per-100k":
                 renderer = createDeaths100kRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "none";
                 break;
             case "new-total":
                 renderer = createNewCasesRenderer({
                     startDate: startDate,
                     endDate: endDate
                 });
+                legendNote.style.display = "none";
                 break;
             default:
                 break;
