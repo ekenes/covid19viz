@@ -1,6 +1,6 @@
 # Viral - Explore COVID-19 data in the United States
 
-[This app](./) visualizes COVID-19 data in the United States on the county level.
+[This app](https://ekenes.github.io/covid19viz/) visualizes COVID-19 data in the United States on the county level.
 
 Data originates from a hosted FeatureLayer, which updates daily based on [this data](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series) maintained by Johns Hopkins University.
 
@@ -9,6 +9,11 @@ The data contains the total number of people who tested positive for COVID-19 an
 This app uses expressions to calculate various statistics, such as the total number of cases, new cases, deaths, death rate, doubling time, and the estimated number of people actively sick with COVID-19.
 
 Use the slider to view how this data changed over time.
+
+## Methodology
+
+The methodology that determined the Arcade expressions and cartographic decisions are described in this blog post:
+[Animate and explore COVID-19 data through time](https://www.esri.com/arcgis-blog/products/js-api-arcgis/mapping/animate-and-explore-covid-19-data-through-time/).
 
 ## Expressions
 
