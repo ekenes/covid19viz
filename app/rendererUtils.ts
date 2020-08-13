@@ -53,7 +53,7 @@ export function updateRenderer(params: UpdateRendererParams){
         startDate,
         endDate
       });
-      legendNote.style.display = "none";
+      legendNote.style.display = "block";
       break;
     case "total-deaths":
       renderer = createTotalDeathsRenderer({
@@ -268,12 +268,12 @@ function createDotDensityRenderer(params: CreateRendererParams) : COVIDRenderer 
     attributes = [
       new AttributeColorInfo({
         color: colors[0],
-        valueExpressionTitle: "Active",
+        valueExpressionTitle: "Active*",
         valueExpression: createActiveCasesExpression(startDateFieldName),
       }),
       new AttributeColorInfo({
         color: colors[1],
-        valueExpressionTitle: "Recovered",
+        valueExpressionTitle: "Recovered*",
         valueExpression: createRecoveredCasesExpression(startDateFieldName),
       }),
       new AttributeColorInfo({
@@ -444,7 +444,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
 
     visualVariables = [
       new SizeVariable({
-        valueExpressionTitle: `Change in estimated active COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+        valueExpressionTitle: `Change in estimated active* COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
         valueExpression: expressionDifference(
           createActiveCasesExpression(startDateFieldName, true),
           createActiveCasesExpression(endDateFieldName, true),
@@ -466,7 +466,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
           true
         ),
         legendOptions: {
-          title: `Change in active cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
+          title: `Change in active* cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
         },
         stops: [
           { value: -100, color: colors[0], label: "Decrease" },
@@ -479,7 +479,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
     ];
   } else {
     visualVariables = [ new SizeVariable({
-      valueExpressionTitle: `Estimated active COVID-19 cases on ${formatDate(startDate)}`,
+      valueExpressionTitle: `Estimated active* COVID-19 cases on ${formatDate(startDate)}`,
       valueExpression: createActiveCasesExpression(startDateFieldName),
       stops: [
         { value: 0, size: 0 },
@@ -521,7 +521,7 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
           true
         ),
         legendOptions: {
-          title: `Estimated active COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
+          title: `Estimated active* COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
         },
         stops: [
           { value: 0, size: 0 },
@@ -553,7 +553,7 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
       new SizeVariable({
         valueExpression: createActiveCasesExpression(startDateFieldName),
         legendOptions: {
-          title: `Estimated active COVID-19 cases as of ${formatDate(startDate)}`
+          title: `Estimated active* COVID-19 cases as of ${formatDate(startDate)}`
         },
         stops: [
           { value: 0, size: 0 },
@@ -809,7 +809,7 @@ function createActiveRateRenderer(params: CreateRendererParams) : COVIDRenderer 
           createActiveCasesPer100kExpression(endDateFieldName, true),
           true
         ),
-        valueExpressionTitle: `Change in estimated active COVID-19 cases per 100k people`,
+        valueExpressionTitle: `Change in estimated active* COVID-19 cases per 100k people`,
         stops: [
           { value: -1000, color: colors[0] },
           { value: -500, color: colors[1] },
@@ -823,7 +823,7 @@ function createActiveRateRenderer(params: CreateRendererParams) : COVIDRenderer 
     visualVariables = [
       new ColorVariable({
         valueExpression: createActiveCasesPer100kExpression(startDateFieldName),
-        valueExpressionTitle: `Estimated active COVID-19 cases per 100k people`,
+        valueExpressionTitle: `Estimated active* COVID-19 cases per 100k people`,
         stops: [
           { value: 50, color: colors[0] },
           { value: 200, color: colors[1] },
