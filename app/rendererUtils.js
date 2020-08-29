@@ -601,11 +601,11 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpression: expressionUtils_1.createCaseRateExpression(startDateFieldName),
                     valueExpressionTitle: "Total COVID-19 cases per 100k people",
                     stops: [
-                        { value: 50, color: colors[0] },
-                        { value: 500, color: colors[1] },
-                        { value: 1000, color: colors[2] },
-                        { value: 2000, color: colors[3] },
-                        { value: 3000, color: colors[4] }
+                        { value: 0, color: colors[0] },
+                        { value: 1000, color: colors[1] },
+                        { value: 2500, color: colors[2] },
+                        { value: 3500, color: colors[3] },
+                        { value: 5000, color: colors[4] }
                     ]
                 })
             ];
