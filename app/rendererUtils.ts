@@ -191,23 +191,24 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
           { value: 20000, size: "20px" },
           { value: 250000, size: "250px" }
         ]
-      }),
-      new ColorVariable({
-        valueExpression: expressionPercentChange(
-          createTotalCasesExpression(startDateFieldName),
-          createTotalCasesExpression(endDateFieldName)
-        ),
-        legendOptions: {
-          title: `% increase in total cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
-        },
-        stops: [
-          { value: dateRangeConfig.stops[0], color: colors[0], label: "No increase" },
-          { value: dateRangeConfig.stops[1], color: colors[1] },
-          { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
-          { value: dateRangeConfig.stops[3], color: colors[3] },
-          { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
-        ]
       })
+      // ,
+      // new ColorVariable({
+      //   valueExpression: expressionPercentChange(
+      //     createTotalCasesExpression(startDateFieldName),
+      //     createTotalCasesExpression(endDateFieldName)
+      //   ),
+      //   legendOptions: {
+      //     title: `% increase in total cases from ${formatDate(startDate)} - ${formatDate(endDate)}`
+      //   },
+      //   stops: [
+      //     { value: dateRangeConfig.stops[0], color: colors[0], label: "No increase" },
+      //     { value: dateRangeConfig.stops[1], color: colors[1] },
+      //     { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
+      //     { value: dateRangeConfig.stops[3], color: colors[3] },
+      //     { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
+      //   ]
+      // })
     ];
 
   } else {
@@ -228,7 +229,7 @@ function createTotalCasesRenderer(params: CreateRendererParams) : COVIDRenderer 
   }
 
   return new SimpleRenderer({
-    symbol: endDate ? createDefaultSymbol() : createDefaultSymbol(null, new SimpleLineSymbol({
+    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
       color: new Color("rgba(227, 0, 106,0.6)"),
       width: 0.5
     })),
@@ -325,23 +326,24 @@ function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer
           { value: 5000, size: "50px" },
           { value: 30000, size: "100px" }
         ]
-      }),
-      new ColorVariable({
-        valueExpression: expressionPercentChange(
-          createTotalCasesExpression(startDateFieldName),
-          createTotalCasesExpression(endDateFieldName)
-        ),
-        legendOptions: {
-          title: `% increase in deaths from ${formatDate(startDate)} - ${formatDate(endDate)}`
-        },
-        stops: [
-          { value: dateRangeConfig.stops[0], color: colors[0], label: "No increase" },
-          { value: dateRangeConfig.stops[1], color: colors[1] },
-          { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
-          { value: dateRangeConfig.stops[3], color: colors[3] },
-          { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
-        ]
       })
+      // ,
+      // new ColorVariable({
+      //   valueExpression: expressionPercentChange(
+      //     createTotalCasesExpression(startDateFieldName),
+      //     createTotalCasesExpression(endDateFieldName)
+      //   ),
+      //   legendOptions: {
+      //     title: `% increase in deaths from ${formatDate(startDate)} - ${formatDate(endDate)}`
+      //   },
+      //   stops: [
+      //     { value: dateRangeConfig.stops[0], color: colors[0], label: "No increase" },
+      //     { value: dateRangeConfig.stops[1], color: colors[1] },
+      //     { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
+      //     { value: dateRangeConfig.stops[3], color: colors[3] },
+      //     { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
+      //   ]
+      // })
     ];
   } else {
     visualVariables = [
@@ -363,9 +365,9 @@ function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer
     ];
   }
   return new SimpleRenderer({
-    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
+    symbol: createDefaultSymbol(new Color("rgba(15, 15, 15,0.4)"), new SimpleLineSymbol({
       color: new Color("rgba(15, 15, 15,0.8)"),
-      width: endDate ? 0 : 0.5
+      width: 0
     })),
     label: "County",
     visualVariables
@@ -421,9 +423,9 @@ function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
     }) ];
   }
   return new SimpleRenderer({
-    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
+    symbol: createDefaultSymbol(new Color("rgba(212, 74, 0,0.4)"), new SimpleLineSymbol({
       color: new Color("rgba(212, 74, 0,1)"),
-      width: endDate ? 0 : 0.5
+      width: 0
     })),
     label: "County",
     visualVariables
@@ -493,9 +495,9 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
   }
 
   return new SimpleRenderer({
-    symbol: createDefaultSymbol(null, new SimpleLineSymbol({
+    symbol: createDefaultSymbol(new Color("rgba(230, 0, 73, 0.3)"), new SimpleLineSymbol({
       color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(230, 0, 73, 0.8)"),
-      width: endDate ? 0.5 : 0.5
+      width: 0
     })),
     label: "County",
     visualVariables
