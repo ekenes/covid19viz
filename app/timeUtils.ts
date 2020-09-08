@@ -49,6 +49,14 @@ export const timeExtents = {
     start: new Date(2020, 6, 4),
     end: initialTimeExtent.end
   }),
+  sturgis: new TimeExtent({
+    start: new Date(2020, 7, 7),
+    end: initialTimeExtent.end
+  }),
+  labor: new TimeExtent({
+    start: new Date(2020, 8, 7),
+    end: initialTimeExtent.end
+  }),
   month: new TimeExtent({
     start: dateAdd(initialTimeExtent.end, -30),
     end: initialTimeExtent.end

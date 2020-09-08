@@ -339,10 +339,12 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                         ];
                                     }
                                 }
-                                btns[0].innerText = (newMode === "time-window") ? "Last 2 weeks" : "Two weeks ago";
-                                btns[1].innerText = (newMode === "time-window") ? "Last month" : "One month ago";
-                                btns[2].innerText = (newMode === "time-window") ? "Since July 4th" : "July 4th";
-                                btns[3].innerText = (newMode === "time-window") ? "Since Memorial Day" : "Memorial Day";
+                                btns[0].innerText = (newMode === "time-window") ? "Since Memorial Day" : "Memorial Day";
+                                btns[1].innerText = (newMode === "time-window") ? "Since July 4th" : "July 4th";
+                                btns[2].innerText = (newMode === "time-window") ? "Since Sturgis" : "Sturgis";
+                                btns[3].innerText = (newMode === "time-window") ? "Since Labor Day" : "Labor Day";
+                                btns[4].innerText = (newMode === "time-window") ? "Last month" : "One month ago";
+                                btns[5].innerText = (newMode === "time-window") ? "Last 2 weeks" : "Two weeks ago";
                             };
                             view.ui.add("timeOptions", "bottom-center");
                             timeVisibilityBtn = document.getElementById("time-slider-toggle");

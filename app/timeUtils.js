@@ -44,6 +44,14 @@ define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", 
             start: new Date(2020, 6, 4),
             end: exports.initialTimeExtent.end
         }),
+        sturgis: new TimeExtent({
+            start: new Date(2020, 7, 7),
+            end: exports.initialTimeExtent.end
+        }),
+        labor: new TimeExtent({
+            start: new Date(2020, 8, 7),
+            end: exports.initialTimeExtent.end
+        }),
         month: new TimeExtent({
             start: dateAdd(exports.initialTimeExtent.end, -30),
             end: exports.initialTimeExtent.end
