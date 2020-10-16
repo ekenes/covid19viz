@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "@types/arcgis-js-api": "http://jscore.esri.com/javascript/latest/api-reference/typings/arcgis-js-api-4.16.tgz"
+    "@types/arcgis-js-api": "4.17.0"
   }
 }
