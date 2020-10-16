@@ -126,6 +126,7 @@ define(["require", "exports", "./timeUtils", "esri/PopupTemplate", "esri/popup/c
                 firstMediaInfoTitle = "Total cases";
                 break;
             case "new-total":
+            case "new-total-bars":
                 firstMediaInfoTitle = "7-day rolling average of new cases per day";
             case "dot-density":
                 firstMediaInfoTitle = "Active cases";

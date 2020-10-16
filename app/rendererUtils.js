@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "esri/renderers/support/AttributeColorInfo", "esri/core/lang", "./timeUtils", "./expressionUtils", "esri/symbols", "esri/renderers"], function (require, exports, SimpleRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, AttributeColorInfo, lang, timeUtils_1, expressionUtils_1, symbols_1, renderers_1) {
+define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/ClassBreaksRenderer", "esri/renderers/visualVariables/ColorVariable", "esri/renderers/visualVariables/SizeVariable", "esri/renderers/visualVariables/OpacityVariable", "esri/Color", "esri/renderers/support/AttributeColorInfo", "esri/core/lang", "./timeUtils", "./expressionUtils", "esri/symbols", "esri/renderers", "./symbolUtils"], function (require, exports, SimpleRenderer, ClassBreaksRenderer, ColorVariable, SizeVariable, OpacityVariable, Color, AttributeColorInfo, lang, timeUtils_1, expressionUtils_1, symbols_1, renderers_1, symbolUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var legendNote = document.getElementById("legend-note");
@@ -72,6 +72,13 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                 break;
             case "new-total":
                 renderer = createNewCasesRenderer({
+                    startDate: startDate,
+                    endDate: endDate
+                });
+                legendNote.style.display = "none";
+                break;
+            case "new-total-bars":
+                renderer = createNewCasesRendererBars({
                     startDate: startDate,
                     endDate: endDate
                 });
@@ -365,6 +372,46 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             })),
             label: "County",
             visualVariables: visualVariables
+        });
+    }
+    var newCasesClassBreakInfos = null;
+    function createNewCasesRendererBars(params) {
+        var colors = lang.clone(colorRamps.light[6]);
+        var startDate = params.startDate, endDate = params.endDate;
+        var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
+        var valueExpression, valueExpressionTitle = null;
+        var visualVariables = null;
+        if (endDate) {
+            var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
+            valueExpressionTitle = "7-day rolling average of new COVID-19 cases as of " + timeUtils_1.formatDate(startDate);
+            valueExpression = expressionUtils_1.createNewCasesAverageExpression(startDateFieldName);
+            visualVariables = [
+                new ColorVariable({
+                    valueExpressionTitle: "Change in 7-day rolling average of new COVID-19 cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
+                    valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createNewCasesAverageExpression(startDateFieldName, true), expressionUtils_1.createNewCasesAverageExpression(endDateFieldName, true), true),
+                    stops: [
+                        { value: -1, color: colors[0], label: "Decrease" },
+                        { value: 0, color: colors[2] },
+                        { value: 1, color: colors[4], label: "Increase" },
+                    ]
+                })
+            ];
+        }
+        else {
+            valueExpressionTitle = "7-day rolling average of new COVID-19 cases as of " + timeUtils_1.formatDate(startDate);
+            valueExpression = expressionUtils_1.createNewCasesAverageExpression(startDateFieldName);
+        }
+        if (!newCasesClassBreakInfos) {
+            newCasesClassBreakInfos = symbolUtils_1.createClassBreakInfos({
+                min: 0,
+                max: 3000,
+                numClasses: 50
+            });
+        }
+        return new ClassBreaksRenderer({
+            valueExpression: valueExpression,
+            valueExpressionTitle: valueExpressionTitle,
+            classBreakInfos: newCasesClassBreakInfos
         });
     }
     function createActiveCasesRenderer(params) {

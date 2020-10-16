@@ -1,4 +1,6 @@
 import SimpleRenderer = require("esri/renderers/SimpleRenderer");
+import ClassBreaksRenderer = require("esri/renderers/ClassBreaksRenderer");
+import ClassBreakInfo = require("esri/renderers/support/ClassBreakInfo");
 import ColorVariable = require("esri/renderers/visualVariables/ColorVariable");
 import SizeVariable = require("esri/renderers/visualVariables/SizeVariable");
 import OpacityVariable = require("esri/renderers/visualVariables/OpacityVariable");
@@ -13,14 +15,15 @@ import { getFieldFromDate, formatDate } from "./timeUtils";
 import { createTotalCasesExpression, createNewCasesAverageExpression, createDoublingTimeExpression, createActiveCasesPer100kExpression, createCaseRateExpression, createActiveCasesExpression, createDeathRateExpression, createTotalDeathsExpression, expressionPercentChange, expressionDifference, createRecoveredCasesExpression, createDeathRate100kExpression } from "./expressionUtils";
 import { SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol } from "esri/symbols";
 import { DotDensityRenderer } from "esri/renderers";
+import { createBarSymbol, createClassBreakInfos } from "./symbolUtils";
 
-export type COVIDRenderer = SimpleRenderer | DotDensityRenderer;
+export type COVIDRenderer = SimpleRenderer | DotDensityRenderer | ClassBreaksRenderer;
 
 export interface UpdateRendererParams {
   layer: CSVLayer | FeatureLayer,
   rendererType: "total-infections" | "doubling-time" | "total-deaths" | "total-active" |
     "active-rate" | "infection-rate-per-100k" | "death-rate" | "death-rate-per-100k" | "total-color" |
-    "new-total" | "total-color-new-total-size" | "dot-density"
+    "new-total" | "new-total-bars" | "total-color-new-total-size" | "dot-density"
   currentDate: Date,
   endDate?: Date
 }
@@ -99,6 +102,13 @@ export function updateRenderer(params: UpdateRendererParams){
       break;
     case "new-total":
       renderer = createNewCasesRenderer({
+        startDate,
+        endDate
+      });
+      legendNote.style.display = "none";
+      break;
+    case "new-total-bars":
+      renderer = createNewCasesRendererBars({
         startDate,
         endDate
       });
@@ -429,6 +439,53 @@ function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
     })),
     label: "County",
     visualVariables
+  });
+}
+
+let newCasesClassBreakInfos: ClassBreakInfo[] = null;
+
+function createNewCasesRendererBars(params: CreateRendererParams) : COVIDRenderer{
+  const colors = lang.clone(colorRamps.light[6]);
+  const { startDate, endDate } = params;
+  const startDateFieldName = getFieldFromDate(startDate);
+  let valueExpression, valueExpressionTitle = null;
+  let visualVariables = null;
+
+  if(endDate){
+    const endDateFieldName = getFieldFromDate(endDate);
+    valueExpressionTitle = `7-day rolling average of new COVID-19 cases as of ${formatDate(startDate)}`;
+    valueExpression = createNewCasesAverageExpression(startDateFieldName);
+    visualVariables = [
+      new ColorVariable({
+        valueExpressionTitle: `Change in 7-day rolling average of new COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
+        valueExpression: expressionDifference(
+          createNewCasesAverageExpression(startDateFieldName, true),
+          createNewCasesAverageExpression(endDateFieldName, true),
+          true
+        ),
+        stops: [
+          { value: -1, color: colors[0], label: "Decrease"},
+          { value: 0, color: colors[2] },
+          { value: 1, color: colors[4], label: "Increase" },
+        ]
+      })
+    ];
+  } else {
+    valueExpressionTitle = `7-day rolling average of new COVID-19 cases as of ${formatDate(startDate)}`;
+    valueExpression = createNewCasesAverageExpression(startDateFieldName);
+  }
+
+  if (!newCasesClassBreakInfos){
+    newCasesClassBreakInfos = createClassBreakInfos({
+      min: 0,
+      max: 3000,
+      numClasses: 50
+    });
+  }
+  return new ClassBreaksRenderer({
+    valueExpression,
+    valueExpressionTitle,
+    classBreakInfos: newCasesClassBreakInfos
   });
 }
 
