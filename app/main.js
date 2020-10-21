@@ -129,7 +129,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                 var rendererSelect, wkid, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, activeRateElement, deathRateElement, recoveredRateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions, infoElement, infoToggleButton, toggleInfoVisibility;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0:
+                        case 0: return [4 /*yield*/, timeUtils_1.setEndDate()];
+                        case 1:
+                            _a.sent();
                             // display the body style so message or content renders
                             document.body.style.visibility = "visible";
                             rendererSelect = document.getElementById("renderer-select");
@@ -376,7 +378,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 infoToggleButton.addEventListener("click", toggleInfoVisibility);
                             }
                             return [4 /*yield*/, initializeLayer()];
-                        case 1:
+                        case 2:
                             _a.sent();
                             slider.watch("values", function () {
                                 if (slider.viewModel.state === "playing") {

@@ -2,9 +2,9 @@ import intl = require("esri/intl");
 import TimeExtent = require("esri/TimeExtent");
 import lang = require("esri/core/lang");
 
-import { prefix, separator } from "./layerUtils";
+import { infectionsPopulationLayer, prefix, separator } from "./layerUtils";
 
-export const endDate = getPreviousDay(new Date());
+export let endDate = getPreviousDay(new Date());
 
 export const initialTimeExtent = {
   start: new Date(2020, 0, 22),
@@ -65,4 +65,32 @@ export const timeExtents = {
     start: dateAdd(initialTimeExtent.end, -14),
     end: initialTimeExtent.end
   }),
+}
+
+export async function setEndDate(){
+  const query = infectionsPopulationLayer.createQuery();
+  // query.where = "FIPS = '06037'";
+  query.objectIds = [ 1 ];
+  query.returnGeometry = false;
+  const { features } = await infectionsPopulationLayer.queryFeatures(query);
+  const feature = features[0];
+
+  let latestDate = new Date();
+  let latestDateFieldName = getFieldFromDate(latestDate);
+
+  while ( !feature.attributes[latestDateFieldName] ){
+    latestDate = getPreviousDay(latestDate);
+    latestDateFieldName = getFieldFromDate(latestDate);
+  }
+
+  endDate = latestDate;
+  initialTimeExtent.end = endDate;
+  timeExtents.afterCA.end = endDate;
+  timeExtents.beforeCA.end = endDate;
+  timeExtents.july4.end = endDate;
+  timeExtents.labor.end = endDate;
+  timeExtents.memorial.end = endDate;
+  timeExtents.month.end = endDate;
+  timeExtents.sturgis.end = endDate;
+  timeExtents.twoWeeks.end = endDate;
 }

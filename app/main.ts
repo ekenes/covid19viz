@@ -16,7 +16,7 @@ import Home = require("esri/widgets/Home")
 import Search = require("esri/widgets/Search");
 import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 
-import { initialTimeExtent, timeExtents } from "./timeUtils";
+import { initialTimeExtent, setEndDate, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
 import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId, citiesContextLayer, fillColor } from "./layerUtils";
@@ -37,6 +37,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
   loadApp();
 
   async function loadApp() {
+    await setEndDate();
     // display the body style so message or content renders
     document.body.style.visibility = "visible";
 
