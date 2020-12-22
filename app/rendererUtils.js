@@ -265,27 +265,10 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 1, size: "3px" },
                         { value: 100, size: "8px" },
                         { value: 1000, size: "18px" },
-                        { value: 5000, size: "50px" },
-                        { value: 30000, size: "100px" }
+                        { value: 5000, size: "60px" },
+                        { value: 10000, size: "100px" }
                     ]
                 })
-                // ,
-                // new ColorVariable({
-                //   valueExpression: expressionPercentChange(
-                //     createTotalCasesExpression(startDateFieldName),
-                //     createTotalCasesExpression(endDateFieldName)
-                //   ),
-                //   legendOptions: {
-                //     title: `% increase in deaths from ${formatDate(startDate)} - ${formatDate(endDate)}`
-                //   },
-                //   stops: [
-                //     { value: dateRangeConfig.stops[0], color: colors[0], label: "No increase" },
-                //     { value: dateRangeConfig.stops[1], color: colors[1] },
-                //     { value: dateRangeConfig.stops[2], color: colors[2], label: `${dateRangeConfig.stops[2]}% increase` },
-                //     { value: dateRangeConfig.stops[3], color: colors[3] },
-                //     { value: dateRangeConfig.stops[4], color: colors[4], label: `${dateRangeConfig.stops[4].toLocaleString()}% increase` }
-                //   ]
-                // })
             ];
         }
         else {
@@ -301,8 +284,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 1, size: "3px" },
                         { value: 100, size: "8px" },
                         { value: 1000, size: "18px" },
-                        { value: 5000, size: "50px" },
-                        { value: 30000, size: "100px" }
+                        { value: 5000, size: "60px" },
+                        { value: 10000, size: "100px" }
                     ]
                 })
             ];
@@ -331,8 +314,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
                         { value: 100, size: "10px" },
-                        { value: 1000, size: "50px" },
-                        { value: 5000, size: "100px" }
+                        { value: 1000, size: "32px" },
+                        { value: 10000, size: "100px" }
                     ]
                 }), new ColorVariable({
                     valueExpressionTitle: "Change in 7-day rolling average of new COVID-19 cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
@@ -353,8 +336,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
                         { value: 100, size: "10px" },
-                        { value: 1000, size: "50px" },
-                        { value: 5000, size: "100px" }
+                        { value: 1000, size: "32px" },
+                        { value: 10000, size: "100px" }
                     ]
                 })];
         }
@@ -381,10 +364,10 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createActiveCasesExpression(startDateFieldName, true), expressionUtils_1.createActiveCasesExpression(endDateFieldName, true), true),
                     stops: [
                         { value: -10000, size: "50px" },
-                        { value: -1000, size: "20px" },
+                        { value: -1000, size: "10px" },
                         { value: -10, size: "4px" },
                         { value: 10, size: "4px" },
-                        { value: 1000, size: "20px" },
+                        { value: 1000, size: "10px" },
                         { value: 10000, size: "50px" }
                     ]
                 }),
@@ -411,9 +394,9 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
                         { value: 100, size: "4px" },
-                        { value: 1000, size: "10px" },
-                        { value: 10000, size: "50px" },
-                        { value: 100000, size: "200px" }
+                        { value: 1000, size: "8px" },
+                        { value: 10000, size: "32px" },
+                        { value: 100000, size: "120px" }
                     ]
                 })];
         }
@@ -444,20 +427,20 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
                         { value: 100, size: "4px" },
-                        { value: 1000, size: "10px" },
-                        { value: 10000, size: "50px" },
-                        { value: 100000, size: "200px" }
+                        { value: 1000, size: "8px" },
+                        { value: 10000, size: "32px" },
+                        { value: 100000, size: "120px" }
                     ]
                 }),
                 new ColorVariable({
                     valueExpressionTitle: "Doubling time change from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
                     valueExpression: expressionUtils_1.expressionDifference(expressionUtils_1.createDoublingTimeExpression(startDateFieldName, true), expressionUtils_1.createDoublingTimeExpression(endDateFieldName, true), true),
                     stops: [
-                        { value: -28, color: colors_3[4], label: ">28 days faster (bad)" },
-                        { value: -14, color: colors_3[3] },
+                        { value: -60, color: colors_3[4], label: ">60 days faster (bad)" },
+                        { value: -30, color: colors_3[3] },
                         { value: 0, color: colors_3[2], label: "No change" },
-                        { value: 14, color: colors_3[1] },
-                        { value: 28, color: colors_3[0], label: ">28 days slower (good)" }
+                        { value: 30, color: colors_3[1] },
+                        { value: 60, color: colors_3[0], label: ">60 days slower (good)" }
                     ]
                 })
             ];
@@ -473,9 +456,9 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 0, size: 0 },
                         { value: 1, size: "2px" },
                         { value: 100, size: "4px" },
-                        { value: 1000, size: "10px" },
-                        { value: 10000, size: "50px" },
-                        { value: 100000, size: "200px" }
+                        { value: 1000, size: "8px" },
+                        { value: 10000, size: "32px" },
+                        { value: 100000, size: "120px" }
                     ]
                 }),
                 new ColorVariable({
@@ -483,10 +466,10 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpression: expressionUtils_1.createDoublingTimeExpression(startDateFieldName),
                     stops: [
                         { value: 7, color: colors[4], label: "<7 days" },
-                        { value: 10, color: colors[3] },
-                        { value: 14, color: colors[2], label: "14 days" },
-                        { value: 21, color: colors[1] },
-                        { value: 28, color: colors[0], label: ">28 days" }
+                        { value: 14, color: colors[3] },
+                        { value: 30, color: colors[2], label: "30 days" },
+                        { value: 48, color: colors[1] },
+                        { value: 60, color: colors[0], label: ">60 days" }
                     ]
                 }),
                 new OpacityVariable({
@@ -528,8 +511,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 1, size: "3px" },
                         { value: 100, size: "8px" },
                         { value: 1000, size: "18px" },
-                        { value: 5000, size: "50px" },
-                        { value: 30000, size: "100px" }
+                        { value: 5000, size: "60px" },
+                        { value: 10000, size: "100px" }
                     ]
                 }),
                 new ColorVariable({
@@ -558,8 +541,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 1, size: "3px" },
                         { value: 100, size: "8px" },
                         { value: 1000, size: "18px" },
-                        { value: 5000, size: "50px" },
-                        { value: 30000, size: "100px" }
+                        { value: 5000, size: "60px" },
+                        { value: 10000, size: "100px" }
                     ]
                 }),
                 new ColorVariable({
@@ -597,8 +580,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 0, color: colors_5[0] },
                         { value: 250, color: colors_5[1] },
                         { value: 500, color: colors_5[2] },
-                        { value: 750, color: colors_5[3] },
-                        { value: 1000, color: colors_5[4] }
+                        { value: 1000, color: colors_5[3] },
+                        { value: 2500, color: colors_5[4] }
                     ]
                 })
             ];
@@ -610,10 +593,10 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpressionTitle: "Total COVID-19 cases per 100k people",
                     stops: [
                         { value: 0, color: colors[0] },
-                        { value: 1000, color: colors[1] },
-                        { value: 2500, color: colors[2] },
-                        { value: 3500, color: colors[3] },
-                        { value: 5000, color: colors[4] }
+                        { value: 2500, color: colors[1] },
+                        { value: 5000, color: colors[2] },
+                        { value: 7500, color: colors[3] },
+                        { value: 10000, color: colors[4] }
                     ]
                 })
             ];
@@ -660,7 +643,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 50, color: colors[1] },
                         { value: 100, color: colors[2] },
                         { value: 150, color: colors[3] },
-                        { value: 200, color: colors[4] }
+                        { value: 300, color: colors[4] }
                     ]
                 })
             ];
@@ -708,7 +691,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                         { value: 200, color: colors[1] },
                         { value: 500, color: colors[2] },
                         { value: 1000, color: colors[3] },
-                        { value: 1500, color: colors[4] }
+                        { value: 2000, color: colors[4] }
                     ]
                 })
             ];
