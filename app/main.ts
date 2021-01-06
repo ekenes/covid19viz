@@ -210,8 +210,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
           value: 1,
           unit: "days"
         })
-      },
-      view
+      }
     });
 
     const checkbox = document.getElementById("difference") as HTMLInputElement;
@@ -267,10 +266,10 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
         }
       }
 
-      btns[0].innerText = (newMode === "time-window") ? "Since Memorial Day" : "Memorial Day";
-      btns[1].innerText = (newMode === "time-window") ? "Since July 4th" : "July 4th";
-      btns[2].innerText = (newMode === "time-window") ? "Since Sturgis" : "Sturgis";
-      btns[3].innerText = (newMode === "time-window") ? "Since Labor Day" : "Labor Day";
+      btns[0].innerText = (newMode === "time-window") ? "Since Labor Day" : "Labor Day";
+      btns[1].innerText = (newMode === "time-window") ? "Since Thanksgiving" : "Thanksgiving";
+      btns[2].innerText = (newMode === "time-window") ? "Since Christmas" : "Christmas";
+      btns[3].innerText = (newMode === "time-window") ? "Since New Year's" : "New Year's";
       btns[4].innerText = (newMode === "time-window") ? "Last month" : "One month ago";
       btns[5].innerText = (newMode === "time-window") ? "Last 2 weeks" : "Two weeks ago";
     };

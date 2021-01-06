@@ -57,6 +57,18 @@ export const timeExtents = {
     start: new Date(2020, 8, 7),
     end: initialTimeExtent.end
   }),
+  thanksgiving: new TimeExtent({
+    start: new Date(2020, 10, 26),
+    end: initialTimeExtent.end
+  }),
+  christmas: new TimeExtent({
+    start: new Date(2020, 11, 25),
+    end: initialTimeExtent.end
+  }),
+  newyears: new TimeExtent({
+    start: new Date(2021, 0, 1),
+    end: initialTimeExtent.end
+  }),
   month: new TimeExtent({
     start: dateAdd(initialTimeExtent.end, -30),
     end: initialTimeExtent.end

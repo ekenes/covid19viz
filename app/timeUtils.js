@@ -88,6 +88,18 @@ define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", 
             start: new Date(2020, 8, 7),
             end: exports.initialTimeExtent.end
         }),
+        thanksgiving: new TimeExtent({
+            start: new Date(2020, 10, 26),
+            end: exports.initialTimeExtent.end
+        }),
+        christmas: new TimeExtent({
+            start: new Date(2020, 11, 25),
+            end: exports.initialTimeExtent.end
+        }),
+        newyears: new TimeExtent({
+            start: new Date(2021, 0, 1),
+            end: exports.initialTimeExtent.end
+        }),
         month: new TimeExtent({
             start: dateAdd(exports.initialTimeExtent.end, -30),
             end: exports.initialTimeExtent.end
