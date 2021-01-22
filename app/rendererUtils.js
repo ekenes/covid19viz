@@ -590,13 +590,13 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             visualVariables = [
                 new ColorVariable({
                     valueExpression: expressionUtils_1.createCaseRateExpression(startDateFieldName),
-                    valueExpressionTitle: "Total COVID-19 cases per 100k people",
+                    valueExpressionTitle: "% of population infected with COVID-19",
                     stops: [
-                        { value: 0, color: colors[0] },
+                        { value: 0, color: colors[0], label: "0%" },
                         { value: 2500, color: colors[1] },
-                        { value: 5000, color: colors[2] },
+                        { value: 5000, color: colors[2], label: "5%" },
                         { value: 7500, color: colors[3] },
-                        { value: 10000, color: colors[4] }
+                        { value: 10000, color: colors[4], label: "10%" }
                     ]
                 })
             ];
