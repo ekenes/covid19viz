@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "@types/arcgis-js-api": "4.17.0"
+    "@types/arcgis-js-api": "4.18.0"
   }
 }

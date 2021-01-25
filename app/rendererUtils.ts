@@ -348,7 +348,7 @@ function createTotalDeathsRenderer(params: CreateRendererParams) : COVIDRenderer
     ];
   }
   return new SimpleRenderer({
-    symbol: createDefaultSymbol(new Color("rgba(15, 15, 15,0.4)"), new SimpleLineSymbol({
+    symbol: createDefaultSymbol(new Color("rgba(15, 15, 15,0.3)"), new SimpleLineSymbol({
       color: new Color("rgba(15, 15, 15,0.8)"),
       width: 0
     })),
@@ -406,9 +406,9 @@ function createNewCasesRenderer(params: CreateRendererParams) : COVIDRenderer{
     }) ];
   }
   return new SimpleRenderer({
-    symbol: createDefaultSymbol(new Color("rgba(212, 74, 0,0.4)"), new SimpleLineSymbol({
-      color: new Color("rgba(212, 74, 0,1)"),
-      width: 0
+    symbol: createDefaultSymbol(new Color("rgba(212, 74, 0,0.25)"), new SimpleLineSymbol({
+      color: new Color("rgba(255, 255, 255,0.3)"),
+      width: 0.5
     })),
     label: "County",
     visualVariables
@@ -422,11 +422,19 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
   const startDateFieldName = getFieldFromDate(startDate);
 
   let visualVariables = null;
+  let authoringInfo: __esri.AuthoringInfo = null;
 
   if( endDate ){
     const colors = colorRamps.light[6];
     const endDateFieldName = getFieldFromDate(endDate);
-
+    authoringInfo = {
+      type: "univariate-color-size",
+      statistics: {
+        min: -10000,
+        max: 10000
+      },
+      univariateTheme: "above-and-below"
+    } as __esri.AuthoringInfo;
     visualVariables = [
       new SizeVariable({
         valueExpressionTitle: `Change in estimated active* COVID-19 cases from ${formatDate(startDate)} - ${formatDate(endDate)}`,
@@ -438,8 +446,7 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
         stops: [
           { value: -10000, size: "50px" },
           { value: -1000, size: "10px" },
-          { value: -10, size: "4px" },
-          { value: 10, size: "4px" },
+          { value: 0, size: "4px" },
           { value: 1000, size: "10px" },
           { value: 10000, size: "50px" }
         ]
@@ -478,7 +485,8 @@ function createActiveCasesRenderer(params: CreateRendererParams) : COVIDRenderer
   }
 
   return new SimpleRenderer({
-    symbol: createDefaultSymbol(new Color("rgba(230, 0, 73, 0.3)"), new SimpleLineSymbol({
+    authoringInfo,
+    symbol: createDefaultSymbol(new Color("rgba(230, 0, 73, 0.2)"), new SimpleLineSymbol({
       color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(230, 0, 73, 0.8)"),
       width: 0
     })),
@@ -582,7 +590,7 @@ function createDoublingTimeRenderer(params: CreateRendererParams) : COVIDRendere
 }
 
 function createDeathRateRenderer(params: CreateRendererParams) : COVIDRenderer {
-  const colors = colorRamps.light[0];
+  const colors = colorRamps.light[9];
   const { startDate, endDate } = params;
   const startDateFieldName = getFieldFromDate(startDate);
 

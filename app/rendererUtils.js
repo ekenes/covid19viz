@@ -291,7 +291,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             ];
         }
         return new SimpleRenderer({
-            symbol: createDefaultSymbol(new Color("rgba(15, 15, 15,0.4)"), new symbols_1.SimpleLineSymbol({
+            symbol: createDefaultSymbol(new Color("rgba(15, 15, 15,0.3)"), new symbols_1.SimpleLineSymbol({
                 color: new Color("rgba(15, 15, 15,0.8)"),
                 width: 0
             })),
@@ -342,9 +342,9 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                 })];
         }
         return new SimpleRenderer({
-            symbol: createDefaultSymbol(new Color("rgba(212, 74, 0,0.4)"), new symbols_1.SimpleLineSymbol({
-                color: new Color("rgba(212, 74, 0,1)"),
-                width: 0
+            symbol: createDefaultSymbol(new Color("rgba(212, 74, 0,0.25)"), new symbols_1.SimpleLineSymbol({
+                color: new Color("rgba(255, 255, 255,0.3)"),
+                width: 0.5
             })),
             label: "County",
             visualVariables: visualVariables
@@ -355,9 +355,18 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         var startDate = params.startDate, endDate = params.endDate;
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
+        var authoringInfo = null;
         if (endDate) {
             var colors_2 = colorRamps.light[6];
             var endDateFieldName = timeUtils_1.getFieldFromDate(endDate);
+            authoringInfo = {
+                type: "univariate-color-size",
+                statistics: {
+                    min: -10000,
+                    max: 10000
+                },
+                univariateTheme: "above-and-below"
+            };
             visualVariables = [
                 new SizeVariable({
                     valueExpressionTitle: "Change in estimated active* COVID-19 cases from " + timeUtils_1.formatDate(startDate) + " - " + timeUtils_1.formatDate(endDate),
@@ -365,8 +374,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     stops: [
                         { value: -10000, size: "50px" },
                         { value: -1000, size: "10px" },
-                        { value: -10, size: "4px" },
-                        { value: 10, size: "4px" },
+                        { value: 0, size: "4px" },
                         { value: 1000, size: "10px" },
                         { value: 10000, size: "50px" }
                     ]
@@ -401,7 +409,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                 })];
         }
         return new SimpleRenderer({
-            symbol: createDefaultSymbol(new Color("rgba(230, 0, 73, 0.3)"), new symbols_1.SimpleLineSymbol({
+            authoringInfo: authoringInfo,
+            symbol: createDefaultSymbol(new Color("rgba(230, 0, 73, 0.2)"), new symbols_1.SimpleLineSymbol({
                 color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(230, 0, 73, 0.8)"),
                 width: 0
             })),
@@ -492,7 +501,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         });
     }
     function createDeathRateRenderer(params) {
-        var colors = colorRamps.light[0];
+        var colors = colorRamps.light[9];
         var startDate = params.startDate, endDate = params.endDate;
         var startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
         var visualVariables = null;
