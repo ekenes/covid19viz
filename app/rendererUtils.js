@@ -95,7 +95,9 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
             ["#a6611a", "#dfc27d", "#f5f5f5", "#80cdc1", "#018571"],
             ["#454545", "#686868", "#8c8c8c", "#c2c2c2", "#f7f7f7"].reverse(),
             ["#f7f7f7", "#cccccc", "#969696", "#636363", "#252525"],
-            ["#484c59", "#63687a", "#948889", "#e0b9b5", "#ffe9e6"].reverse()
+            ["#484c59", "#63687a", "#948889", "#e0b9b5", "#ffe9e6"].reverse(),
+            ["#D0D0E2", "#76ADDB", "#688AB1", "#3F5677", "#302C35"],
+            ["#FBFD26", "#F9CA41", "#F58873", "#BA5E63", "#5A5262"].reverse() // Mentone Beach
         ],
         dark: [
             ["#0010d9", "#0040ff", "#0080ff", "#00bfff", "#00ffff"],
