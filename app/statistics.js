@@ -139,6 +139,9 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
                     case 2:
                         allFeatures.forEach(function (feature) {
                             var value = feature.attributes[startDateFieldName];
+                            if (!value) {
+                                return;
+                            }
                             var currentDayInfections = parseInt(value.split("|")[0]);
                             var currentDayDeaths = parseInt(value.split("|")[1]);
                             var startDate = new Date(2020, 0, 22);

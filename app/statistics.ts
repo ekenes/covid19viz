@@ -84,7 +84,9 @@ export async function getStatsForDate( params: StatisticsParams ){
 
   allFeatures.forEach( feature => {
     const value: string = feature.attributes[startDateFieldName];
-
+    if(!value){
+      return;
+    }
     const currentDayInfections = parseInt(value.split("|")[0]);
     const currentDayDeaths = parseInt(value.split("|")[1]);
 
