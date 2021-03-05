@@ -224,7 +224,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 },
                                 constraints: {
                                     minScale: 25000000,
-                                    maxScale: 200000
+                                    maxScale: 200000,
+                                    rotationEnabled: false
                                 },
                                 popup: {
                                     dockEnabled: true,
