@@ -109,12 +109,14 @@ define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", 
             end: exports.initialTimeExtent.end
         }),
     };
-    function setEndDate() {
+    function setEndDate(d) {
         return __awaiter(this, void 0, void 0, function () {
-            var query, features, feature, latestDate, latestDateFieldName;
+            var latestDate, query, features, feature, latestDateFieldName;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        latestDate = d;
+                        if (!!d) return [3 /*break*/, 2];
                         query = layerUtils_1.infectionsPopulationLayer.createQuery();
                         // query.where = "FIPS = '06037'";
                         query.objectIds = [1];
@@ -129,6 +131,8 @@ define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", 
                             latestDate = getPreviousDay(latestDate);
                             latestDateFieldName = getFieldFromDate(latestDate);
                         }
+                        _a.label = 2;
+                    case 2:
                         exports.endDate = latestDate;
                         exports.initialTimeExtent.end = exports.endDate;
                         exports.timeExtents.afterCA.end = exports.endDate;

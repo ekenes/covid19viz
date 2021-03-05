@@ -79,20 +79,24 @@ export const timeExtents = {
   }),
 }
 
-export async function setEndDate(){
-  const query = infectionsPopulationLayer.createQuery();
-  // query.where = "FIPS = '06037'";
-  query.objectIds = [ 1 ];
-  query.returnGeometry = false;
-  const { features } = await infectionsPopulationLayer.queryFeatures(query);
-  const feature = features[0];
+export async function setEndDate(d?: Date){
 
-  let latestDate = new Date();
-  let latestDateFieldName = getFieldFromDate(latestDate);
+  let latestDate = d;
+  if(!d){
+    const query = infectionsPopulationLayer.createQuery();
+    // query.where = "FIPS = '06037'";
+    query.objectIds = [ 1 ];
+    query.returnGeometry = false;
+    const { features } = await infectionsPopulationLayer.queryFeatures(query);
+    const feature = features[0];
 
-  while ( !feature.attributes[latestDateFieldName] ){
-    latestDate = getPreviousDay(latestDate);
-    latestDateFieldName = getFieldFromDate(latestDate);
+    latestDate = new Date();
+    let latestDateFieldName = getFieldFromDate(latestDate);
+
+    while ( !feature.attributes[latestDateFieldName] ){
+      latestDate = getPreviousDay(latestDate);
+      latestDateFieldName = getFieldFromDate(latestDate);
+    }
   }
 
   endDate = latestDate;
