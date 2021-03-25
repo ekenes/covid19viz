@@ -99,11 +99,11 @@ export async function getStatsForDate( params: StatisticsParams ){
     } else {
 
       const daysAgo14FieldName = getFieldFromDate(daysAgo14);
-      const daysAgo14Value = feature.attributes[daysAgo14FieldName];
+      const daysAgo14Value = feature.attributes[daysAgo14FieldName] || "0|0";
       const daysAgo14Infections = parseInt(daysAgo14Value.split("|")[0]);
 
       const daysAgo15FieldName = getFieldFromDate(daysAgo15);
-      const daysAgo15Value = feature.attributes[daysAgo15FieldName];
+      const daysAgo15Value = feature.attributes[daysAgo15FieldName] || "0|0";
       const daysAgo15Infections = parseInt(daysAgo15Value.split("|")[0]);
 
       if (daysAgo26 < startDate){
@@ -111,11 +111,11 @@ export async function getStatsForDate( params: StatisticsParams ){
       } else {
 
         const daysAgo25FieldName = getFieldFromDate(daysAgo25);
-        const daysAgo25Value = feature.attributes[daysAgo25FieldName];
+        const daysAgo25Value = feature.attributes[daysAgo25FieldName] || "0|0";
         const daysAgo25Infections = parseInt(daysAgo25Value.split("|")[0]);
 
         const daysAgo26FieldName = getFieldFromDate(daysAgo26);
-        const daysAgo26Value = feature.attributes[daysAgo26FieldName];
+        const daysAgo26Value = feature.attributes[daysAgo26FieldName] || "0|0";
         const daysAgo26Infections = parseInt(daysAgo26Value.split("|")[0]);
 
         if (daysAgo49 < startDate){
@@ -123,7 +123,7 @@ export async function getStatsForDate( params: StatisticsParams ){
         } else {
 
           const daysAgo49FieldName = getFieldFromDate(daysAgo49);
-          const daysAgo49Value = feature.attributes[daysAgo49FieldName];
+          const daysAgo49Value = feature.attributes[daysAgo49FieldName] || "0|0";
           const daysAgo49Infections = parseInt(daysAgo49Value.split("|")[0]);
           const daysAgo49Deaths = parseInt(daysAgo49Value.split("|")[1]);
 

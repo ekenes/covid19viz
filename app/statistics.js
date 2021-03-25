@@ -152,27 +152,27 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
                             }
                             else {
                                 var daysAgo14FieldName = timeUtils_1.getFieldFromDate(daysAgo14);
-                                var daysAgo14Value = feature.attributes[daysAgo14FieldName];
+                                var daysAgo14Value = feature.attributes[daysAgo14FieldName] || "0|0";
                                 var daysAgo14Infections = parseInt(daysAgo14Value.split("|")[0]);
                                 var daysAgo15FieldName = timeUtils_1.getFieldFromDate(daysAgo15);
-                                var daysAgo15Value = feature.attributes[daysAgo15FieldName];
+                                var daysAgo15Value = feature.attributes[daysAgo15FieldName] || "0|0";
                                 var daysAgo15Infections = parseInt(daysAgo15Value.split("|")[0]);
                                 if (daysAgo26 < startDate) {
                                     activeEstimate = Math.round((currentDayInfections - daysAgo14Infections) + (0.19 * daysAgo15Infections) - deathCount);
                                 }
                                 else {
                                     var daysAgo25FieldName = timeUtils_1.getFieldFromDate(daysAgo25);
-                                    var daysAgo25Value = feature.attributes[daysAgo25FieldName];
+                                    var daysAgo25Value = feature.attributes[daysAgo25FieldName] || "0|0";
                                     var daysAgo25Infections = parseInt(daysAgo25Value.split("|")[0]);
                                     var daysAgo26FieldName = timeUtils_1.getFieldFromDate(daysAgo26);
-                                    var daysAgo26Value = feature.attributes[daysAgo26FieldName];
+                                    var daysAgo26Value = feature.attributes[daysAgo26FieldName] || "0|0";
                                     var daysAgo26Infections = parseInt(daysAgo26Value.split("|")[0]);
                                     if (daysAgo49 < startDate) {
                                         activeEstimate = Math.round((currentDayInfections - daysAgo14Infections) + (0.19 * (daysAgo15Infections - daysAgo25Infections)) + (0.05 * daysAgo26Infections) - deathCount);
                                     }
                                     else {
                                         var daysAgo49FieldName = timeUtils_1.getFieldFromDate(daysAgo49);
-                                        var daysAgo49Value = feature.attributes[daysAgo49FieldName];
+                                        var daysAgo49Value = feature.attributes[daysAgo49FieldName] || "0|0";
                                         var daysAgo49Infections = parseInt(daysAgo49Value.split("|")[0]);
                                         var daysAgo49Deaths = parseInt(daysAgo49Value.split("|")[1]);
                                         deathCount = currentDayDeaths - daysAgo49Deaths;

@@ -37,7 +37,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
   loadApp();
 
   async function loadApp() {
-    await setEndDate();
+    await setEndDate(new Date(2020, 11, 31));
     // display the body style so message or content renders
     document.body.style.visibility = "visible";
 
