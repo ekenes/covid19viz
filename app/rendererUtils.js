@@ -295,7 +295,7 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         return new SimpleRenderer({
             symbol: createDefaultSymbol(new Color("rgba(15, 15, 15,0.3)"), new symbols_1.SimpleLineSymbol({
                 color: new Color("rgba(15, 15, 15,0.8)"),
-                width: 0
+                width: 0.3
             })),
             label: "County",
             visualVariables: visualVariables
@@ -413,8 +413,8 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
         return new SimpleRenderer({
             authoringInfo: authoringInfo,
             symbol: createDefaultSymbol(new Color("rgba(230, 0, 73, 0.2)"), new symbols_1.SimpleLineSymbol({
-                color: endDate ? new Color("rgba(255, 255, 255, 0.3)") : new Color("rgba(230, 0, 73, 0.8)"),
-                width: 0
+                color: endDate ? new Color("rgba(255, 255, 255, 0.6)") : new Color("rgba(230, 0, 73, 0.8)"),
+                width: 0.3
             })),
             label: "County",
             visualVariables: visualVariables
