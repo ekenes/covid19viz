@@ -140,8 +140,10 @@ define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", 
                         exports.timeExtents.july4.end = exports.endDate;
                         exports.timeExtents.labor.end = exports.endDate;
                         exports.timeExtents.memorial.end = exports.endDate;
+                        exports.timeExtents.month.start = dateAdd(exports.initialTimeExtent.end, -30);
                         exports.timeExtents.month.end = exports.endDate;
                         exports.timeExtents.sturgis.end = exports.endDate;
+                        exports.timeExtents.twoWeeks.start = dateAdd(exports.initialTimeExtent.end, -14);
                         exports.timeExtents.twoWeeks.end = exports.endDate;
                         return [2 /*return*/];
                 }

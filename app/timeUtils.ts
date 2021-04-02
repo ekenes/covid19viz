@@ -106,7 +106,9 @@ export async function setEndDate(d?: Date){
   timeExtents.july4.end = endDate;
   timeExtents.labor.end = endDate;
   timeExtents.memorial.end = endDate;
+  timeExtents.month.start = dateAdd(initialTimeExtent.end, -30);
   timeExtents.month.end = endDate;
   timeExtents.sturgis.end = endDate;
+  timeExtents.twoWeeks.start = dateAdd(initialTimeExtent.end, -14);
   timeExtents.twoWeeks.end = endDate;
 }
