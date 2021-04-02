@@ -344,7 +344,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 btns[0].innerText = (newMode === "time-window") ? "Since Labor Day" : "Labor Day";
                                 btns[1].innerText = (newMode === "time-window") ? "Since Thanksgiving" : "Thanksgiving";
                                 btns[2].innerText = (newMode === "time-window") ? "Since Christmas" : "Christmas";
-                                btns[3].innerText = (newMode === "time-window") ? "Since New Year's" : "New Year's";
+                                btns[3].innerText = (newMode === "time-window") ? "Since Sturgis" : "Sturgis";
                                 btns[4].innerText = (newMode === "time-window") ? "Last month" : "One month ago";
                                 btns[5].innerText = (newMode === "time-window") ? "Last 2 weeks" : "Two weeks ago";
                             };
