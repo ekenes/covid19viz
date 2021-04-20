@@ -43,7 +43,7 @@ define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", 
         end: exports.endDate
     };
     function getFieldFromDate(d) {
-        var fieldName = "" + layerUtils_1.prefix + ("0" + (d.getMonth() + 1)).slice(-2) + layerUtils_1.separator + ("0" + d.getDate()).slice(-2) + layerUtils_1.separator + (d.getFullYear()).toString();
+        var fieldName = "" + (d.getFullYear()).toString() + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2);
         return fieldName;
     }
     exports.getFieldFromDate = getFieldFromDate;

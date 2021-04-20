@@ -7,8 +7,8 @@ import { SimpleMarkerSymbol, TextSymbol } from "esri/symbols";
 // Data from Johns Hopkins University
 // "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series";
 
-export const polygonFillPortalItemId = "45389b90ed234ab4be65820e081254c4";
-export const polygonFillLayerId = 2;  // polygons
+export const polygonFillPortalItemId = "3d170bd624804d59b3009cafa5294a66";
+export const polygonFillLayerId = 0;  // 2020
 
 export const separator = "_";
 export const prefix = "DAYSTRING_";

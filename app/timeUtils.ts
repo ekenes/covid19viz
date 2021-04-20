@@ -2,7 +2,7 @@ import intl = require("esri/intl");
 import TimeExtent = require("esri/TimeExtent");
 import lang = require("esri/core/lang");
 
-import { infectionsPopulationLayer, prefix, separator } from "./layerUtils";
+import { infectionsPopulationLayer } from "./layerUtils";
 
 export let endDate = getPreviousDay(new Date());
 
@@ -12,7 +12,7 @@ export const initialTimeExtent = {
 };
 
 export function getFieldFromDate(d: Date) {
-  const fieldName = `${prefix}${("0"+(d.getMonth() + 1)).slice(-2)}${separator}${("0"+d.getDate()).slice(-2)}${separator}${(d.getFullYear()).toString()}`;
+  const fieldName = `${(d.getFullYear()).toString()}${("0"+(d.getMonth() + 1)).slice(-2)}${("0"+d.getDate()).slice(-2)}`;
   return fieldName;
 }
 

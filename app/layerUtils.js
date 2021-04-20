@@ -3,8 +3,8 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/layers/support/L
     Object.defineProperty(exports, "__esModule", { value: true });
     // Data from Johns Hopkins University
     // "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series";
-    exports.polygonFillPortalItemId = "45389b90ed234ab4be65820e081254c4";
-    exports.polygonFillLayerId = 2; // polygons
+    exports.polygonFillPortalItemId = "3d170bd624804d59b3009cafa5294a66";
+    exports.polygonFillLayerId = 0; // 2020
     exports.separator = "_";
     exports.prefix = "DAYSTRING_";
     exports.infectionsPopulationLayer = new FeatureLayer({

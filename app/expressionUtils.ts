@@ -1,28 +1,24 @@
-import { prefix, separator } from "./layerUtils";
-
 export function createNewCasesAverageExpression(currentDateFieldName: string, excludeGetFieldFromDate?: boolean){
   const getFieldFromDate = getFieldFromDateFunction();
 
   const base = `
     var unit = 7;
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDayValueParts = Split(currentDayValue, "|");
-    var currentDayValueCases = Number(currentDayValueParts[0]);
-    var currentDayValueDeaths = Number(currentDayValueParts[1]);
+    var currentDayValueCases = $feature.Confirmed_${currentDateFieldName};
+    var currentDayValueDeaths = $feature.Deaths_${currentDateFieldName};
 
-    var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
-    var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
+    var stamp = "${currentDateFieldName}";
+    var y = Number( Left(stamp, 4) );
+    var m = Number( Mid(stamp, 4, 2) );
+    var d = Number( Right(stamp, 2) );
+    var currentDayFieldDate = Date(y,m-1,d);
     var previousDay = DateAdd(currentDayFieldDate, (-1 * unit), 'days');
     if (Month(previousDay) == 0 && Day(previousDay) <= 21 && Year(previousDay) == 2020){
       return 0;
     }
 
     var previousDayFieldName = getFieldFromDate(previousDay);
-    var previousDayValue = $feature[previousDayFieldName];
-    var previousDayValueParts = Split(previousDayValue, "|");
-    var previousDayValueCases = Number(previousDayValueParts[0]);
-    var previousDayValueDeaths = Number(previousDayValueParts[1]);
+    var previousDayValueCases = $feature["Confirmed_" + previousDayFieldName];
+    var previousDayValueDeaths = $feature["Deaths_" + previousDayFieldName];
 
     return Round((currentDayValueCases - previousDayValueCases) / unit);
   `;
@@ -35,24 +31,20 @@ export function createNewCasesExpression(currentDateFieldName: string, excludeGe
 
   const base = `
     var unit = 7;
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDayValueParts = Split(currentDayValue, "|");
-    var currentDayValueCases = Number(currentDayValueParts[0]);
-    var currentDayValueDeaths = Number(currentDayValueParts[1]);
+    var currentDayValueCases = $feature.Confirmed_${currentDateFieldName};
 
-    var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
-    var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
+    var stamp = "${currentDateFieldName}";
+    var y = Number( Left(stamp, 4) );
+    var m = Number( Mid(stamp, 4, 2) );
+    var d = Number( Right(stamp, 2) );
+    var currentDayFieldDate = Date(y,m-1,d);
     var previousDay = DateAdd(currentDayFieldDate, (-1 * unit), 'days');
     if (Month(previousDay) == 0 && Day(previousDay) <= 21 && Year(previousDay) == 2020){
       return 0;
     }
 
     var previousDayFieldName = getFieldFromDate(previousDay);
-    var previousDayValue = $feature[previousDayFieldName];
-    var previousDayValueParts = Split(previousDayValue, "|");
-    var previousDayValueCases = Number(previousDayValueParts[0]);
-    var previousDayValueDeaths = Number(previousDayValueParts[1]);
+    var previousDayValueCases = $feature["Confirmed_" + previousDayFieldName];
 
     return (currentDayValueCases - previousDayValueCases);
   `;
@@ -64,14 +56,14 @@ export function createActiveCasesExpression(currentDateFieldName: string, exclud
   const getFieldFromDate = getFieldFromDateFunction();
 
   const base = `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDayValueParts = Split(currentDayValue, "|");
-    var currentDayCases = Number(currentDayValueParts[0]);
-    var currentDayDeaths = Number(currentDayValueParts[1]);
+    var currentDayCases = $feature.Confirmed_${currentDateFieldName};
+    var currentDayDeaths = $feature.Deaths_${currentDateFieldName};
 
-    var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
-    var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
+    var stamp = "${currentDateFieldName}";
+    var y = Number( Left(stamp, 4) );
+    var m = Number( Mid(stamp, 4, 2) );
+    var d = Number( Right(stamp, 2) );
+    var currentDayFieldDate = Date(y,m-1,d);
 
     // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
 
@@ -90,42 +82,32 @@ export function createActiveCasesExpression(currentDateFieldName: string, exclud
     }
 
     var daysAgo14FieldName = getFieldFromDate(daysAgo14);
-    var daysAgo14Value = $feature[daysAgo14FieldName];
-    var daysAgo14ValueParts = Split(daysAgo14Value, "|");
-    var daysAgo14Cases = Number(daysAgo14ValueParts[0]);
-    var daysAgo14Deaths = Number(daysAgo14ValueParts[1]);
+    var daysAgo14Cases = $feature["Confirmed_" + daysAgo14FieldName];
+    var daysAgo14Deaths = $feature["Deaths_" + daysAgo14FieldName];
 
     var daysAgo15FieldName = getFieldFromDate(daysAgo15);
-    var daysAgo15Value = $feature[daysAgo15FieldName];
-    var daysAgo15ValueParts = Split(daysAgo15Value, "|");
-    var daysAgo15Cases = Number(daysAgo15ValueParts[0]);
-    var daysAgo15Deaths = Number(daysAgo15ValueParts[1]);
+    var daysAgo15Cases = $feature["Confirmed_" + daysAgo15FieldName];
+    var daysAgo15Deaths = $feature["Deaths_" + daysAgo15FieldName];
 
     if (daysAgo26 < startDate){
       return Round( (currentDayCases - daysAgo14Cases) + ( 0.19 * daysAgo15Cases ) - deaths );
     }
 
     var daysAgo25FieldName = getFieldFromDate(daysAgo25);
-    var daysAgo25Value = $feature[daysAgo25FieldName];
-    var daysAgo25ValueParts = Split(daysAgo25Value, "|");
-    var daysAgo25Cases = Number(daysAgo25ValueParts[0]);
-    var daysAgo25Deaths = Number(daysAgo25ValueParts[1]);
+    var daysAgo25Cases = $feature["Confirmed_" + daysAgo25FieldName];
+    var daysAgo25Deaths = $feature["Deaths_" + daysAgo25FieldName];
 
     var daysAgo26FieldName = getFieldFromDate(daysAgo26);
-    var daysAgo26Value = $feature[daysAgo26FieldName];
-    var daysAgo26ValueParts = Split(daysAgo26Value, "|");
-    var daysAgo26Cases = Number(daysAgo26ValueParts[0]);
-    var daysAgo26Deaths = Number(daysAgo26ValueParts[1]);
+    var daysAgo26Cases = $feature["Confirmed_" + daysAgo26FieldName];
+    var daysAgo26Deaths = $feature["Deaths_" + daysAgo26FieldName];
 
     if (daysAgo49 < startDate){
       return Round( (currentDayCases - daysAgo14Cases) + ( 0.19 * ( daysAgo15Cases - daysAgo25Cases ) ) + ( 0.05 * daysAgo26Cases ) - deaths );
     }
 
     var daysAgo49FieldName = getFieldFromDate(daysAgo49);
-    var daysAgo49Value = $feature[daysAgo49FieldName];
-    var daysAgo49ValueParts = Split(daysAgo49Value, "|");
-    var daysAgo49Cases = Number(daysAgo49ValueParts[0]);
-    var daysAgo49Deaths = Number(daysAgo49ValueParts[1]);
+    var daysAgo49Cases = $feature["Confirmed_" + daysAgo49FieldName];
+    var daysAgo49Deaths = $feature["Deaths_" + daysAgo49FieldName];
 
     deaths = currentDayDeaths - daysAgo49Deaths;
     var activeEstimate = (currentDayCases - daysAgo14Cases) + ( 0.19 * ( daysAgo15Cases - daysAgo25Cases ) ) + ( 0.05 * ( daysAgo26Cases - daysAgo49Cases) ) - deaths;
@@ -140,14 +122,14 @@ export function createRecoveredCasesExpression(currentDateFieldName: string, exc
   const getFieldFromDate = getFieldFromDateFunction();
 
   const base = `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDayValueParts = Split(currentDayValue, "|");
-    var currentDayCases = Number(currentDayValueParts[0]);
-    var currentDayDeaths = Number(currentDayValueParts[1]);
+    var currentDayCases = $feature.Confirmed_${currentDateFieldName};
+    var currentDayDeaths = $feature.Deaths_${currentDateFieldName};
 
-    var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
-    var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
+    var stamp = "${currentDateFieldName}";
+    var y = Number( Left(stamp, 4) );
+    var m = Number( Mid(stamp, 4, 2) );
+    var d = Number( Right(stamp, 2) );
+    var currentDayFieldDate = Date(y,m-1,d);
 
     // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
 
@@ -166,42 +148,33 @@ export function createRecoveredCasesExpression(currentDateFieldName: string, exc
     }
 
     var daysAgo14FieldName = getFieldFromDate(daysAgo14);
-    var daysAgo14Value = $feature[daysAgo14FieldName];
-    var daysAgo14ValueParts = Split(daysAgo14Value, "|");
-    var daysAgo14Cases = Number(daysAgo14ValueParts[0]);
-    var daysAgo14Deaths = Number(daysAgo14ValueParts[1]);
+    var daysAgo14Cases = $feature["Confirmed_" + daysAgo14FieldName];
+    var daysAgo14Deaths = $feature["Deaths_" + daysAgo14FieldName];
 
     var daysAgo15FieldName = getFieldFromDate(daysAgo15);
-    var daysAgo15Value = $feature[daysAgo15FieldName];
-    var daysAgo15ValueParts = Split(daysAgo15Value, "|");
-    var daysAgo15Cases = Number(daysAgo15ValueParts[0]);
-    var daysAgo15Deaths = Number(daysAgo15ValueParts[1]);
+    var daysAgo15Cases = $feature["Confirmed_" + daysAgo15FieldName];
+    var daysAgo15Deaths = $feature["Deaths_" + daysAgo15FieldName];
 
     if (daysAgo26 < startDate){
       return Round( (currentDayCases - daysAgo14Cases) + ( 0.19 * daysAgo15Cases ) - deaths );
     }
 
     var daysAgo25FieldName = getFieldFromDate(daysAgo25);
-    var daysAgo25Value = $feature[daysAgo25FieldName];
-    var daysAgo25ValueParts = Split(daysAgo25Value, "|");
-    var daysAgo25Cases = Number(daysAgo25ValueParts[0]);
-    var daysAgo25Deaths = Number(daysAgo25ValueParts[1]);
+    var daysAgo25Cases = $feature["Confirmed_" + daysAgo25FieldName];
+    var daysAgo25Deaths = $feature["Deaths_" + daysAgo25FieldName];
+
 
     var daysAgo26FieldName = getFieldFromDate(daysAgo26);
-    var daysAgo26Value = $feature[daysAgo26FieldName];
-    var daysAgo26ValueParts = Split(daysAgo26Value, "|");
-    var daysAgo26Cases = Number(daysAgo26ValueParts[0]);
-    var daysAgo26Deaths = Number(daysAgo26ValueParts[1]);
+    var daysAgo26Cases = $feature["Confirmed_" + daysAgo26FieldName];
+    var daysAgo26Deaths = $feature["Deaths_" + daysAgo26FieldName];
 
     if (daysAgo49 < startDate){
       return Round( (currentDayCases - daysAgo14Cases) + ( 0.19 * ( daysAgo15Cases - daysAgo25Cases ) ) + ( 0.05 * daysAgo26Cases ) - deaths );
     }
 
     var daysAgo49FieldName = getFieldFromDate(daysAgo49);
-    var daysAgo49Value = $feature[daysAgo49FieldName];
-    var daysAgo49ValueParts = Split(daysAgo49Value, "|");
-    var daysAgo49Cases = Number(daysAgo49ValueParts[0]);
-    var daysAgo49Deaths = Number(daysAgo49ValueParts[1]);
+    var daysAgo49Cases = $feature["Confirmed_" + daysAgo49FieldName];
+    var daysAgo49Deaths = $feature["Deaths_" + daysAgo49FieldName];
 
     deaths = currentDayDeaths - daysAgo49Deaths;
     var activeEstimate = (currentDayCases - daysAgo14Cases) + ( 0.19 * ( daysAgo15Cases - daysAgo25Cases ) ) + ( 0.05 * ( daysAgo26Cases - daysAgo49Cases) ) - deaths;
@@ -217,23 +190,20 @@ export function createDoublingTimeExpression (currentDateFieldName: string, excl
 
   const base = `
     var unit = 14;
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDayValueParts = Split(currentDayValue, "|");
-    var totalCasesValue = Number(currentDayValueParts[0]);
+    var totalCasesValue = $feature.Confirmed_${currentDateFieldName};
 
-    var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
-    var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
-    var previousDay = DateAdd(currentDayFieldDate, (unit * -1), 'days');
-
+    var stamp = "${currentDateFieldName}";
+    var y = Number( Left(stamp, 4) );
+    var m = Number( Mid(stamp, 4, 2) );
+    var d = Number( Right(stamp, 2) );
+    var currentDayFieldDate = Date(y,m-1,d);
+    var previousDay = DateAdd(currentDayFieldDate, (-1 * unit), 'days');
     if (Month(previousDay) == 0 && Day(previousDay) <= 21 && Year(previousDay) == 2020){
       return 0;
     }
 
     var previousDayFieldName = getFieldFromDate(previousDay);
-    var previousDayValue = $feature[previousDayFieldName];
-    var previousDayValueParts = Split(previousDayValue, "|");
-    var previousDayCasesValue = Number(previousDayValueParts[0]);
+    var previousDayCasesValue = $feature["Confirmed_" + previousDayFieldName];
 
     var newCases = totalCasesValue - previousDayCasesValue;
     var oldCases = totalCasesValue - newCases;
@@ -251,24 +221,16 @@ export function createDoublingTimeExpression (currentDateFieldName: string, excl
 
 export function createCaseRateExpression(currentDateFieldName: string){
   return `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDaySplit = Split(currentDayValue, "|");
-    var cases = Number(currentDaySplit[0]);
-    var deaths = Number(currentDaySplit[1]);
-    var population = $feature.POPULATION;
+    var cases = $feature.Confirmed_${currentDateFieldName};
+    var population = $feature.POP2018;
     return (cases / population ) * 100000;
   `;
 }
 
 export function createDeathRate100kExpression(currentDateFieldName: string){
   return `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDaySplit = Split(currentDayValue, "|");
-    var cases = Number(currentDaySplit[0]);
-    var deaths = Number(currentDaySplit[1]);
-    var population = $feature.POPULATION;
+    var deaths = $feature.Deaths_${currentDateFieldName};
+    var population = $feature.POP2018;
     return (deaths / population ) * 100000;
   `;
 }
@@ -277,16 +239,16 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string,
   const getFieldFromDate = getFieldFromDateFunction();
 
   const base = `
-    var population = $feature.POPULATION;
+    var population = $feature.POP2018;
 
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-    var currentDayValueParts = Split(currentDayValue, "|");
-    var currentDayCases = Number(currentDayValueParts[0]);
-    var currentDayDeaths = Number(currentDayValueParts[1]);
+    var currentDayCases = $feature.Confirmed_${currentDateFieldName};
+    var currentDayDeaths = $feature.Deaths_${currentDateFieldName};
 
-    var parts = Split(Replace(currentDayFieldName,"${prefix}",""), "${separator}");
-    var currentDayFieldDate = Date(Number(parts[2]), Number(parts[0])-1, Number(parts[1]));
+    var stamp = "${currentDateFieldName}";
+    var y = Number( Left(stamp, 4) );
+    var m = Number( Mid(stamp, 4, 2) );
+    var d = Number( Right(stamp, 2) );
+    var currentDayFieldDate = Date(y,m-1,d);
 
     // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
 
@@ -307,16 +269,12 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string,
     }
 
     var daysAgo14FieldName = getFieldFromDate(daysAgo14);
-    var daysAgo14Value = $feature[daysAgo14FieldName];
-    var daysAgo14ValueParts = Split(daysAgo14Value, "|");
-    var daysAgo14Cases = Number(daysAgo14ValueParts[0]);
-    var daysAgo14Deaths = Number(daysAgo14ValueParts[1]);
+    var daysAgo14Cases = $feature["Confirmed_" + daysAgo14FieldName];
+    var daysAgo14Deaths = $feature["Deaths_" + daysAgo14FieldName];
 
     var daysAgo15FieldName = getFieldFromDate(daysAgo15);
-    var daysAgo15Value = $feature[daysAgo15FieldName];
-    var daysAgo15ValueParts = Split(daysAgo15Value, "|");
-    var daysAgo15Cases = Number(daysAgo15ValueParts[0]);
-    var daysAgo15Deaths = Number(daysAgo15ValueParts[1]);
+    var daysAgo15Cases = $feature["Confirmed_" + daysAgo15FieldName];
+    var daysAgo15Deaths = $feature["Deaths_" + daysAgo15FieldName];
 
     if (daysAgo26 < startDate){
       activeEstimate = Round( (currentDayCases - daysAgo14Cases) + ( 0.19 * daysAgo15Cases ) - deaths );
@@ -324,16 +282,12 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string,
     }
 
     var daysAgo25FieldName = getFieldFromDate(daysAgo25);
-    var daysAgo25Value = $feature[daysAgo25FieldName];
-    var daysAgo25ValueParts = Split(daysAgo25Value, "|");
-    var daysAgo25Cases = Number(daysAgo25ValueParts[0]);
-    var daysAgo25Deaths = Number(daysAgo25ValueParts[1]);
+    var daysAgo25Cases = $feature["Confirmed_" + daysAgo25FieldName];
+    var daysAgo25Deaths = $feature["Deaths_" + daysAgo25FieldName];
 
     var daysAgo26FieldName = getFieldFromDate(daysAgo26);
-    var daysAgo26Value = $feature[daysAgo26FieldName];
-    var daysAgo26ValueParts = Split(daysAgo26Value, "|");
-    var daysAgo26Cases = Number(daysAgo26ValueParts[0]);
-    var daysAgo26Deaths = Number(daysAgo26ValueParts[1]);
+    var daysAgo26Cases = $feature["Confirmed_" + daysAgo26FieldName];
+    var daysAgo26Deaths = $feature["Deaths_" + daysAgo26FieldName];
 
     if (daysAgo49 < startDate){
       activeEstimate = Round( (currentDayCases - daysAgo14Cases) + ( 0.19 * ( daysAgo15Cases - daysAgo25Cases ) ) + ( 0.05 * daysAgo26Cases ) - deaths );
@@ -341,10 +295,8 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string,
     }
 
     var daysAgo49FieldName = getFieldFromDate(daysAgo49);
-    var daysAgo49Value = $feature[daysAgo49FieldName];
-    var daysAgo49ValueParts = Split(daysAgo49Value, "|");
-    var daysAgo49Cases = Number(daysAgo49ValueParts[0]);
-    var daysAgo49Deaths = Number(daysAgo49ValueParts[1]);
+    var daysAgo49Cases = $feature["Confirmed_" + daysAgo49FieldName];
+    var daysAgo49Deaths = $feature["Deaths_" + daysAgo49FieldName];
 
     deaths = currentDayDeaths - daysAgo49Deaths;
     activeEstimate = (currentDayCases - daysAgo14Cases) + ( 0.19 * ( daysAgo15Cases - daysAgo25Cases ) ) + ( 0.05 * ( daysAgo26Cases - daysAgo49Cases) ) - deaths;
@@ -357,13 +309,8 @@ export function createActiveCasesPer100kExpression(currentDateFieldName: string,
 
 export function createDeathRateExpression (currentDateFieldName: string){
   return `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-
-    var parts = Split(currentDayValue, "|");
-
-    var cases = Number(parts[0]);
-    var deaths = Number(parts[1]);
+    var cases = $feature.Confirmed_${currentDateFieldName};
+    var deaths = $feature.Deaths_${currentDateFieldName};
 
     return IIF(cases <= 0, 0, (deaths / cases) * 100);
   `;
@@ -371,43 +318,22 @@ export function createDeathRateExpression (currentDateFieldName: string){
 
 export function createTotalDeathsExpression (currentDateFieldName: string){
   return `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-
-    var parts = Split(currentDayValue, "|");
-
-    var cases = Number(parts[0]);
-    var deaths = Number(parts[1]);
-
-    return deaths;
+    $feature.Deaths_${currentDateFieldName};
   `;
 }
 
 export function createTotalCasesExpression (currentDateFieldName: string){
   return `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
-
-    var parts = Split(currentDayValue, "|");
-
-    var cases = Number(parts[0]);
-    var deaths = Number(parts[1]);
-
-    return cases;
+    $feature.Confirmed_${currentDateFieldName};
   `;
 }
 
 export function createSusceptiblePopulationExpression (currentDateFieldName: string){
   return `
-    var currentDayFieldName = "${currentDateFieldName}";
-    var currentDayValue = $feature[currentDayFieldName];
+    var cases = $feature.Confirmed_${currentDateFieldName};
+    var deaths = $feature.Confirmed_${currentDateFieldName};
 
-    var parts = Split(currentDayValue, "|");
-
-    var cases = Number(parts[0]);
-    var deaths = Number(parts[1]);
-
-    var population = $feature.POPULATION;
+    var population = $feature.POP2018;
 
     return population - cases;
   `;
@@ -416,7 +342,7 @@ export function createSusceptiblePopulationExpression (currentDateFieldName: str
 function getFieldFromDateFunction (){
   return `
     function getFieldFromDate(d) {
-      var fieldName = "${prefix}" + Text(d, "MM${separator}DD${separator}Y");
+      var fieldName = Text(d, "YMMDD");
       return fieldName;
     }
 
