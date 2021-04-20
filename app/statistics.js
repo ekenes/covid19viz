@@ -34,168 +34,93 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "./timeUtils"], function (require, exports, timeUtils_1) {
+define(["require", "exports", "esri/tasks/support/StatisticDefinition", "./timeUtils"], function (require, exports, StatisticDefinition, timeUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var allFeatures = null;
     var allStats = {};
-    function getTotalCases(params) {
-        return __awaiter(this, void 0, void 0, function () {
-            var layer, startDate, endDate, startDateFieldName, totalCount;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        layer = params.layer, startDate = params.startDate, endDate = params.endDate;
-                        startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
-                        if (!!allFeatures) return [3 /*break*/, 2];
-                        return [4 /*yield*/, queryAllFeatures(layer)];
-                    case 1:
-                        allFeatures = _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        totalCount = allFeatures.map(function (feature) {
-                            var value = feature.attributes[startDateFieldName];
-                            var cases = parseInt(value.split("|")[0]);
-                            return cases;
-                        })
-                            .reduce(function (prev, curr) { return prev + curr; });
-                        console.log("total", totalCount);
-                        return [2 /*return*/, totalCount];
-                }
-            });
-        });
-    }
-    exports.getTotalCases = getTotalCases;
-    function getTotalDeaths(params) {
-        return __awaiter(this, void 0, void 0, function () {
-            var layer, startDate, endDate, startDateFieldName, totalCount;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        layer = params.layer, startDate = params.startDate, endDate = params.endDate;
-                        startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
-                        if (!!allFeatures) return [3 /*break*/, 2];
-                        return [4 /*yield*/, queryAllFeatures(layer)];
-                    case 1:
-                        allFeatures = _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        totalCount = allFeatures.map(function (feature) {
-                            var value = feature.attributes[startDateFieldName];
-                            var cases = parseInt(value.split("|")[1]);
-                            return cases;
-                        })
-                            .reduce(function (prev, curr) { return prev + curr; });
-                        return [2 /*return*/, totalCount];
-                }
-            });
-        });
-    }
-    exports.getTotalDeaths = getTotalDeaths;
-    function queryAllFeatures(layer) {
-        return __awaiter(this, void 0, void 0, function () {
-            var features;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, layer.queryFeatures({
-                            returnGeometry: false,
-                            outFields: ["*"],
-                            maxRecordCountFactor: 5,
-                            where: "1=1"
-                        })];
-                    case 1:
-                        features = (_a.sent()).features;
-                        return [2 /*return*/, features];
-                }
-            });
-        });
-    }
     function getStatsForDate(params) {
         return __awaiter(this, void 0, void 0, function () {
-            var layer, startDate, endDate, totalCases, totalDeaths, totalRecovered, totalActive, totalPopulation, startDateFieldName, daysAgo14, daysAgo15, daysAgo25, daysAgo26, daysAgo49, stats;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var layerView, startDate, endDate, initialDate, query, startDateFieldName, totalCasesDefinition, totalDeathsDefinition, totalPopulationDefinition, totalActiveDefinition, daysAgo14, daysAgo15, daysAgo25, daysAgo26, daysAgo49, daysAgo14Infections, daysAgo15Infections, daysAgo25Infections, daysAgo26Infections, daysAgo49Infections, daysAgo49Deaths, deathCount, features, _a, cases, deaths, active, population, recovered, stats;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        layer = params.layer, startDate = params.startDate, endDate = params.endDate;
-                        totalCases = 0;
-                        totalDeaths = 0;
-                        totalRecovered = 0;
-                        totalActive = 0;
-                        totalPopulation = 0;
+                        layerView = params.layerView, startDate = params.startDate, endDate = params.endDate;
+                        initialDate = timeUtils_1.initialTimeExtent.start;
+                        query = layerView.createQuery();
                         startDateFieldName = timeUtils_1.getFieldFromDate(startDate);
                         if (allStats[startDateFieldName]) {
                             return [2 /*return*/, allStats[startDateFieldName]];
                         }
+                        totalCasesDefinition = new StatisticDefinition({
+                            onStatisticField: "Confirmed_" + startDateFieldName,
+                            outStatisticFieldName: "cases",
+                            statisticType: "sum"
+                        });
+                        totalDeathsDefinition = new StatisticDefinition({
+                            onStatisticField: "Deaths_" + startDateFieldName,
+                            outStatisticFieldName: "deaths",
+                            statisticType: "sum"
+                        });
+                        totalPopulationDefinition = new StatisticDefinition({
+                            onStatisticField: "POP2018",
+                            outStatisticFieldName: "population",
+                            statisticType: "sum"
+                        });
+                        totalActiveDefinition = new StatisticDefinition({
+                            outStatisticFieldName: "active",
+                            statisticType: "sum"
+                        });
                         daysAgo14 = timeUtils_1.dateAdd(startDate, -14);
                         daysAgo15 = timeUtils_1.dateAdd(startDate, -15);
                         daysAgo25 = timeUtils_1.dateAdd(startDate, -25);
                         daysAgo26 = timeUtils_1.dateAdd(startDate, -26);
                         daysAgo49 = timeUtils_1.dateAdd(startDate, -49);
-                        if (!!allFeatures) return [3 /*break*/, 2];
-                        return [4 /*yield*/, queryAllFeatures(layer)];
-                    case 1:
-                        allFeatures = _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        allFeatures.forEach(function (feature) {
-                            var value = feature.attributes[startDateFieldName];
-                            if (!value) {
-                                return;
-                            }
-                            var currentDayInfections = parseInt(value.split("|")[0]);
-                            var currentDayDeaths = parseInt(value.split("|")[1]);
-                            var startDate = new Date(2020, 0, 22);
-                            var deathCount = currentDayDeaths;
-                            var activeEstimate = 0;
-                            if (daysAgo15 < startDate) {
-                                activeEstimate = currentDayInfections - deathCount;
+                        if (daysAgo15 < initialDate) {
+                            totalActiveDefinition.onStatisticField = "Confirmed_" + startDateFieldName + " - Deaths_" + startDateFieldName;
+                        }
+                        else {
+                            daysAgo14Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo14);
+                            daysAgo15Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo15);
+                            if (daysAgo26 < initialDate) {
+                                totalActiveDefinition.onStatisticField = "(Confirmed_" + startDateFieldName + " - " + daysAgo14Infections + ") + ( 0.19 * " + daysAgo15Infections + ") - Deaths_" + startDateFieldName;
                             }
                             else {
-                                var daysAgo14FieldName = timeUtils_1.getFieldFromDate(daysAgo14);
-                                var daysAgo14Value = feature.attributes[daysAgo14FieldName] || "0|0";
-                                var daysAgo14Infections = parseInt(daysAgo14Value.split("|")[0]);
-                                var daysAgo15FieldName = timeUtils_1.getFieldFromDate(daysAgo15);
-                                var daysAgo15Value = feature.attributes[daysAgo15FieldName] || "0|0";
-                                var daysAgo15Infections = parseInt(daysAgo15Value.split("|")[0]);
-                                if (daysAgo26 < startDate) {
-                                    activeEstimate = Math.round((currentDayInfections - daysAgo14Infections) + (0.19 * daysAgo15Infections) - deathCount);
+                                daysAgo25Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo25);
+                                daysAgo26Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo26);
+                                if (daysAgo49 < initialDate) {
+                                    totalActiveDefinition.onStatisticField = "(Confirmed_" + startDateFieldName + " - " + daysAgo14Infections + ") + ( 0.19 * (" + daysAgo15Infections + " - " + daysAgo25Infections + ")) + ( 0.05 * " + daysAgo26Infections + " ) - Deaths_" + startDateFieldName;
                                 }
                                 else {
-                                    var daysAgo25FieldName = timeUtils_1.getFieldFromDate(daysAgo25);
-                                    var daysAgo25Value = feature.attributes[daysAgo25FieldName] || "0|0";
-                                    var daysAgo25Infections = parseInt(daysAgo25Value.split("|")[0]);
-                                    var daysAgo26FieldName = timeUtils_1.getFieldFromDate(daysAgo26);
-                                    var daysAgo26Value = feature.attributes[daysAgo26FieldName] || "0|0";
-                                    var daysAgo26Infections = parseInt(daysAgo26Value.split("|")[0]);
-                                    if (daysAgo49 < startDate) {
-                                        activeEstimate = Math.round((currentDayInfections - daysAgo14Infections) + (0.19 * (daysAgo15Infections - daysAgo25Infections)) + (0.05 * daysAgo26Infections) - deathCount);
-                                    }
-                                    else {
-                                        var daysAgo49FieldName = timeUtils_1.getFieldFromDate(daysAgo49);
-                                        var daysAgo49Value = feature.attributes[daysAgo49FieldName] || "0|0";
-                                        var daysAgo49Infections = parseInt(daysAgo49Value.split("|")[0]);
-                                        var daysAgo49Deaths = parseInt(daysAgo49Value.split("|")[1]);
-                                        deathCount = currentDayDeaths - daysAgo49Deaths;
-                                        // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
-                                        activeEstimate = Math.round((currentDayInfections - daysAgo14Infections) + (0.19 * (daysAgo15Infections - daysAgo25Infections)) + (0.05 * (daysAgo26Infections - daysAgo49Infections)) - deathCount);
-                                    }
+                                    daysAgo49Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo49);
+                                    daysAgo49Deaths = "Deaths_" + timeUtils_1.getFieldFromDate(daysAgo49);
+                                    deathCount = "(Deaths_" + startDateFieldName + " - " + daysAgo49Deaths + ")";
+                                    // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
+                                    totalActiveDefinition.onStatisticField = "(Confirmed_" + startDateFieldName + " - " + daysAgo14Infections + ") + ( 0.19 * (" + daysAgo15Infections + " - " + daysAgo25Infections + ")) + ( 0.05 * (" + daysAgo26Infections + " - " + daysAgo49Infections + ")) - " + deathCount;
                                 }
                             }
-                            var recoveredEstimate = Math.round(currentDayInfections - activeEstimate - currentDayDeaths);
-                            totalCases += currentDayInfections;
-                            totalDeaths += currentDayDeaths;
-                            totalActive += activeEstimate;
-                            totalRecovered += recoveredEstimate;
-                            totalPopulation += feature.attributes.POPULATION;
-                        });
+                        }
+                        query.outFields = ["*"];
+                        query.returnGeometry = false;
+                        query.where = "1=1";
+                        query.outStatistics = [
+                            totalCasesDefinition,
+                            totalDeathsDefinition,
+                            totalPopulationDefinition,
+                            totalActiveDefinition
+                        ];
+                        return [4 /*yield*/, layerView.queryFeatures(query)];
+                    case 1:
+                        features = (_b.sent()).features;
+                        _a = features[0].attributes, cases = _a.cases, deaths = _a.deaths, active = _a.active, population = _a.population;
+                        recovered = cases - active - deaths;
                         stats = {
-                            cases: totalCases,
-                            deaths: totalDeaths,
-                            active: totalActive,
-                            recovered: totalRecovered,
-                            activeRate: (totalActive / totalPopulation) * 100000,
-                            recoveredRate: (totalRecovered / totalPopulation) * 100000,
-                            deathRate: (totalDeaths / totalPopulation) * 100000,
+                            cases: cases,
+                            deaths: deaths,
+                            active: active,
+                            recovered: recovered,
+                            activeRate: (active / population) * 100000,
+                            recoveredRate: (recovered / population) * 100000,
+                            deathRate: (deaths / population) * 100000,
                         };
                         allStats[startDateFieldName] = stats;
                         return [2 /*return*/, stats];
@@ -206,20 +131,20 @@ define(["require", "exports", "./timeUtils"], function (require, exports, timeUt
     exports.getStatsForDate = getStatsForDate;
     function getStats(params) {
         return __awaiter(this, void 0, void 0, function () {
-            var layer, startDate, endDate, startStats, endStats, diffStats;
+            var layerView, startDate, endDate, startStats, endStats, diffStats;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        layer = params.layer, startDate = params.startDate, endDate = params.endDate;
+                        layerView = params.layerView, startDate = params.startDate, endDate = params.endDate;
                         return [4 /*yield*/, getStatsForDate({
-                                layer: layer,
+                                layerView: layerView,
                                 startDate: startDate
                             })];
                     case 1:
                         startStats = _a.sent();
                         if (!endDate) return [3 /*break*/, 3];
                         return [4 /*yield*/, getStatsForDate({
-                                layer: layer,
+                                layerView: layerView,
                                 startDate: endDate
                             })];
                     case 2:

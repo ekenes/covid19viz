@@ -1,70 +1,20 @@
-import FeatureLayer = require("esri/layers/FeatureLayer");
-import Graphic = require("esri/Graphic");
-import { getFieldFromDate, dateAdd } from "./timeUtils";
+import FeatureLayerView = require("esri/views/layers/FeatureLayerView");
+import StatisticDefinition = require("esri/tasks/support/StatisticDefinition");
+import { getFieldFromDate, dateAdd, initialTimeExtent } from "./timeUtils";
 
 interface StatisticsParams {
-  layer: FeatureLayer,
+  layerView: FeatureLayerView,
   startDate: Date,
   endDate?: Date
 }
 
-let allFeatures: Graphic[] = null;
 let allStats = {};
 
-export async function getTotalCases(params: StatisticsParams ){
-  const { layer, startDate, endDate } = params;
-  const startDateFieldName = getFieldFromDate(startDate);
-
-  if(!allFeatures){
-    allFeatures = await queryAllFeatures(layer);
-  }
-
-  const totalCount = allFeatures.map( feature => {
-    const value: string = feature.attributes[startDateFieldName];
-    const cases = parseInt(value.split("|")[0]);
-    return cases;
-  })
-  .reduce( (prev, curr) => prev + curr);
-  console.log("total", totalCount);
-  return totalCount;
-}
-
-export async function getTotalDeaths(params: StatisticsParams ){
-  const { layer, startDate, endDate } = params;
-  const startDateFieldName = getFieldFromDate(startDate);
-
-  if(!allFeatures){
-    allFeatures = await queryAllFeatures(layer);
-  }
-
-  const totalCount = allFeatures.map( feature => {
-    const value: string = feature.attributes[startDateFieldName];
-    const cases = parseInt(value.split("|")[1]);
-    return cases;
-  })
-  .reduce( (prev, curr) => prev + curr);
-
-  return totalCount;
-}
-
-async function queryAllFeatures(layer: FeatureLayer){
-  const { features } = await layer.queryFeatures({
-    returnGeometry: false,
-    outFields: ["*"],
-    maxRecordCountFactor: 5,
-    where: "1=1"
-  });
-  return features;
-}
-
 export async function getStatsForDate( params: StatisticsParams ){
-  const { layer, startDate, endDate } = params;
+  const { layerView, startDate, endDate } = params;
+  const initialDate = initialTimeExtent.start;
 
-  let totalCases = 0;
-  let totalDeaths = 0;
-  let totalRecovered = 0;
-  let totalActive = 0;
-  let totalPopulation = 0;
+  const query = layerView.createQuery();
 
   const startDateFieldName = getFieldFromDate(startDate);
 
@@ -72,85 +22,90 @@ export async function getStatsForDate( params: StatisticsParams ){
     return allStats[startDateFieldName];
   }
 
+  const totalCasesDefinition = new StatisticDefinition({
+    onStatisticField: `Confirmed_${startDateFieldName}`,
+    outStatisticFieldName: "cases",
+    statisticType: "sum"
+  });
+
+  const totalDeathsDefinition = new StatisticDefinition({
+    onStatisticField: `Deaths_${startDateFieldName}`,
+    outStatisticFieldName: "deaths",
+    statisticType: "sum"
+  });
+
+  const totalPopulationDefinition = new StatisticDefinition({
+    onStatisticField: `POP2018`,
+    outStatisticFieldName: "population",
+    statisticType: "sum"
+  });
+
+  const totalActiveDefinition = new StatisticDefinition({
+    outStatisticFieldName: "active",
+    statisticType: "sum"
+  });
+
   const daysAgo14 = dateAdd(startDate, -14);
   const daysAgo15 = dateAdd(startDate, -15);
   const daysAgo25 = dateAdd(startDate, -25);
   const daysAgo26 = dateAdd(startDate, -26);
   const daysAgo49 = dateAdd(startDate, -49);
 
-  if(!allFeatures){
-    allFeatures = await queryAllFeatures(layer);
-  }
+  if(daysAgo15 < initialDate){
+    totalActiveDefinition.onStatisticField = `Confirmed_${startDateFieldName} - Deaths_${startDateFieldName}`;
+  } else {
 
-  allFeatures.forEach( feature => {
-    const value: string = feature.attributes[startDateFieldName];
-    if(!value){
-      return;
-    }
-    const currentDayInfections = parseInt(value.split("|")[0]);
-    const currentDayDeaths = parseInt(value.split("|")[1]);
+    const daysAgo14Infections = `Confirmed_${getFieldFromDate(daysAgo14)}`;
+    const daysAgo15Infections = `Confirmed_${getFieldFromDate(daysAgo15)}`;
 
-    const startDate = new Date(2020, 0, 22);
-    let deathCount = currentDayDeaths;
-    let activeEstimate = 0;
-
-    if (daysAgo15 < startDate){
-      activeEstimate = currentDayInfections - deathCount;
+    if(daysAgo26 < initialDate){
+      totalActiveDefinition.onStatisticField = `(Confirmed_${startDateFieldName} - ${daysAgo14Infections}) + ( 0.19 * ${daysAgo15Infections}) - Deaths_${startDateFieldName}`;
     } else {
+      const daysAgo25Infections = `Confirmed_${getFieldFromDate(daysAgo25)}`;
+      const daysAgo26Infections = `Confirmed_${getFieldFromDate(daysAgo26)}`;
 
-      const daysAgo14FieldName = getFieldFromDate(daysAgo14);
-      const daysAgo14Value = feature.attributes[daysAgo14FieldName] || "0|0";
-      const daysAgo14Infections = parseInt(daysAgo14Value.split("|")[0]);
-
-      const daysAgo15FieldName = getFieldFromDate(daysAgo15);
-      const daysAgo15Value = feature.attributes[daysAgo15FieldName] || "0|0";
-      const daysAgo15Infections = parseInt(daysAgo15Value.split("|")[0]);
-
-      if (daysAgo26 < startDate){
-        activeEstimate = Math.round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * daysAgo15Infections ) - deathCount );
+      if(daysAgo49 < initialDate){
+        totalActiveDefinition.onStatisticField = `(Confirmed_${startDateFieldName} - ${daysAgo14Infections}) + ( 0.19 * (${daysAgo15Infections} - ${daysAgo25Infections})) + ( 0.05 * ${daysAgo26Infections} ) - Deaths_${startDateFieldName}`;
       } else {
+        const daysAgo49Infections = `Confirmed_${getFieldFromDate(daysAgo49)}`;
+        const daysAgo49Deaths = `Deaths_${getFieldFromDate(daysAgo49)}`;
 
-        const daysAgo25FieldName = getFieldFromDate(daysAgo25);
-        const daysAgo25Value = feature.attributes[daysAgo25FieldName] || "0|0";
-        const daysAgo25Infections = parseInt(daysAgo25Value.split("|")[0]);
+        const deathCount = `(Deaths_${startDateFieldName} - ${daysAgo49Deaths})`;
 
-        const daysAgo26FieldName = getFieldFromDate(daysAgo26);
-        const daysAgo26Value = feature.attributes[daysAgo26FieldName] || "0|0";
-        const daysAgo26Infections = parseInt(daysAgo26Value.split("|")[0]);
-
-        if (daysAgo49 < startDate){
-          activeEstimate = Math.round( (currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * daysAgo26Infections ) - deathCount );
-        } else {
-
-          const daysAgo49FieldName = getFieldFromDate(daysAgo49);
-          const daysAgo49Value = feature.attributes[daysAgo49FieldName] || "0|0";
-          const daysAgo49Infections = parseInt(daysAgo49Value.split("|")[0]);
-          const daysAgo49Deaths = parseInt(daysAgo49Value.split("|")[1]);
-
-          deathCount = currentDayDeaths - daysAgo49Deaths;
-
-          // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
-          activeEstimate = Math.round((currentDayInfections - daysAgo14Infections) + ( 0.19 * ( daysAgo15Infections - daysAgo25Infections ) ) + ( 0.05 * ( daysAgo26Infections - daysAgo49Infections) ) - deathCount);
-        }
+        // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
+        totalActiveDefinition.onStatisticField = `(Confirmed_${startDateFieldName} - ${daysAgo14Infections}) + ( 0.19 * (${daysAgo15Infections} - ${daysAgo25Infections})) + ( 0.05 * (${daysAgo26Infections} - ${daysAgo49Infections})) - ${deathCount}`;
       }
     }
-    const recoveredEstimate = Math.round(currentDayInfections - activeEstimate - currentDayDeaths);
+  }
 
-    totalCases += currentDayInfections;
-    totalDeaths += currentDayDeaths;
-    totalActive += activeEstimate;
-    totalRecovered += recoveredEstimate;
-    totalPopulation += feature.attributes.POPULATION;
-  });
+  query.outFields = ["*"];
+  query.returnGeometry = false;
+  query.where = "1=1";
+  query.outStatistics = [
+    totalCasesDefinition,
+    totalDeathsDefinition,
+    totalPopulationDefinition,
+    totalActiveDefinition
+  ];
 
+  const { features } = await layerView.queryFeatures(query);
+
+  const {
+    cases,
+    deaths,
+    active,
+    population
+  } = features[0].attributes;
+
+  const recovered = cases - active - deaths;
   const stats = {
-    cases: totalCases,
-    deaths: totalDeaths,
-    active: totalActive,
-    recovered: totalRecovered,
-    activeRate: (totalActive / totalPopulation ) * 100000,
-    recoveredRate: (totalRecovered / totalPopulation ) * 100000,
-    deathRate: (totalDeaths / totalPopulation ) * 100000,
+    cases,
+    deaths,
+    active,
+    recovered,
+    activeRate: (active / population ) * 100000,
+    recoveredRate: (recovered / population ) * 100000,
+    deathRate: (deaths / population ) * 100000,
   };
 
   allStats[startDateFieldName] = stats;
@@ -158,16 +113,16 @@ export async function getStatsForDate( params: StatisticsParams ){
 }
 
 export async function getStats(params: StatisticsParams){
-  const { layer, startDate, endDate } = params;
+  const { layerView, startDate, endDate } = params;
 
   const startStats = await getStatsForDate({
-    layer,
+    layerView,
     startDate
   });
 
   if(endDate){
     const endStats = await getStatsForDate({
-      layer,
+      layerView,
       startDate: endDate
     });
 

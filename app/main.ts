@@ -313,9 +313,9 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
           currentDate: slider.values[0],
           rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
         });
-      });
 
-      updateStats();
+        updateStats();
+      });
     }
 
     function updateLayer (useExistingTemplate?: boolean) {
@@ -384,8 +384,10 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     });
 
     async function updateStats(){
+      const layerView = await view.whenLayerView(infectionsPopulationLayer);
+
       const stats = await getStats({
-        layer: infectionsPopulationLayer,
+        layerView,
         startDate: slider.values[0],
         endDate: slider.values.length > 1 ? slider.values[1] : null
       });

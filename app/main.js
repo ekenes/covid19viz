@@ -71,8 +71,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                             currentDate: slider.values[0],
                                             rendererType: rendererSelect.value
                                         });
+                                        updateStats();
                                     });
-                                    updateStats();
                                     return [2 /*return*/];
                             }
                         });
@@ -94,15 +94,18 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                 }
                 function updateStats() {
                     return __awaiter(this, void 0, void 0, function () {
-                        var stats, format, dateOptions;
+                        var layerView, stats, format, dateOptions;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
-                                case 0: return [4 /*yield*/, statistics_1.getStats({
-                                        layer: layerUtils_1.infectionsPopulationLayer,
-                                        startDate: slider.values[0],
-                                        endDate: slider.values.length > 1 ? slider.values[1] : null
-                                    })];
+                                case 0: return [4 /*yield*/, view.whenLayerView(layerUtils_1.infectionsPopulationLayer)];
                                 case 1:
+                                    layerView = _a.sent();
+                                    return [4 /*yield*/, statistics_1.getStats({
+                                            layerView: layerView,
+                                            startDate: slider.values[0],
+                                            endDate: slider.values.length > 1 ? slider.values[1] : null
+                                        })];
+                                case 2:
                                     stats = _a.sent();
                                     format = intl_1.convertNumberFormatToIntlOptions({
                                         places: 0,
