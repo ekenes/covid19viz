@@ -19,11 +19,12 @@ import LayerSearchSource = require("esri/widgets/Search/LayerSearchSource");
 import { initialTimeExtent, setEndDate, timeExtents } from "./timeUtils";
 import { updateRenderer, UpdateRendererParams } from "./rendererUtils";
 import { updatePopupTemplate } from "./popupTemplateUtils";
-import { infectionsPopulationLayer, polygonFillPortalItemId, polygonFillLayerId, citiesContextLayer, fillColor } from "./layerUtils";
+import { infectionsPopulationLayer2020, infectionsPopulationLayer2021, polygonFillPortalItemId, polygonFillLayerId, citiesContextLayer, fillColor, setActiveLayer, setInactiveLayer } from "./layerUtils";
 import { SimpleRenderer } from "esri/renderers";
 import { SimpleFillSymbol, SimpleLineSymbol, TextSymbol } from "esri/symbols";
 import { getStats } from "./statistics";
 import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDateFormatToIntlOptions } from "esri/intl";
+import { dataOverlap, fetchFinalYearOfData } from "./dataUtils";
 
 (async () => {
 
@@ -37,7 +38,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
   loadApp();
 
   async function loadApp() {
-    await setEndDate(new Date(2020, 11, 31));
+    // await setEndDate(new Date(2020, 11, 31));
     // display the body style so message or content renders
     document.body.style.visibility = "visible";
 
@@ -155,7 +156,7 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
       includeDefaultSources: false,
       sources: [
         new LayerSearchSource({
-          layer: infectionsPopulationLayer,
+          layer: infectionsPopulationLayer2020,
           searchFields: [ "Admin2", "Province_State" ],
           displayField: "Admin2",
           suggestionTemplate: "{Admin2}, {Province_State}",
@@ -299,18 +300,23 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     }
 
     async function initializeLayer(){
-      map.add(infectionsPopulationLayer);
-      const activeLayerView = await view.whenLayerView(infectionsPopulationLayer);
+      map.add(infectionsPopulationLayer2020);
+      map.add(infectionsPopulationLayer2021);
+      const currentDate = slider.values[0];
+      const activeLayer = setActiveLayer(currentDate);
+      const activeLayerView = await view.whenLayerView(activeLayer);
+
+      await fetchFinalYearOfData();
 
       watchUtils.whenFalseOnce(activeLayerView, "updating", () => {
         updateRenderer({
-          layer: infectionsPopulationLayer,
-          currentDate: slider.values[0],
+          layer: activeLayer,
+          currentDate,
           rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
         });
         updatePopupTemplate({
-          layer: infectionsPopulationLayer,
-          currentDate: slider.values[0],
+          layer: activeLayer,
+          currentDate,
           rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
         });
 
@@ -319,17 +325,21 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     }
 
     function updateLayer (useExistingTemplate?: boolean) {
+      const currentDate = slider.values[1] ? slider.values[1] : slider.values[0];
+      const activeLayer = setActiveLayer(currentDate);
+      setInactiveLayer(currentDate);
+
       updateRenderer({
-        layer: infectionsPopulationLayer,
+        layer: activeLayer,
         currentDate: slider.values[0],
         endDate: slider.values[1] ? slider.values[1] : null,
         rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
       });
       updatePopupTemplate({
-        layer: infectionsPopulationLayer,
-        currentDate: slider.values[1] ? slider.values[1] : slider.values[0],
+        layer: activeLayer,
+        currentDate,
         rendererType: rendererSelect.value as UpdateRendererParams["rendererType"],
-        existingTemplate: useExistingTemplate ? infectionsPopulationLayer.popupTemplate : null
+        existingTemplate: useExistingTemplate ? activeLayer.popupTemplate : null
       });
     }
 
@@ -338,7 +348,8 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     });
 
     if(isMobileBrowser()){
-      infectionsPopulationLayer.popupEnabled = false;
+      infectionsPopulationLayer2020.popupEnabled = false;
+      infectionsPopulationLayer2021.popupEnabled = false;
       view.constraints.minScale = lang.clone(view.constraints.minScale) * 2;
       toggleTimeOptionsVisibility();
 
@@ -364,10 +375,14 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     await initializeLayer();
 
     slider.watch("values",  () => {
+      const currentDate = slider.values[1] ? slider.values[1] : slider.values[0];
+      const activeLayer = setActiveLayer(currentDate);
+      setInactiveLayer(currentDate);
+
       if (slider.viewModel.state === "playing"){
         // don't generate popupTemplate when slider is playing
         updateRenderer({
-          layer: infectionsPopulationLayer,
+          layer: activeLayer,
           currentDate: slider.values[0],
           endDate: slider.values[1] ? slider.values[1] : null,
           rendererType: rendererSelect.value as UpdateRendererParams["rendererType"]
@@ -384,7 +399,11 @@ import { formatNumber, convertNumberFormatToIntlOptions, formatDate, convertDate
     });
 
     async function updateStats(){
-      const layerView = await view.whenLayerView(infectionsPopulationLayer);
+      const currentDate = slider.values[0];
+      const activeLayer = setActiveLayer(currentDate);
+      setInactiveLayer(currentDate);
+
+      const layerView = await view.whenLayerView(activeLayer);
 
       const stats = await getStats({
         layerView,

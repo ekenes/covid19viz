@@ -2,7 +2,7 @@ import intl = require("esri/intl");
 import TimeExtent = require("esri/TimeExtent");
 import lang = require("esri/core/lang");
 
-import { infectionsPopulationLayer } from "./layerUtils";
+import { infectionsPopulationLayer2020, infectionsPopulationLayer2021 } from "./layerUtils";
 
 export let endDate = getPreviousDay(new Date());
 
@@ -83,11 +83,11 @@ export async function setEndDate(d?: Date){
 
   let latestDate = d;
   if(!d){
-    const query = infectionsPopulationLayer.createQuery();
+    const query = infectionsPopulationLayer2021.createQuery();
     // query.where = "FIPS = '06037'";
     query.objectIds = [ 1 ];
     query.returnGeometry = false;
-    const { features } = await infectionsPopulationLayer.queryFeatures(query);
+    const { features } = await infectionsPopulationLayer2021.queryFeatures(query);
     const feature = features[0];
 
     latestDate = new Date();

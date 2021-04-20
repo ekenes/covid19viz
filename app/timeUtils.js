@@ -117,11 +117,11 @@ define(["require", "exports", "esri/intl", "esri/TimeExtent", "esri/core/lang", 
                     case 0:
                         latestDate = d;
                         if (!!d) return [3 /*break*/, 2];
-                        query = layerUtils_1.infectionsPopulationLayer.createQuery();
+                        query = layerUtils_1.infectionsPopulationLayer2021.createQuery();
                         // query.where = "FIPS = '06037'";
                         query.objectIds = [1];
                         query.returnGeometry = false;
-                        return [4 /*yield*/, layerUtils_1.infectionsPopulationLayer.queryFeatures(query)];
+                        return [4 /*yield*/, layerUtils_1.infectionsPopulationLayer2021.queryFeatures(query)];
                     case 1:
                         features = (_a.sent()).features;
                         feature = features[0];

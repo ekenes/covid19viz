@@ -10,13 +10,32 @@ import { SimpleMarkerSymbol, TextSymbol } from "esri/symbols";
 export const polygonFillPortalItemId = "3d170bd624804d59b3009cafa5294a66";
 export const polygonFillLayerId = 0;  // 2020
 
-export const infectionsPopulationLayer = new FeatureLayer({
+export const infectionsPopulationLayer2020 = new FeatureLayer({
   title: null,
   portalItem: {
     id: polygonFillPortalItemId
   },
   copyright: `App and maps by <a href="https://github.com/ekenes">Kristian Ekenes</a>`,
   layerId: polygonFillLayerId,
+  outFields: ["*"],
+  opacity: 1,
+  renderer: new SimpleRenderer({
+    symbol: new SimpleMarkerSymbol({
+      size: 1,
+      color: null,
+      outline: null
+    })
+  })
+});
+
+export const infectionsPopulationLayer2021 = new FeatureLayer({
+  title: null,
+  portalItem: {
+    id: polygonFillPortalItemId
+  },
+  opacity: 0.01,
+  copyright: `App and maps by <a href="https://github.com/ekenes">Kristian Ekenes</a>`,
+  layerId: 1,
   outFields: ["*"],
   renderer: new SimpleRenderer({
     symbol: new SimpleMarkerSymbol({
@@ -66,3 +85,18 @@ export const citiesContextLayer = new FeatureLayer({
   ]
 });
 
+export function setActiveLayer(d: Date){
+  const activeLayer = d.getFullYear() < 2021 ? infectionsPopulationLayer2020 : infectionsPopulationLayer2021;
+  activeLayer.opacity = 1;
+  activeLayer.popupEnabled = true;
+  activeLayer.legendEnabled = true;
+  return activeLayer;
+}
+
+export function setInactiveLayer(d: Date){
+  const inactiveLayer = d.getFullYear() < 2021 ? infectionsPopulationLayer2021 : infectionsPopulationLayer2020;
+  inactiveLayer.opacity = 0.01;
+  inactiveLayer.popupEnabled = false;
+  inactiveLayer.legendEnabled = false;
+  return inactiveLayer;
+}

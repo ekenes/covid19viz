@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/lang", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Home", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./statistics", "esri/intl"], function (require, exports, WebMap, MapView, lang, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Home, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, statistics_1, intl_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/lang", "esri/layers/FeatureLayer", "esri/widgets/TimeSlider", "esri/TimeInterval", "esri/core/watchUtils", "esri/Color", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/Zoom", "esri/widgets/Home", "esri/widgets/Search", "esri/widgets/Search/LayerSearchSource", "./timeUtils", "./rendererUtils", "./popupTemplateUtils", "./layerUtils", "esri/renderers", "esri/symbols", "./statistics", "esri/intl", "./dataUtils"], function (require, exports, WebMap, MapView, lang, FeatureLayer, TimeSlider, TimeInterval, watchUtils, Color, Legend, Expand, Zoom, Home, Search, LayerSearchSource, timeUtils_1, rendererUtils_1, popupTemplateUtils_1, layerUtils_1, renderers_1, symbols_1, statistics_1, intl_1, dataUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -52,23 +52,29 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                 }
                 function initializeLayer() {
                     return __awaiter(this, void 0, void 0, function () {
-                        var activeLayerView;
+                        var currentDate, activeLayer, activeLayerView;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    map.add(layerUtils_1.infectionsPopulationLayer);
-                                    return [4 /*yield*/, view.whenLayerView(layerUtils_1.infectionsPopulationLayer)];
+                                    map.add(layerUtils_1.infectionsPopulationLayer2020);
+                                    map.add(layerUtils_1.infectionsPopulationLayer2021);
+                                    currentDate = slider.values[0];
+                                    activeLayer = layerUtils_1.setActiveLayer(currentDate);
+                                    return [4 /*yield*/, view.whenLayerView(activeLayer)];
                                 case 1:
                                     activeLayerView = _a.sent();
+                                    return [4 /*yield*/, dataUtils_1.fetchFinalYearOfData()];
+                                case 2:
+                                    _a.sent();
                                     watchUtils.whenFalseOnce(activeLayerView, "updating", function () {
                                         rendererUtils_1.updateRenderer({
-                                            layer: layerUtils_1.infectionsPopulationLayer,
-                                            currentDate: slider.values[0],
+                                            layer: activeLayer,
+                                            currentDate: currentDate,
                                             rendererType: rendererSelect.value
                                         });
                                         popupTemplateUtils_1.updatePopupTemplate({
-                                            layer: layerUtils_1.infectionsPopulationLayer,
-                                            currentDate: slider.values[0],
+                                            layer: activeLayer,
+                                            currentDate: currentDate,
                                             rendererType: rendererSelect.value
                                         });
                                         updateStats();
@@ -79,25 +85,32 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                     });
                 }
                 function updateLayer(useExistingTemplate) {
+                    var currentDate = slider.values[1] ? slider.values[1] : slider.values[0];
+                    var activeLayer = layerUtils_1.setActiveLayer(currentDate);
+                    layerUtils_1.setInactiveLayer(currentDate);
                     rendererUtils_1.updateRenderer({
-                        layer: layerUtils_1.infectionsPopulationLayer,
+                        layer: activeLayer,
                         currentDate: slider.values[0],
                         endDate: slider.values[1] ? slider.values[1] : null,
                         rendererType: rendererSelect.value
                     });
                     popupTemplateUtils_1.updatePopupTemplate({
-                        layer: layerUtils_1.infectionsPopulationLayer,
-                        currentDate: slider.values[1] ? slider.values[1] : slider.values[0],
+                        layer: activeLayer,
+                        currentDate: currentDate,
                         rendererType: rendererSelect.value,
-                        existingTemplate: useExistingTemplate ? layerUtils_1.infectionsPopulationLayer.popupTemplate : null
+                        existingTemplate: useExistingTemplate ? activeLayer.popupTemplate : null
                     });
                 }
                 function updateStats() {
                     return __awaiter(this, void 0, void 0, function () {
-                        var layerView, stats, format, dateOptions;
+                        var currentDate, activeLayer, layerView, stats, format, dateOptions;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
-                                case 0: return [4 /*yield*/, view.whenLayerView(layerUtils_1.infectionsPopulationLayer)];
+                                case 0:
+                                    currentDate = slider.values[0];
+                                    activeLayer = layerUtils_1.setActiveLayer(currentDate);
+                                    layerUtils_1.setInactiveLayer(currentDate);
+                                    return [4 /*yield*/, view.whenLayerView(activeLayer)];
                                 case 1:
                                     layerView = _a.sent();
                                     return [4 /*yield*/, statistics_1.getStats({
@@ -132,9 +145,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                 var rendererSelect, wkid, outlineColor, textColor, map, view, search, activeCountElement, recoveredCountElement, deathCountElement, displayDateElement, activeRateElement, deathRateElement, recoveredRateElement, slider, checkbox, btns, updateSlider, timeVisibilityBtn, timeOptions, infoElement, infoToggleButton, toggleInfoVisibility;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, timeUtils_1.setEndDate(new Date(2020, 11, 31))];
-                        case 1:
-                            _a.sent();
+                        case 0:
+                            // await setEndDate(new Date(2020, 11, 31));
                             // display the body style so message or content renders
                             document.body.style.visibility = "visible";
                             rendererSelect = document.getElementById("renderer-select");
@@ -246,7 +258,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 includeDefaultSources: false,
                                 sources: [
                                     new LayerSearchSource({
-                                        layer: layerUtils_1.infectionsPopulationLayer,
+                                        layer: layerUtils_1.infectionsPopulationLayer2020,
                                         searchFields: ["Admin2", "Province_State"],
                                         displayField: "Admin2",
                                         suggestionTemplate: "{Admin2}, {Province_State}",
@@ -362,7 +374,8 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 updateLayer(false);
                             });
                             if (isMobileBrowser()) {
-                                layerUtils_1.infectionsPopulationLayer.popupEnabled = false;
+                                layerUtils_1.infectionsPopulationLayer2020.popupEnabled = false;
+                                layerUtils_1.infectionsPopulationLayer2021.popupEnabled = false;
                                 view.constraints.minScale = lang.clone(view.constraints.minScale) * 2;
                                 toggleTimeOptionsVisibility();
                                 infoElement.style.position = null;
@@ -381,13 +394,16 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/core/la
                                 infoToggleButton.addEventListener("click", toggleInfoVisibility);
                             }
                             return [4 /*yield*/, initializeLayer()];
-                        case 2:
+                        case 1:
                             _a.sent();
                             slider.watch("values", function () {
+                                var currentDate = slider.values[1] ? slider.values[1] : slider.values[0];
+                                var activeLayer = layerUtils_1.setActiveLayer(currentDate);
+                                layerUtils_1.setInactiveLayer(currentDate);
                                 if (slider.viewModel.state === "playing") {
                                     // don't generate popupTemplate when slider is playing
                                     rendererUtils_1.updateRenderer({
-                                        layer: layerUtils_1.infectionsPopulationLayer,
+                                        layer: activeLayer,
                                         currentDate: slider.values[0],
                                         endDate: slider.values[1] ? slider.values[1] : null,
                                         rendererType: rendererSelect.value
