@@ -10,9 +10,6 @@ import { SimpleMarkerSymbol, TextSymbol } from "esri/symbols";
 export const polygonFillPortalItemId = "3d170bd624804d59b3009cafa5294a66";
 export const polygonFillLayerId = 0;  // 2020
 
-export const separator = "_";
-export const prefix = "DAYSTRING_";
-
 export const infectionsPopulationLayer = new FeatureLayer({
   title: null,
   portalItem: {

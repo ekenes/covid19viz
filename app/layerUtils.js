@@ -5,8 +5,6 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/layers/support/L
     // "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series";
     exports.polygonFillPortalItemId = "3d170bd624804d59b3009cafa5294a66";
     exports.polygonFillLayerId = 0; // 2020
-    exports.separator = "_";
-    exports.prefix = "DAYSTRING_";
     exports.infectionsPopulationLayer = new FeatureLayer({
         title: null,
         portalItem: {
