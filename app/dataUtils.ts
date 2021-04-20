@@ -4,7 +4,7 @@ import { dateAdd, getFieldFromDate } from "./timeUtils";
 export const dataOverlap: any = {};
 
 export async function fetchFinalYearOfData(){
-  const startDate = new Date(2020, 9, 15);
+  const startDate = new Date(2020, 10, 1);
   const endDate = new Date(2020, 11, 31);
 
   const query = infectionsPopulationLayer2020.createQuery();

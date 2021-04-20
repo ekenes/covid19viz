@@ -40,7 +40,7 @@ define(["require", "exports", "esri/tasks/support/StatisticDefinition", "./timeU
     var allStats = {};
     function getStatsForDate(params) {
         return __awaiter(this, void 0, void 0, function () {
-            var layerView, startDate, endDate, initialDate, query, startDateFieldName, totalCasesDefinition, totalDeathsDefinition, totalPopulationDefinition, totalActiveDefinition, daysAgo14, daysAgo15, daysAgo25, daysAgo26, daysAgo49, daysAgo14Infections, daysAgo15Infections, daysAgo25Infections, daysAgo26Infections, daysAgo49Infections, daysAgo49Deaths, deathCount, features, _a, cases, deaths, active, population, recovered, stats;
+            var layerView, startDate, endDate, initialDate, query, startDateFieldName, startDateInfections, startDateDeaths, totalCasesDefinition, totalDeathsDefinition, totalPopulationDefinition, totalActiveDefinition, daysAgo14, daysAgo15, daysAgo25, daysAgo26, daysAgo49, daysAgo14Infections, daysAgo15Infections, daysAgo25Infections, daysAgo26Infections, daysAgo49Infections, daysAgo49Deaths, deathCount, features, _a, cases, deaths, active, population, recovered, stats;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -51,13 +51,15 @@ define(["require", "exports", "esri/tasks/support/StatisticDefinition", "./timeU
                         if (allStats[startDateFieldName]) {
                             return [2 /*return*/, allStats[startDateFieldName]];
                         }
+                        startDateInfections = "Confirmed_" + startDateFieldName;
+                        startDateDeaths = "Deaths_" + startDateFieldName;
                         totalCasesDefinition = new StatisticDefinition({
-                            onStatisticField: "Confirmed_" + startDateFieldName,
+                            onStatisticField: startDateInfections,
                             outStatisticFieldName: "cases",
                             statisticType: "sum"
                         });
                         totalDeathsDefinition = new StatisticDefinition({
-                            onStatisticField: "Deaths_" + startDateFieldName,
+                            onStatisticField: startDateDeaths,
                             outStatisticFieldName: "deaths",
                             statisticType: "sum"
                         });
@@ -76,26 +78,26 @@ define(["require", "exports", "esri/tasks/support/StatisticDefinition", "./timeU
                         daysAgo26 = timeUtils_1.dateAdd(startDate, -26);
                         daysAgo49 = timeUtils_1.dateAdd(startDate, -49);
                         if (daysAgo15 < initialDate) {
-                            totalActiveDefinition.onStatisticField = "Confirmed_" + startDateFieldName + " - Deaths_" + startDateFieldName;
+                            totalActiveDefinition.onStatisticField = startDateInfections + " - " + startDateDeaths;
                         }
                         else {
                             daysAgo14Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo14);
                             daysAgo15Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo15);
                             if (daysAgo26 < initialDate) {
-                                totalActiveDefinition.onStatisticField = "(Confirmed_" + startDateFieldName + " - " + daysAgo14Infections + ") + ( 0.19 * " + daysAgo15Infections + ") - Deaths_" + startDateFieldName;
+                                totalActiveDefinition.onStatisticField = "(" + startDateInfections + " - " + daysAgo14Infections + ") + ( 0.19 * " + daysAgo15Infections + ") - " + startDateDeaths;
                             }
                             else {
                                 daysAgo25Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo25);
                                 daysAgo26Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo26);
                                 if (daysAgo49 < initialDate) {
-                                    totalActiveDefinition.onStatisticField = "(Confirmed_" + startDateFieldName + " - " + daysAgo14Infections + ") + ( 0.19 * (" + daysAgo15Infections + " - " + daysAgo25Infections + ")) + ( 0.05 * " + daysAgo26Infections + " ) - Deaths_" + startDateFieldName;
+                                    totalActiveDefinition.onStatisticField = "(" + startDateInfections + " - " + daysAgo14Infections + ") + ( 0.19 * (" + daysAgo15Infections + " - " + daysAgo25Infections + ")) + ( 0.05 * " + daysAgo26Infections + " ) - " + startDateDeaths;
                                 }
                                 else {
                                     daysAgo49Infections = "Confirmed_" + timeUtils_1.getFieldFromDate(daysAgo49);
                                     daysAgo49Deaths = "Deaths_" + timeUtils_1.getFieldFromDate(daysAgo49);
-                                    deathCount = "(Deaths_" + startDateFieldName + " - " + daysAgo49Deaths + ")";
+                                    deathCount = "(" + startDateDeaths + " - " + daysAgo49Deaths + ")";
                                     // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
-                                    totalActiveDefinition.onStatisticField = "(Confirmed_" + startDateFieldName + " - " + daysAgo14Infections + ") + ( 0.19 * (" + daysAgo15Infections + " - " + daysAgo25Infections + ")) + ( 0.05 * (" + daysAgo26Infections + " - " + daysAgo49Infections + ")) - " + deathCount;
+                                    totalActiveDefinition.onStatisticField = "(" + startDateInfections + " - " + daysAgo14Infections + ") + ( 0.19 * (" + daysAgo15Infections + " - " + daysAgo25Infections + ")) + ( 0.05 * (" + daysAgo26Infections + " - " + daysAgo49Infections + ")) - " + deathCount;
                                 }
                             }
                         }

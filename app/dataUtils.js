@@ -44,7 +44,7 @@ define(["require", "exports", "./layerUtils", "./timeUtils"], function (require,
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        startDate = new Date(2020, 9, 15);
+                        startDate = new Date(2020, 10, 1);
                         endDate = new Date(2020, 11, 31);
                         query = layerUtils_1.infectionsPopulationLayer2020.createQuery();
                         query.where = "1=1";

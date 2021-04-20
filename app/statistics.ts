@@ -22,14 +22,17 @@ export async function getStatsForDate( params: StatisticsParams ){
     return allStats[startDateFieldName];
   }
 
+  const startDateInfections = `Confirmed_${startDateFieldName}`;
+  const startDateDeaths = `Deaths_${startDateFieldName}`;
+
   const totalCasesDefinition = new StatisticDefinition({
-    onStatisticField: `Confirmed_${startDateFieldName}`,
+    onStatisticField: startDateInfections,
     outStatisticFieldName: "cases",
     statisticType: "sum"
   });
 
   const totalDeathsDefinition = new StatisticDefinition({
-    onStatisticField: `Deaths_${startDateFieldName}`,
+    onStatisticField: startDateDeaths,
     outStatisticFieldName: "deaths",
     statisticType: "sum"
   });
@@ -52,28 +55,28 @@ export async function getStatsForDate( params: StatisticsParams ){
   const daysAgo49 = dateAdd(startDate, -49);
 
   if(daysAgo15 < initialDate){
-    totalActiveDefinition.onStatisticField = `Confirmed_${startDateFieldName} - Deaths_${startDateFieldName}`;
+    totalActiveDefinition.onStatisticField = `${startDateInfections} - ${startDateDeaths}`;
   } else {
 
     const daysAgo14Infections = `Confirmed_${getFieldFromDate(daysAgo14)}`;
     const daysAgo15Infections = `Confirmed_${getFieldFromDate(daysAgo15)}`;
 
     if(daysAgo26 < initialDate){
-      totalActiveDefinition.onStatisticField = `(Confirmed_${startDateFieldName} - ${daysAgo14Infections}) + ( 0.19 * ${daysAgo15Infections}) - Deaths_${startDateFieldName}`;
+      totalActiveDefinition.onStatisticField = `(${startDateInfections} - ${daysAgo14Infections}) + ( 0.19 * ${daysAgo15Infections}) - ${startDateDeaths}`;
     } else {
       const daysAgo25Infections = `Confirmed_${getFieldFromDate(daysAgo25)}`;
       const daysAgo26Infections = `Confirmed_${getFieldFromDate(daysAgo26)}`;
 
       if(daysAgo49 < initialDate){
-        totalActiveDefinition.onStatisticField = `(Confirmed_${startDateFieldName} - ${daysAgo14Infections}) + ( 0.19 * (${daysAgo15Infections} - ${daysAgo25Infections})) + ( 0.05 * ${daysAgo26Infections} ) - Deaths_${startDateFieldName}`;
+        totalActiveDefinition.onStatisticField = `(${startDateInfections} - ${daysAgo14Infections}) + ( 0.19 * (${daysAgo15Infections} - ${daysAgo25Infections})) + ( 0.05 * ${daysAgo26Infections} ) - ${startDateDeaths}`;
       } else {
         const daysAgo49Infections = `Confirmed_${getFieldFromDate(daysAgo49)}`;
         const daysAgo49Deaths = `Deaths_${getFieldFromDate(daysAgo49)}`;
 
-        const deathCount = `(Deaths_${startDateFieldName} - ${daysAgo49Deaths})`;
+        const deathCount = `(${startDateDeaths} - ${daysAgo49Deaths})`;
 
         // Active Cases = (100% of new cases from last 14 days + 19% of days 15-25 + 5% of days 26-49) - Death Count
-        totalActiveDefinition.onStatisticField = `(Confirmed_${startDateFieldName} - ${daysAgo14Infections}) + ( 0.19 * (${daysAgo15Infections} - ${daysAgo25Infections})) + ( 0.05 * (${daysAgo26Infections} - ${daysAgo49Infections})) - ${deathCount}`;
+        totalActiveDefinition.onStatisticField = `(${startDateInfections} - ${daysAgo14Infections}) + ( 0.19 * (${daysAgo15Infections} - ${daysAgo25Infections})) + ( 0.05 * (${daysAgo26Infections} - ${daysAgo49Infections})) - ${deathCount}`;
       }
     }
   }
