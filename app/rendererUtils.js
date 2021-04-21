@@ -604,10 +604,10 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpressionTitle: "% of population infected with COVID-19",
                     stops: [
                         { value: 0, color: colors[0], label: "0%" },
-                        { value: 2500, color: colors[1] },
-                        { value: 5000, color: colors[2], label: "5%" },
-                        { value: 7500, color: colors[3] },
-                        { value: 10000, color: colors[4], label: "10%" }
+                        { value: 5000, color: colors[1] },
+                        { value: 10000, color: colors[2], label: "10%" },
+                        { value: 15000, color: colors[3] },
+                        { value: 20000, color: colors[4], label: "20%" }
                     ]
                 })
             ];
@@ -651,10 +651,10 @@ define(["require", "exports", "esri/renderers/SimpleRenderer", "esri/renderers/v
                     valueExpressionTitle: "Total COVID-19 deaths per 100k people",
                     stops: [
                         { value: 0, color: colors[0] },
-                        { value: 50, color: colors[1] },
-                        { value: 100, color: colors[2] },
-                        { value: 150, color: colors[3] },
-                        { value: 300, color: colors[4] }
+                        { value: 125, color: colors[1] },
+                        { value: 250, color: colors[2] },
+                        { value: 375, color: colors[3] },
+                        { value: 500, color: colors[4] }
                     ]
                 })
             ];
